@@ -1,0 +1,20 @@
+.login-wrapper{
+    text-align: center;
+    display: grid;
+    place-items: center;
+    background-color: #295457;
+    height: 65dvh;
+    max-height: 30rem;
+    padding: 1rem;
+}
+.login-form{
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    max-width: 35rem;
+    justify-content: space-between;
+    padding: 1.25rem;
+    height: 100%;
+    border: 2px solid white;
+    background-color: #ffffff;
+}

@@ -1,0 +1,57 @@
+.find-provider-container{
+    background: linear-gradient(to bottom, #295457, #60d9d9);
+    padding-inline: 7.5%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    padding-block: 3rem 1rem;
+}
+.provider-search-result-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+.provider-card{
+    border: 1px solid white;
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    row-gap: 1rem;
+}
+.provider-info{
+    color: white;
+    display: flex;
+    column-gap: 5rem;
+}
+.provider-info > div{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem;
+}
+.provider-image{
+    height: 12rem;
+}
+.find-provider-main{
+    column-gap: 2rem;
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+.filter-inp{
+    background-color: #f2f2f2;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #f2f2f2;
+}
+.more-filter-btn{
+    text-align: center;
+    color: cyan;
+    width: fit-content;
+    align-self: center;
+    user-select: none;
+} 
+.more-filter-btn:hover{
+    cursor: pointer;
+}

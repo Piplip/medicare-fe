@@ -1,0 +1,206 @@
+
+.root-container > *:not(:nth-child(-n+2)){
+    padding-top: 5rem;
+    padding-bottom: 1rem;
+}
+.homepage-hero{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #295457, #60d9d9);
+    padding: 1rem 7.5% 0;
+}
+.hero-main-wrapper{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    color: #000000;
+    padding-inline: 3rem;
+}
+.root-nav{
+    display: flex;
+    background-color: #295457;
+    color: white;
+    padding: 1rem 2rem;
+    justify-content: space-between;
+}
+.call-to-action-container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1.5rem;
+}
+.hero-main-intro-text{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.call-to-action-item{
+    color: black;
+    padding: 2.5rem 1rem 1rem;
+    background-color: #f3f3f3;
+    position: relative;
+    border-top-right-radius: 1rem;
+    border-top-left-radius: 1rem;
+    max-width: 20rem;
+}
+.call-to-action-icon-wrapper{
+    display: flex;
+    background-color: #295457;
+    width: fit-content;
+    padding: 1rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.call-to-action-main{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 11rem;
+}
+.call-to-action-btn{
+    background-color: #295457;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    text-align: center;
+    cursor: pointer;
+    border-bottom-right-radius: 5rem;
+}
+.nav-logo{
+    font-size: 1.25rem;
+    color: yellow;
+    font-weight: bold;
+    text-decoration: none;
+}
+.homepage-service-wrapper{
+    width: 100%;
+    background: linear-gradient(to bottom, #60d9d9, #295457);
+}
+.homepage-service{
+    padding: 1rem 10%;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 2rem;
+}
+.service-item{
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    background-color: #cbfafa;
+    row-gap: .5rem;
+}
+.service-item > img{
+    width: 100%;
+}
+.patient-visitor-information{
+    background: linear-gradient(to bottom, #60d9d9, #295457);
+}
+.patient-visitor{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    padding-inline: 25%;
+}
+.patient-visitor-item{
+    width: 100%;
+    border: 1px solid white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    background-color: #295457;
+}
+.patient-visitor-item:nth-child(even){
+    flex-direction: row-reverse;
+}
+.patient-visitor-item > img{
+    width: 20%;
+}
+.homepage-about-wrapper{
+    background: linear-gradient(to bottom, #295457, #60d9d9);
+    display: flex;
+    padding-inline: 10%;
+    column-gap: 3rem;
+    justify-content: space-between;
+}
+.homepage-about{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: 50%;
+}
+.homepage-about p{
+    color: white;
+}
+.homepage-about > *:last-child > p{
+    color: black;
+}
+.homepage-about-wrapper > img{
+    width: 50%;
+}
+.about-info{
+    margin-left: 1rem;
+    color: white;
+    font-size: 1.25rem;
+    background-color: black;
+    padding: 0.25rem 1rem;
+}
+.homepage-about > *:last-child .about-info{
+    border-block: 4px solid yellow;
+}
+.root-footer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    color: white;
+}
+.footer-subscribe-form{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    align-items: center;
+    margin-top: 3rem;
+    row-gap: 1rem;
+}
+.footer-copyright{
+    flex-grow: 1;
+    transform: translateX(-3rem);
+    text-align: center;
+}
+.root-nav-links{
+    display: flex;
+    column-gap: 1.5rem;
+}
+.call-to-action-btn{
+    width: 100%;
+}
+.call-to-action-icon-wrapper > *{
+    color: white;
+}
+.chat-btn{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    background-color: #007dff;
+    border-radius: 50%;
+    color: white;
+    padding: 1.25rem;
+    font-size: 2rem;
+}

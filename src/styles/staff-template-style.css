@@ -1,0 +1,12 @@
+.page-template{
+    display: flex;
+    flex-direction: column;
+}
+.page-content-wrapper{
+    display: flex;
+    width: 100%;
+}
+.page-template-outlet-wrapper{
+    background-color: #BDEBFF;
+    flex-grow: 1;
+}
