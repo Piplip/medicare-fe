@@ -1,4 +1,4 @@
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Link, RouterProvider} from "react-router-dom";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import FindProvider from "./pages/FindDoctor.jsx";
@@ -31,6 +31,14 @@ function App() {
                 {path: 'appointment-scheduling', element: <AppointmentScheduling />},
                 {path: 'patient-view', element: <PhysicianPatientView />},
             ]
+        },
+        {
+            path: '/verify/success',
+            element: <div style={{width: '100%', height: '100dvh', backgroundColor: 'black', padding: '2rem', textAlign: 'center'}}>
+                <p style={{fontSize: '4rem', color: 'orange', marginBlock: '4rem'}}>EIDA</p>
+                <h1 style={{color: 'lightgreen'}}>VERIFIED SUCCESSFULLY</h1>
+                <p style={{color: 'white'}}>You can now close this page or head to <Link style={{color: 'yellow'}} to={'/login'}>login page.</Link></p>
+            </div>
         },
     ])
 

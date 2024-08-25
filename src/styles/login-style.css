@@ -3,7 +3,7 @@
     display: grid;
     place-items: center;
     background-color: #295457;
-    height: 65dvh;
+    height: 100dvh;
     max-height: 30rem;
     padding: 1rem;
 }
