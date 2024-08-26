@@ -18,7 +18,7 @@ export default function LoginSignUp(){
     const signUpSchema = Yup.object().shape({
         email: Yup.string()
             .email('Invalid email')
-            .required('Required'),
+            .required('Missing email'),
 
         password: Yup.string()
             .min(8, 'Password must be at least 8 characters')
@@ -31,16 +31,20 @@ export default function LoginSignUp(){
     });
 
     function sendSignUpRequest(data){
-        baseAxios.post('/api/user/sign-up', {
+        baseAxios.post('/sign-up', {
             email: data.email,
             password: data.password
         }).then(res => {
-            console.log(res)
-            if(res.status === 200){
-                setAwaitResponse(false)
+            console.log(res.status)
+            setAwaitResponse(false)
+            alert('Account created successfully! Check your email for verification link.')
+
+        }).catch(err => {
+            setAwaitResponse(false)
+            if(err.status === 400){
+                alert(err.response.data)
             }
         })
-            .catch(err => console.log(err))
     }
 
     return (
@@ -55,14 +59,13 @@ export default function LoginSignUp(){
                         validationSchema={signUpSchema}
                         onSubmit={(values) => {
                             setAwaitResponse(true)
-                            console.log(values)
                             sendSignUpRequest(values)
                         }}
                     >
                         {({
                               values, errors, touched,
                               handleChange, handleBlur,
-                              handleSubmit, isSubmitting,
+                              handleSubmit
                           }) => (
                             <Form style={{width: '100%', display: 'flex', rowGap: '0.25rem', flexDirection: 'column', height: 'fit-content'}}
                                 onSubmit={handleSubmit}
