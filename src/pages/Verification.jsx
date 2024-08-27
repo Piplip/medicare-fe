@@ -9,6 +9,7 @@ export default function Verification(){
     const errorRef = {
         'ERR-1001': 'Account not found',
         'ERR-1002': 'Account already activated',
+        'ERR-1003': 'Invalid token'
     }
 
     const path = useLocation();
