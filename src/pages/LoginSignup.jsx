@@ -4,16 +4,19 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from '@mui/icons-material/Lock';
 import {useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {useLocation} from "react-router";
+import {useLocation, useNavigate} from "react-router";
 import {Form, Link} from "react-router-dom";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import baseAxios from "../config/axiosConfig.jsx";
 
 export default function LoginSignUp(){
+    const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
     const isSignUpPage = useLocation().pathname.includes('sign-up')
     const [awaitResponse, setAwaitResponse] = useState(false)
+    const [disabledSend, setDisabledSend] = useState(false)
+    const [showSuccessLogin, setShowSuccessLogin] = useState(false)
 
     const signUpSchema = Yup.object().shape({
         email: Yup.string()
@@ -25,9 +28,11 @@ export default function LoginSignUp(){
             .max(30, 'Max allowed length is 30 characters')
             .required('Missing password'),
 
-        confirm: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Passwords mismatch')
-            .required('Missing confirm password'),
+        ...(isSignUpPage ? {
+            confirm: Yup.string()
+                .oneOf([Yup.ref('password'), null], 'Passwords mismatch')
+                .required('Missing confirm password')
+        } : {})
     });
 
     function sendSignUpRequest(data){
@@ -35,10 +40,28 @@ export default function LoginSignUp(){
             email: data.email,
             password: data.password
         }).then(res => {
-            console.log(res.status)
             setAwaitResponse(false)
-            alert('Account created successfully! Check your email for verification link.')
+            alert(res.data)
 
+        }).catch(err => {
+            setAwaitResponse(false)
+            if(err.status === 400){
+                alert(err.response.data)
+            }
+        })
+    }
+
+    function sendLoginRequest(data){
+        baseAxios.post('/login', {
+            email: data.email,
+            password: data.password,
+            sessionID: localStorage.getItem('SESSION-ID')
+        }).then(res => {
+            console.log(res)
+            localStorage.setItem('SESSION-ID', res.data.sessionID)
+            setAwaitResponse(false)
+            setShowSuccessLogin(true)
+            setTimeout(() => navigate('/'), 3000)
         }).catch(err => {
             setAwaitResponse(false)
             if(err.status === 400){
@@ -57,9 +80,11 @@ export default function LoginSignUp(){
                     <Formik
                         initialValues={{ email: '', password: '', confirm: ''}}
                         validationSchema={signUpSchema}
-                        onSubmit={(values) => {
+                        onSubmit={async (values) => {
                             setAwaitResponse(true)
-                            sendSignUpRequest(values)
+                            await (isSignUpPage ? sendSignUpRequest(values) : sendLoginRequest(values))
+                            setDisabledSend(true)
+                            setTimeout(() => setDisabledSend(false), 5000)
                         }}
                     >
                         {({
@@ -101,7 +126,7 @@ export default function LoginSignUp(){
                                     </>
                                 }
                                 {!isSignUpPage && <FormHelperText>Forgot password ?</FormHelperText>}
-                                <Button variant={'contained'} type={'submit'}
+                                <Button variant={'contained'} type={'submit'} disabled={disabledSend}
                                         sx={{backgroundColor: '#295457', marginBlock: '1rem',
                                             color: 'white',
                                             '&:hover': {backgroundColor: '#1b3c3f'
@@ -118,6 +143,11 @@ export default function LoginSignUp(){
                         {isSignUpPage ? 'Have an account ? Login here': 'New User ? Register here'}
                     </Typography>
                 </Link>
+                {showSuccessLogin &&
+                    <div className={'success-login'}>
+                        Login successfully! Redirecting to homepage....
+                    </div>
+                }
             </div>
         </div>
     )

@@ -205,10 +205,10 @@
     font-size: 2rem;
 }
 .loader {
-    width: 20%;
+    width: 50%;
     height: 25px;
     border-radius: 40px;
-    color: #07ffeb;
+    color: #000000;
     border: 2px solid;
     position: relative;
     overflow: hidden;
@@ -225,7 +225,7 @@
     background: currentColor;
     box-shadow: -10px 0 12px 3px currentColor;
     clip-path: polygon(0 5%, 100% 0,100% 100%,0 95%,-30px 50%);
-    animation: l14 1s infinite linear;
+    animation: l14 1.25s infinite ease-in-out;
 }
 @keyframes l14 {
     100% {left: calc(100% + 20px)}
