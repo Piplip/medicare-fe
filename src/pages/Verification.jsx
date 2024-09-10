@@ -9,13 +9,13 @@ export default function Verification(){
     const errorRef = {
         'ERR-1001': 'Account not found',
         'ERR-1002': 'Account already activated',
-        'ERR-1003': 'Invalid token'
+        'ERR-1003': 'Invalid token or token expired'
     }
 
     const path = useLocation();
     const [isWaiting, setIsWaiting] = useState(false)
     const [response, setResponse] = useState({
-        content: convertErrorToMessage(path.search.substring(7)),
+        content: convertErrorToMessage(path.search.substring(7)) || "Token is expired! Please generate new token",
         type: null
     })
 
@@ -28,11 +28,12 @@ export default function Verification(){
         }
     }
 
-    function sendRenewTokenRequest(){
-        setIsWaiting(true)
-        baseAxios.post('/token/renew?account=' + path.search.charAt(path.search.length - 1))
+    async function sendRenewTokenRequest(){
+        await setIsWaiting(true)
+        baseAxios.post('/token/renew?account=' + path.search.substring(path.search.length - 3))
             .then(res => {
                 console.log(res)
+                setIsWaiting(false)
                 setResponse({
                     content: res.data,
                     type: 'success'
@@ -40,6 +41,7 @@ export default function Verification(){
             })
             .catch(err => {
                 console.log(err)
+                setIsWaiting(false)
                 setResponse({
                     content: err.response.data,
                     type: 'error'
@@ -51,27 +53,21 @@ export default function Verification(){
         <div className={'verification-wrapper'}>
             {path.pathname === "/verify/success" ?
                 <Stack rowGap={1}>
-                    <p style={{fontSize: '4rem', color: 'orange', marginBlock: '4rem'}}>MedicarePlus</p>
+                    <p style={{fontSize: '3.5rem', color: 'yellow', marginBlock: '4rem'}}>Medicare<span style={{color: 'orangered'}}>Plus</span></p>
                     <h1 style={{color: 'lightgreen'}}>VERIFIED SUCCESSFULLY</h1>
                     <p style={{color: 'white'}}>You can now close this page or head to <Link style={{color: 'yellow'}} to={'/login'}>login page.</Link></p>
                 </Stack>
                 :
                 <Stack rowGap={1} alignItems={'center'}>
-                    <p style={{fontSize: '4rem', color: 'orange', marginBlock: '4rem'}}>MedicarePlus</p>
-                    {response.content ?
-                        <p style={{color: response.type === 'success' ? 'greenyellow' : 'red'}}>
-                            {response.content}
-                        </p> :
-                        <Stack rowGap={'1rem'} alignItems={'center'}>
-                            <h1 style={{color: 'red'}}>VERIFICATION FAILED</h1>
-                            <p style={{color: 'white'}}>Invalid token or token is expired. Click the button below to generate new token</p>
-                            <Button sx={{width: 'fit-content'}} variant="contained"
-                                    onClick={sendRenewTokenRequest}
-                            >
-                                {isWaiting ? <CircularProgress sx={{color: 'red', marginInline: '2rem'}} size={'1.5rem'}/> : "GENERATE"}
-                            </Button>
-                        </Stack>
-                    }
+                    <p style={{fontSize: '3.5rem', color: 'yellow', marginBlock: '4rem'}}>Medicare<span
+                        style={{color: 'orangered'}}>Plus</span></p>
+                    <Stack rowGap={'1rem'} alignItems={'center'}>
+                        <h1 style={{color: 'red'}}>VERIFICATION FAILED</h1>
+                        <p style={{color: 'white'}}>{response.content}</p>
+                        <Button sx={{width: 'fit-content'}} variant="contained" onClick={sendRenewTokenRequest}>
+                            {isWaiting ? <CircularProgress sx={{color: 'red', marginInline: '2rem'}} size={'1.5rem'}/> : "GENERATE NEW TOKEN"}
+                        </Button>
+                    </Stack>
                 </Stack>
             }
         </div>
