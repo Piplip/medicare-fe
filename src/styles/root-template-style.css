@@ -1,0 +1,108 @@
+.root-container > *:not(:nth-child(-n+2)){
+    padding-top: 5rem;
+    padding-bottom: 1rem;
+}
+.root-nav{
+    display: flex;
+    background-color: #295457;
+    color: white;
+    padding: 1rem 2rem;
+    justify-content: space-between;
+}
+.nav-logo{
+    font-size: 1.25rem;
+    color: yellow;
+    font-weight: bold;
+    text-decoration: none;
+}
+.root-nav-links{
+    display: flex;
+    column-gap: .2rem;
+    align-items: center;
+}
+.root-nav-links > a{
+    padding: 0.5rem 0.75rem;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 3px solid transparent;
+    transition: all 0.25s ease-in-out;
+    font-family: 'Roboto', sans-serif;
+}
+.root-nav-links > .nav-links:hover{
+    color: #295457;
+    background-color: yellow;
+    border: 3px solid black;
+    filter: drop-shadow(0 0 0.5rem black);
+}
+.root-footer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    color: white;
+}
+.footer-subscribe-form{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    align-items: center;
+    margin-top: 3rem;
+    row-gap: 1rem;
+}
+.footer-copyright{
+    flex-grow: 1;
+    text-align: center;
+}
+.chat-btn{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    background-color: #007dff;
+    border-radius: 50%;
+    color: white;
+    padding: 1.25rem;
+    font-size: 2rem;
+}
+.profile{
+    position: relative;
+}
+.profile-menu{
+    width: 12.5rem;
+    display: flex;
+    flex-direction: column;
+    right: 0;
+    background-color: white;
+    color: black;
+    padding: 0.5rem 0.75rem;
+    position: absolute;
+    visibility: hidden;
+    z-index: 10;
+}
+.profile-menu > *{
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+.profile-menu p{
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid;
+    padding-bottom: 0.25rem;
+}
+.profile:has(.profile-btn:hover) .profile-menu{
+    visibility: visible;
+}
+.profile-menu:hover{
+    visibility: visible;
+}
+.profile-menu > .profile-nav-links:hover{
+    background-color: #c2c2c2;
+}

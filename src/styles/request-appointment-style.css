@@ -1,0 +1,35 @@
+.request-appointment-wrapper{
+    padding: 2rem 7%;
+    background-color: #0f1f1f;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.5rem;
+}
+.request-appointment-wrapper > *{
+    color: white;
+}
+.appointment-holder{
+    width: 12rem;
+    border-radius: 50%;
+}
+.appointment-holder-wrapper{
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+.appointment-holder-wrapper:hover{
+    filter: brightness(0.9);
+}
+.appointment-detail-doctor{
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #13243d;
+    width: 30rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+.appointment-detail-component:not(:first-child){
+    border-top: 1px solid #fff;
+    padding-top: 0.5rem;
+}
