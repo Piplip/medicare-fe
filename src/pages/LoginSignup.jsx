@@ -9,8 +9,9 @@ import {Form, Link} from "react-router-dom";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import baseAxios from "../config/axiosConfig.jsx";
+import {useTranslation} from "react-i18next";
 
-export default function LoginSignUp(){
+export default function LoginSignUp(props){
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
     const isSignUpPage = useLocation().pathname.includes('sign-up')
@@ -18,20 +19,22 @@ export default function LoginSignUp(){
     const [disabledSend, setDisabledSend] = useState(false)
     const [showSuccessLogin, setShowSuccessLogin] = useState(false)
 
+    const {t} = useTranslation('common')
+
     const signUpSchema = Yup.object().shape({
         email: Yup.string()
-            .email('Invalid email')
-            .required('Missing email'),
+            .email(t("login.error.email.invalid"))
+            .required(t("login.error.email.missing")),
 
         password: Yup.string()
-            .min(8, 'Password must be at least 8 characters')
-            .max(30, 'Max allowed length is 30 characters')
-            .required('Missing password'),
+            .min(8, t("login.error.password.too-short"))
+            .max(30, t("login.error.password.too-long"))
+            .required(t("login.error.password.missing")),
 
         ...(isSignUpPage ? {
             confirm: Yup.string()
-                .oneOf([Yup.ref('password'), null], 'Passwords mismatch')
-                .required('Missing confirm password')
+                .oneOf([Yup.ref('password'), null], t("login.error.confirm.mismatch"))
+                .required(t("login.error.confirm.missing"))
         } : {})
     });
 
@@ -55,13 +58,22 @@ export default function LoginSignUp(){
         baseAxios.post('/login', {
             email: data.email,
             password: data.password,
-            sessionID: localStorage.getItem('SESSION-ID')
-        }).then(res => {
-            console.log(res)
+        }).then(async res => {
+            console.log(res.data)
             localStorage.setItem('SESSION-ID', res.data.sessionID)
+            localStorage.setItem('firstName', res.data.firstName)
+            localStorage.setItem('lastName', res.data.lastName)
+
+            await props.setCurrentUser(prev => ({
+                ...prev,
+                firstName: res.data.firstName,
+                lastName: res.data.lastName,
+                email: res.data.email,
+            }))
+
             setAwaitResponse(false)
             setShowSuccessLogin(true)
-            setTimeout(() => navigate('/'), 3000)
+            setTimeout(() => window.location.href = '/', 2000)
         }).catch(err => {
             setAwaitResponse(false)
             if(err.status === 400){
@@ -75,7 +87,7 @@ export default function LoginSignUp(){
             <div className={'login-form'}>
                 <Stack rowGap={'1rem'}>
                     <Typography variant={'h4'} marginBottom={3}>
-                        {isSignUpPage ? 'Sign Up' : 'Log In'}
+                        {isSignUpPage ? t('login.signup-title') : t('login.login-title')}
                     </Typography>
                     <Formik
                         initialValues={{ email: '', password: '', confirm: ''}}
@@ -95,11 +107,11 @@ export default function LoginSignUp(){
                             <Form style={{width: '100%', display: 'flex', rowGap: '0.25rem', flexDirection: 'column', height: 'fit-content'}}
                                 onSubmit={handleSubmit}
                             >
-                                <TextField placeholder={'Enter your email'} name={'email'} onChange={handleChange} onBlur={handleBlur} value={values.email}
+                                <TextField placeholder={t('login.placeholder.email')} name={'email'} onChange={handleChange} onBlur={handleBlur} value={values.email}
                                            error={touched.email && Boolean(errors.email)}
                                            helperText={touched.email && errors.email}
                                            InputProps={{startAdornment: (<InputAdornment position="start"><EmailIcon /></InputAdornment>),}} variant="outlined"/>
-                                <TextField placeholder={'Password'} type={showPassword ? 'text' : 'password'}
+                                <TextField placeholder={t('login.placeholder.password')} type={showPassword ? 'text' : 'password'}
                                            name={'password'} onChange={handleChange} onBlur={handleBlur} value={values.password}
                                            error={touched.password && Boolean(errors.password)}
                                            helperText={touched.password && errors.password}
@@ -112,7 +124,7 @@ export default function LoginSignUp(){
                                            variant="outlined"/>
                                 {isSignUpPage &&
                                     <>
-                                        <TextField placeholder={'Confirm Password'} type={showPassword ? 'text' : 'password'}
+                                        <TextField placeholder={t('login.placeholder.confirm')} type={showPassword ? 'text' : 'password'}
                                                    name={'confirm'} onChange={handleChange} onBlur={handleBlur} value={values.confirm}
                                                    error={touched.confirm && Boolean(errors.confirm)}
                                                    helperText={touched.confirm && errors.confirm}
@@ -125,14 +137,14 @@ export default function LoginSignUp(){
                                                    variant="outlined"/>
                                     </>
                                 }
-                                {!isSignUpPage && <FormHelperText>Forgot password ?</FormHelperText>}
+                                {!isSignUpPage && <FormHelperText>{t('login.forgot-pass')}</FormHelperText>}
                                 <Button variant={'contained'} type={'submit'} disabled={disabledSend}
                                         sx={{backgroundColor: '#295457', marginBlock: '1rem',
                                             color: 'white',
                                             '&:hover': {backgroundColor: '#1b3c3f'
                                         }}}
                                 >
-                                    {awaitResponse ? <div className={'loader'}></div> : isSignUpPage ? 'Sign Up' : 'Log In'}
+                                    {awaitResponse ? <div className={'loader'}></div> : isSignUpPage ? t('login.signup-title') : t('login.login-title')}
                                 </Button>
                             </Form>
                         )}
@@ -140,7 +152,7 @@ export default function LoginSignUp(){
                 </Stack>
                 <Link to={isSignUpPage ? '/login' : '/sign-up'} style={{textDecoration: 'none', width: 'fit-content', alignSelf: 'center'}}>
                     <Typography variant={'body2'}>
-                        {isSignUpPage ? 'Have an account ? Login here': 'New User ? Register here'}
+                        {isSignUpPage ? t('login.login-rec'): t('login.register-rec')}
                     </Typography>
                 </Link>
                 {showSuccessLogin &&
