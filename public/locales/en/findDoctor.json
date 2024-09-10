@@ -1,0 +1,21 @@
+{
+  "name-placeholder": "Search by name...",
+  "find-button": "Find",
+  "more-filter": "MORE FILTER +",
+  "less-filter": "LESS FILTER -",
+  "note": "(*) The information provided in this search result is for general informational purposes only. While we strive to keep the information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability with respect to the information, products, services, or related graphics contained on the website for any purpose. Any reliance you place on such information is therefore strictly at your own risk.",
+  "clear-filter": "CLEAR ALL FILTER",
+  "primary-lang": "PRIMARY LANGUAGE",
+  "gender": {
+    "title": "GENDER",
+    "male": "Male",
+    "female": "Female"
+  },
+  "row-per-page": "Result per page",
+  "number-of-doctor_one": "{{count}} Doctor",
+  "number-of-doctor_other": "{{count}} Doctors",
+  "department": "DEPARTMENT",
+  "specialization": "SPECIALIZATION",
+  "language-spoken": "LANGUAGE SPOKEN",
+  "schedule": "SCHEDULE APPOINTMENT"
+}

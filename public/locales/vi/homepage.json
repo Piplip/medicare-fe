@@ -1,0 +1,84 @@
+{
+  "hero-main": "Chào mừng đến với ",
+  "hero-sub": "Nơi cung cấp các dịch vụ chăm sóc và điều trị sức khỏe cho bạn",
+  "call-to-action": {
+    "item1": {
+      "title": "Đặng nhập/Đăng ký",
+      "description": "Đăng nhập và đăng ký tài khoản sử dụng dịch vụ của MedicarePlus",
+      "button": "Đăng nhập/Đăng ký"
+    },
+    "item2": {
+      "title": "Đặt lịch khám bệnh",
+      "description": "Đặt lịch khám bệnh theo mong muốn chăm sóc sức khỏe của bạn",
+      "button": "Đặt lịch khám"
+    },
+    "item3": {
+      "title": "Tìm kiếm bác sĩ",
+      "description": "Tìm kiếm bác sĩ phù hợp để có được chất lượng khám bệnh tốt nhất",
+      "button": "Tìm kiếm"
+    },
+    "item4": {
+      "title": "Tin tức",
+      "description": "Cung cấp các thông tin/bài báo mới nhất về bệnh viện MedicarePlus",
+      "button": "Xem thêm"
+    }
+  },
+  "service": {
+    "title": "Dịch vụ chăm sóc sức khỏe của chúng tôi",
+    "service1": {
+      "name": "Khoa tim mạch",
+      "description": "Chăm sóc/điều trị bệnh nhân có các bệnh liên quan đến tim mạch"
+    },
+    "service2": {
+      "name": "Khoa cấp cứu",
+      "description": "Chăm sóc sức khỏe 24/7 đối với bệnh nhân nguy kịch"
+    },
+    "service3": {
+      "name": "Khoa thần kinh",
+      "description": "Chăm sóc/điều trị đặc biệt đối với các trường hợp có bệnh tình phức tạp về thần kinh"
+    },
+    "service4": {
+      "name": "Khoa chấn thương chỉnh hình",
+      "description": "Chăm sóc/điều trị bệnh nhân có xương, khớp bị biến dạng trên cơ thể"
+    },
+    "service5": {
+      "name": "Khoa nhi",
+      "description": "Chăm sóc/điều trị sức khỏe toàn diện cho bệnh nhân trẻ em và thanh thiếu niên"
+    },
+    "service6": {
+      "name": "Khoa ung thư",
+      "description": "Chăm sóc/điều trị bệnh nhân bị các bệnh liên quan đến ung thư"
+    },
+    "button": "Xem thêm"
+  },
+  "contact": {
+    "title": "Liên lạc với chúng tôi",
+    "emergency-title": "Đường dây nóng",
+    "address-title": "Địa chỉ bệnh viện",
+    "phone": "Điện thoại",
+    "regular-hours": "Giờ hoạt động",
+    "emergency-hours": "Giờ cấp cứu",
+    "emergency-phone": "Số điện thoại đường dây nóng",
+    "address": "Số 6 Nguyễn Huệ, phường 3, tỉnh Bạc Liêu"
+  },
+  "visitor-info": {
+    "title": "Thông tin cần biết đối với người dùng dịch vụ",
+    "item1": {
+      "title": "Bảo hiểm",
+      "description": "Hiện danh sách các bảo hiểm được bệnh viện công nhận và cách sử dụng từng loại bảo hiểm"
+    },
+    "item2": {	
+      "title": "Thông tin bãi giữ xe",
+      "description": "Hỗ trợ tìm kiếm nơi đậu xe"
+    },
+    "item3": {
+      "title": "Quyền và trách nhiệm của bệnh nhân/người thăm gặp",
+      "description": "Giải thích các quyền và trách nhiệm của bệnh nhân/người thăm gặp"
+    },
+    "item4": {
+      "title": "Giờ thăm gặp",
+      "description": "Thông tin về giờ thăm gặp và các hướng dẫn của bệnh viện giúp việc thăm gặp dễ dàng hơn"
+    },
+    "button": "XEM THÊM"
+  }
+}

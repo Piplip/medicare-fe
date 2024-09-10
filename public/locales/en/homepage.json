@@ -1,0 +1,84 @@
+{
+  "hero-main": "Welcome to ",
+  "hero-sub": "A comprehensive healthcare solution for all your needs",
+  "call-to-action": {
+    "item1": {
+      "title": "Log in or create an account",
+      "description": "Access your information anytime, anywhere",
+      "button": "Login/Create Account"
+    },
+    "item2": {
+      "title": "Schedule an appointment",
+      "description": "Book an appointment with a healthcare provider of your choice",
+      "button": "Schedule Now"
+    },
+    "item3": {
+      "title": "Find a Doctor suit your needs",
+      "description": "Search for a healthcare provider based on your preferences",
+      "button": "Find a Doctor"
+    },
+    "item4": {
+      "title": "News and Updates",
+      "description": "Stay informed about the latest happenings and news.",
+      "button": "Learn More"
+    }
+  },
+  "service": {
+    "title": "Our Services",
+    "service1": {
+      "name": "Cardiology",
+      "description": "Comprehensive heart care for all ages"
+    },
+    "service2": {
+      "name": "Emergency",
+      "description": "24/7 emergency care for critical conditions"
+    },
+    "service3": {
+      "name": "Neurology",
+      "description": "Expert neurological care for complex conditions"
+    },
+    "service4": {
+      "name": "Orthopedics",
+      "description": "Advanced care for bone and joint conditions"
+    },
+    "service5": {
+      "name": "Pediatrics",
+      "description": "Specialized care for children and adolescents"
+    },
+    "service6": {
+      "name": "Oncology",
+      "description": "Comprehensive cancer treatment"
+    },
+    "button": "Learn More"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "emergency-title": "Emergency Contact",
+    "address-title": "Hospital Address",
+    "phone": "Phone",
+    "regular-hours": "Regular Hours",
+    "emergency-hours": "Emergency Hours",
+    "emergency-phone": "Emergency Phone Number",
+    "address": "1234 Health St, Wellness City"
+  },
+  "visitor-info": {
+    "title": "Patient & Visitor Information",
+    "item1": {
+      "title": "Insurance Plans",
+      "description": "See a list of accepted insurance plans and how to use them"
+    },
+    "item2": {
+      "title": "Parking Information",
+      "description": "Find out where to park and get directions to our facilities"
+    },
+    "item3": {
+      "title": "Patient Rights",
+      "description": "Understand your rights and responsibility as a patient"
+    },
+    "item4": {
+      "title": "Visiting Hours",
+      "description": "Learn about our visiting hours and guidelines to make your visit smooth and enjoyable."
+    },
+    "button": "LEARN MORE"
+  }
+}
