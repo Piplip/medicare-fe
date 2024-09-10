@@ -1,0 +1,149 @@
+{
+  "address": "Số 6 đường Nguyễn Huệ, phường 3, thành phố Bạc Liêu, tỉnh Bạc Liêu",
+  "header": {
+    "nav": {
+      "nav1": "Tìm kiếm bác sĩ",
+      "nav2": "Đặt lịch khám",
+      "nav3": "Bệnh nhân & người thăm gặp",
+      "nav4": "Thông tin cá nhân",
+      "nav5": "Cài đặt",
+      "nav6": "Đăng xuất"
+    }
+  },
+  "footer": {
+    "subscribe": {
+      "title": "Đăng ký email nhận thông tin",
+      "placeholder": "Nhập email",
+      "button": "Đăng ký"
+    },
+    "legal": {
+      "title": "Thông tin pháp lý",
+      "link1": "Quyền riêng tư & chính sách",
+      "link2": "Điều khoản sử dụng"
+    },
+    "about": {
+      "title": "Giới thiệu",
+      "link1": "Đội ngũ nhân viên",
+      "link2": "Lịch sử hình thành"
+    },
+    "contact": {
+      "title": "Liên hệ với chúng tôi"
+    },
+    "career": {
+      "title": "Việc làm",
+      "link1": "Tham gia với chúng tôi",
+      "link2": "Chương trình thực tập sinh"
+    }
+  },
+  "login": {
+    "login-title": "Đăng nhập",
+    "signup-title": "Đăng ký",
+    "placeholder": {
+      "email": "Email",
+      "password": "Mật khẩu",
+      "confirm": "Xác nhận mật khẩu"
+    },
+    "error": {
+      "email": {
+        "missing": "Nhập email của bạn",
+        "invalid": "Email không hợp lệ"
+      },
+      "password": {
+        "too-short": "Mật khẩu phải có ít nhất 8 ký tự",
+        "too-long": "Mật khẩu không vượt quá 30 ký tự",
+        "missing": "Nhập mật khẩu của bạn"
+      },
+      "confirm": {
+        "mismatch": "Mật khẩu đã nhập không khớp, hãy thử lại",
+        "missing": "Xác thực mật khẩu của bạn"
+      }
+    },
+    "forgot-pass": "Quên mật khẩu ?",
+    "register-rec": "Bạn chưa có tài khoản? Hãy đăng ký tại đây",
+    "login-rec": "Bạn đã có tài khoản? Đăng nhập tại đây"
+  },
+  "department": {
+    "title": "Khoa và Viện nghiên Cứu",
+    "default": "Lựa chọn khoa",
+    "Anesthesia": "Khoa gây mê hồi sức",
+    "Cardiology": "Khoa tim mạch",
+    "Dermatology": "Khoa da liễu",
+    "ENT": "Khoa tai - mũi - họng",
+    "Emergency": "Khoa cấp cứu",
+    "Gastroenterology": "Khoa tiêu hóa",
+    "Lab": "Viện nghiên cứu",
+    "Nephrology": "Khoa thận",
+    "Neurology": "Khoa thần kinh",
+    "Occupational Therapy": "Khoa hoạt động trị liệu",
+    "Oncology": "Khoa ung thư",
+    "Orthopedics": "Khoa chấn thương chỉnh hình",
+    "Pharmacy": "Khoa dược",
+    "Physical Therapy": "Khoa vật lý trị liêu",
+    "Pediatrics": "Khoa nhi",
+    "Psychiatry": "Khoa tâm thần",
+    "Pulmonology": "Khoa hô hấp",
+    "Radiology": "Khoa chẩn đoán hình ảnh",
+    "Speech Therapy": "Khoa ngôn ngữ trị liệu",
+    "Surgery": "Khoa phẫu thuật"
+  },
+  "speciality": {
+    "title": "Chuyên khoa",
+    "default": "Lựa chọn chuyên khoa",
+    "Allergy and Immunology": "Chuyên khoa xét nghiệm miễn dịch",
+    "Anesthesiology": "Chuyên khoa gây mê",
+    "Cardio thoracic Surgery": "Chuyên khoa phẫu thuật tim - lồng ngực",
+    "Cardiology": "Chuyên khoa tim mạch",
+    "Cardiovascular Disease": "Chuyên khoa rối loạn tim và mạch máu",
+    "Colon and Rectal Surgery": "Chuyên khoa phẫu thuật đại thực tràng",
+    "Dermatology": "Chuyên khoa da liễu",
+    "Emergency Medicine": "Chuyên khoa cấp cứu",
+    "Endocrinology": "Chuyên khoa nội tiết",
+    "ENT (Ear, Nose, and Throat)": "Chuyên khoa tai - mũi - họng",
+    "Gastroenterology": "Chuyên khoa hệ tiêu hóa",
+    "Geriatrics": "Chuyên khoa bệnh lão",
+    "Hematology/Oncology": "Chuyên khoa ung thư",
+    "Infectious Diseases": "Chuyên khoa bệnh truyền nhiễm",
+    "Internal Medicine": "Chuyên khoa nội",
+    "Nephrology": "Chuyên khoa thận",
+    "Neurology": "Chuyên khoa thần kinh",
+    "Neurosurgery": "Chuyên khoa phẫu thuật thần kinh",
+    "Obstetrics and Gynecology": "Chuyên khoa sản",
+    "Oncology": "Chuyên khoa ung thư",
+    "Ophthalmology": "Chuyên khoa mắt",
+    "Orthopedic Surgery": "Chuyên khoa phẫu thuật chấn thương chỉnh hình",
+    "Orthopedics": "Chuyên khoa chấn thương chỉnh hình",
+    "Pathology": "Chuyên khoa bệnh lý",
+    "Pediatrics": "Chuyên khoa nhi",
+    "Physical Medicine and Rehabilitation": "Chuyên khoa vật lý trị liệu và phục hồi chức năng",
+    "Plastic Surgery": "Chuyên khoa phẫu thuật thẩm mỹ",
+    "Psychiatry": "Chuyên khoa tâm thần",
+    "Pulmonology": "Chuyên khoa phổi",
+    "Radiology": "Chuyên khoa chẩn đoán hình ảnh",
+    "Rheumatology": "Chuyên khoa thấp khớp",
+    "Sports Medicine": "Chuyên khoa y học thể thao",
+    "Surgery": "Chuyên khoa phẫu thuật tổng hợp",
+    "Urology": "Chuyên khoa tiết niệu",
+    "Vascular Surgery": "Chuyên khoa phẫu thuật mạch máu"
+  },
+  "lang": {
+    "default": "Lựa chọn ngôn ngữ",
+    "en": "Tiếng Anh",
+    "es": "Tiếng Tây Ban Nha",
+    "fr": "Tiếng Pháp",
+    "zh": "Tiếng Trung",
+    "ko": "Tiếng Hàn",
+    "de": "Tiếng Đức",
+    "it": "Tiếng Ý",
+    "ja": "Tiếng Nhật",
+    "vi": "Tiếng Việt",
+    "English": "Tiếng Anh",
+    "Spanish": "Tiếng Tây Ban Nha",
+    "French": "Tiếng Pháp",
+    "Chinese": "Tiếng Trung",
+    "Korean": "Tiếng Hàn",
+    "German": "Tiếng Đức",
+    "Italian": "Tiếng Ý",
+    "Japanese": "Tiếng Nhật",
+    "Vietnamese": "Tiếng iệt"
+  }
+}

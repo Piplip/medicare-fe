@@ -1,0 +1,152 @@
+{
+  "address": "1234 Health St, Wellness City",
+  "emergency_number": "0723 823 9129",
+  "header": {
+    "nav": {
+      "nav1": "Find a Doctor",
+      "nav2": "Appointments",
+      "nav3": "Patient & Visitor",
+      "nav4": "Profile",
+      "nav5": "Settings",
+      "nav6": "Log out",
+      "logged": "Logged as "
+    }
+  },
+  "footer": {
+    "subscribe": {
+      "title": "Subscribe to our newsletter",
+      "placeholder": "Enter your email",
+      "button": "Subscribe"
+    },
+    "legal": {
+      "title": "Legal",
+      "link1": "Privacy & Policy",
+      "link2": "Terms of Use"
+    },
+    "about": {
+      "title": "About Us",
+      "link1": "Our Team",
+      "link2": "Our Story"
+    },
+    "contact": {
+      "title": "Contact Us"
+    },
+    "career": {
+      "title": "Career",
+      "link1": "Join Our Team",
+      "link2": "Internship"
+    }
+  },
+  "login": {
+    "login-title": "Login",
+    "signup-title": "Sign Up",
+    "placeholder": {
+      "email": "Enter your email",
+      "password": "Enter your password",
+      "confirm": "Confirm password"
+    },
+    "error": {
+      "email": {
+        "missing": "Missing email",
+        "invalid": "Invalid email"
+      },
+      "password": {
+        "too-short": "Password must be at least 8 characters",
+        "too-long": "Max allowed length is 30 characters",
+        "missing": "Missing password"
+      },
+      "confirm": {
+        "mismatch": "Password mismatch",
+        "missing": "Missing confirm password"
+      }
+    },
+    "forgot-pass": "Forgot password ?",
+    "register-rec": "New User? Register here",
+    "login-rec": "Have an account? Login here"
+  },
+
+  "department": {
+    "title": "Institutes & Departments",
+    "default": "Select a Department",
+    "Anesthesia": "Anesthesia",
+    "Cardiology": "Cardiology",
+    "Dermatology": "Dermatology",
+    "ENT": "ENT",
+    "Emergency": "Emergency",
+    "Gastroenterology": "Gastroenterology",
+    "Lab": "Lab",
+    "Nephrology": "Nephrology",
+    "Neurology": "Neurology",
+    "Occupational Therapy": "Occupational Therapy",
+    "Oncology": "Oncology",
+    "Orthopedics": "Orthopedics",
+    "Pharmacy": "Pharmacy",
+    "Physical Therapy": "Physical Therapy",
+    "Pediatrics": "Pediatrics",
+    "Psychiatry": "Psychiatry",
+    "Pulmonology": "Pulmonology",
+    "Radiology": "Radiology",
+    "Speech Therapy": "Speech Therapy",
+    "Surgery": "Surgery"
+  },
+  "speciality": {
+    "title": "Specialization",
+    "default": "Select a specialization",
+    "Allergy and Immunology": "Allergy and Immunology",
+    "Anesthesiology": "Anesthesiology",
+    "Cardio thoracic Surgery": "Cardio thoracic Surgery",
+    "Cardiology": "Cardiology",
+    "Cardiovascular Disease": "Cardiovascular Disease",
+    "Colon and Rectal Surgery": "Colon and Rectal Surgery",
+    "Dermatology": "Dermatology",
+    "Emergency Medicine": "Emergency Medicine",
+    "Endocrinology": "Endocrinology",
+    "ENT (Ear, Nose, and Throat)": "ENT (Ear, Nose, and Throat)",
+    "Gastroenterology": "Gastroenterology",
+    "Geriatrics": "Geriatrics",
+    "Hematology/Oncology": "Hematology/Oncology",
+    "Infectious Diseases": "Infectious Diseases",
+    "Internal Medicine": "Internal Medicine",
+    "Nephrology": "Nephrology",
+    "Neurology": "Neurology",
+    "Neurosurgery": "Neurosurgery",
+    "Obstetrics and Gynecology": "Obstetrics and Gynecology",
+    "Oncology": "Oncology",
+    "Ophthalmology": "Ophthalmology",
+    "Orthopedic Surgery": "Orthopedic Surgery",
+    "Orthopedics": "Orthopedics",
+    "Pathology": "Pathology",
+    "Pediatrics": "Pediatrics",
+    "Physical Medicine and Rehabilitation": "Physical Medicine and Rehabilitation",
+    "Plastic Surgery": "Plastic Surgery",
+    "Psychiatry": "Psychiatry",
+    "Pulmonology": "Pulmonology",
+    "Radiology": "Radiology",
+    "Rheumatology": "Rheumatology",
+    "Sports Medicine": "Sports Medicine",
+    "Surgery": "Surgery",
+    "Urology": "Urology",
+    "Vascular Surgery": "Vascular Surgery"
+  },
+  "lang": {
+    "default": "Select a language",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "zh": "Chinese",
+    "ko": "Korean",
+    "de": "German",
+    "it": "Italian",
+    "ja": "Japanese",
+    "vi": "Vietnamese",
+    "English": "English",
+    "Spanish": "Spanish",
+    "French": "French",
+    "Chinese": "Chinese",
+    "Korean": "Korean",
+    "German": "German",
+    "Italian": "Italian",
+    "Japanese": "Japanese",
+    "Vietnamese": "Vietnamese"
+  }
+}
