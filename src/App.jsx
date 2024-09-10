@@ -1,26 +1,68 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import FindProvider from "./pages/FindDoctor.jsx";
+import FindDoctor from "./pages/FindDoctor.jsx";
 import Homepage from "./pages/Homepage.jsx";
-import RootTemplate from "./Template/RootTemplate.jsx";
+import RootTemplate from "./template/RootTemplate.jsx";
 import AppointmentScheduling from "./pages/AppointmentScheduling.jsx";
 import LoginSignUp from "./pages/LoginSignup.jsx";
-import StaffTemplate from "./Template/StaffTemplate.jsx";
+import StaffTemplate from "./template/StaffTemplate.jsx";
 import PhysicianDashboard from "./pages/PhysicianDashboard.jsx";
 import PhysicianPatientView from "./pages/PhysicianPatientView.jsx";
 import Verification from "./pages/Verification.jsx";
+import i18next from './config/i18nConfig.jsx'
+import {useEffect, useState} from "react";
+import RequestAppointment from "./pages/RequestAppointment.jsx";
+import NeedToKnowInfo from "./components/request-appointment/NeedToKnowInfo.jsx"
+import RequestAppointmentFor from "./components/request-appointment/AppointmentFor.jsx";
+import AppointmentConfirmation from "./components/request-appointment/AppointmentConfirmation.jsx";
+import Payment from "./components/request-appointment/Payment.jsx";
+import Detail from "./components/request-appointment/Detail.jsx";
+import React from "react";
+import AppointmentFindDoctor from "./components/request-appointment/AppointmentFindDoctor.jsx";
+
+export const UserContext  = React.createContext({})
 
 function App() {
+    useEffect(() => {
+        i18next.changeLanguage('vi')
+    }, []);
+    const [language, setLanguage] = useState(localStorage.getItem('language') || 'vi');
+
+    const [currentUser, setCurrentUser] = useState({
+        firstName: localStorage.getItem('firstName') || '',
+        lastName: localStorage.getItem('lastName') || '',
+        email: ''
+    })
+
+    function changeLanguage(newLanguage){
+        i18next.changeLanguage(newLanguage);
+        setLanguage(newLanguage);
+    }
+
     const router = createBrowserRouter([
         {
             path: '/',
-            element: <RootTemplate />,
+            element: <RootTemplate language={language} changeLanguage={changeLanguage} currentUser={currentUser} setCurrentUser={setCurrentUser}/>,
             children: [
                 {index: true, element: <Homepage />},
-                {path: 'find-a-doctor', element: <FindProvider />},
-                {path: 'schedule', element: <AppointmentScheduling />},
-                {path: 'login', element: <LoginSignUp />},
+                {
+                    path: 'find-a-doctor',
+                    element: <FindDoctor language={language}/>
+                },
+                {
+                    path: 'schedule/:id',
+                    element: <RequestAppointment />,
+                    children: [
+                        {path: 'info', element: <NeedToKnowInfo />},
+                        {path: 'request-for', element: <RequestAppointmentFor />},
+                        {path: 'find-a-doctor', element: <AppointmentFindDoctor />},
+                        {path: 'appointment-detail', element: <Detail />},
+                        {path: 'confirmation', element: <AppointmentConfirmation />},
+                        {path: 'payment', element: <Payment />}
+                    ]
+                },
+                {path: 'login', element: <LoginSignUp setCurrentUser={setCurrentUser}/>},
                 {path: 'sign-up', element: <LoginSignUp />}
             ]
         },
@@ -45,7 +87,9 @@ function App() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <RouterProvider router={router} />
+            <UserContext.Provider value={{currentUser: currentUser, setCurrentUser: setCurrentUser}}>
+                <RouterProvider router={router} />
+            </UserContext.Provider>
         </LocalizationProvider>
     )
 }
