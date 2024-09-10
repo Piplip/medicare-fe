@@ -33,3 +33,33 @@
     border-top: 1px solid #fff;
     padding-top: 0.5rem;
 }
+.appointment-confirmation-wrapper{
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    border: 1px solid;
+    width: 50%;
+    max-width: 40rem;
+    align-self: center;
+}
+.appointment-confirmation-wrapper > div{
+    padding: 0.5rem 1rem;
+}
+.appointment-confirmation-wrapper > div:not(:last-child){
+    border-bottom: 1px solid;
+}
+.appointment-confirmation-wrapper > div:nth-child(-n+3){
+    display: flex;
+    justify-content: space-between;
+}
+.appointment-confirmation-wrapper > div:last-child{
+    display: flex;
+    flex-direction: column;
+}
+.appointment-confirmation-wrapper > div:last-child > :last-child{
+    align-self: center;
+    margin-block: 1rem;
+}
+.appointment-confirmation-title{
+    color: yellow;
+}

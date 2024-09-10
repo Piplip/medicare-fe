@@ -13,9 +13,6 @@ export default function Detail(){
         setAppointmentData(prev => ({...prev, [e.target.name] : e.target.value}))
     }
 
-    console.log("date", appointmentData.date)
-    console.log("time", appointmentData.time)
-
     return (
         <>
             <Typography level={'h1'} sx={{color: 'white'}}>Appointment Detail</Typography>

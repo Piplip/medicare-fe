@@ -28,6 +28,7 @@ export default function RequestAppointment(){
     const navigate = useNavigate()
     const [appointmentData, setAppointmentData] = useState({
         for: '',
+        reminder: 'yes',
         date: null,
         time: null,
         reason: '',
