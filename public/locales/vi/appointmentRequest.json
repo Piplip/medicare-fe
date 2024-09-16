@@ -1,0 +1,92 @@
+{
+  "stepper-title": {
+    "info": "Lưu ý",
+    "request-for": "Hẹn khám cho",
+    "find-doctor": "Lựa chọn bác sĩ",
+    "detail": "Chi tiết buổi hẹn",
+    "confirm": "Xác nhận buổi hẹn",
+    "payment": "Thanh toán",
+    "step": "Bước {{num}}"
+  },
+  "button": {
+    "back": "Quay lại",
+    "next": "Tiếp tục"
+  },
+  "component": {
+    "info": {      
+      "title": "Yêu cầu một buổi hẹn khám bệnh",
+      "condition": {
+        "label": "Để yêu cầu một buổi hẹn khám, bạn cần đảm bảo rằng:",
+        "item": {
+          "1": "Bạn phải từ 18 tuổi trở lên",
+          "2": "Các thông tin bạn cung cấp là chính xác (Chúng tôi không chịu trách nhiệm về bất cứ sai sót nào)"
+        }
+      },
+      "processing_time": "Sau khi yêu cầu thành công, thời gian xử lý và phản hồi sẽ là tối đa 1 ngày làm việc",
+      "emergency_1": "Nếu đây là một trường hợp khẩn cấp hãy liên hệ ",
+      "emergency_2": " hoặc đến trạm cấp cứu gần nhất nơi ở của bạn."
+    },
+    "request-for": {
+      "title": "Hẹn khám cho",
+      "type": {
+        "me": "Tôi",
+        "other": "Người khác"
+      }
+    },
+	"find-doctor": {
+      "title": "Tìm bác sĩ phù hợp với yêu cầu của bạn"
+    },
+    "detail": {
+      "title": "Chi tiết buổi hẹn",
+      "selected_doctor": "Bác sĩ đã chọn",
+      "date_time": "Ngày & Giờ",
+      "reason": {
+        "title": "Lí do cần hẹn khám",
+        "placeholder": "Vui lòng mô tả ngắn gọn lý do bạn muốn hẹn gặp"
+      },
+      "referred": {
+        "title": "Bạn có được bác sĩ giới thiệu về dịch vụ này ?",
+        "yes": "Có",
+        "no": "Không"
+      }
+    },
+    "confirm": {
+      "title": "Xác nhận thông tin buổi hẹn",
+      "note1": "Vui lòng xác nhận cẩn thận các thông tin sau vì thông tin này sẽ được sử dụng để tạo lịch hẹn cho bạn.",
+      "note2": "Nếu bạn cảm thấy hài lòng với thông tin này, bây giờ bạn có thể tiến hành bước thanh toán.",
+      "note3": "(Để thực hiện thay đổi, vui lòng nhấp vào nút “{{button}}“. Lưu ý bạn không thể thực hiện thay đổi sau khi xác nhận)",
+      "reminder": {
+        "title": "Ngoài ra, bạn có muốn nhận được lời nhắc cho cuộc hẹn này không?",
+        "yes": "Có",
+        "no": "Không"
+      }
+    },
+    "appointment_summary": {
+      "for": "Người cần hẹn gặp",
+      "date": "Ngày",
+      "time": "Giờ",
+      "status": "Trạng thái",
+      "reason": "Lí do",
+      "provider": "Bác sĩ cho buổi hẹn"
+    },
+    "payment": {
+      "title": {
+        "payment": "Thanh toán",
+        "receipt": "Hóa đơn"
+      },
+      "note": "Để xác nhận cuộc hẹn bạn cần phải thanh toán trước, khi thanh toán thành công, chúng tôi sẽ thông báo và cung cấp cho bạn thêm thông tin về cuộc hẹn của bạn cũng như các sự thay đổi về cuộc hẹn.",
+      "fees": {
+        "title": "Tổng phí",
+        "doctor_fee": "Phí bác sĩ",
+        "service_fee": "Phí dịch vụ",
+        "tax": "Thuế",
+        "total": "Tổng tiền phải trả"
+      },
+      "payment_method": {
+        "title": "Phương thức thanh toán",
+        "or": "hoặc",
+        "continue_button": "Tiếp tục với thẻ tín dụng hoặc thẻ ghi nợ"
+      }
+    }
+  }
+}

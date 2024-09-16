@@ -330,7 +330,7 @@ export default function FindDoctor(props){
                                     </Stack>
                                     <Button variant={'contained'} sx={{width: 'fit-content'}}
                                         onClick={() => schedule(doctor)}
-                                    >{t('schedule')}</Button>
+                                    >{location.pathname.includes('/none/find-a-doctor') ? t('schedule-2') : t('schedule')}</Button>
                                 </div>
                             ))}
                             <Pagination page={searchData.pageNumber} sx={{alignSelf: 'center', backgroundColor: 'white', padding: '0.25rem 1rem'}} count={10} color="primary"

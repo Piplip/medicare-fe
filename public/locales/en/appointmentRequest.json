@@ -1,3 +1,92 @@
 {
-
+  "stepper-title": {
+    "info": "Info",
+    "request-for": "Request For",
+    "find-doctor": "Select a Doctor",
+    "detail": "Appointment Detail",
+    "confirm": "Appointment Confirmation",
+    "payment": "Payment",
+    "step": "Step {{num}}"
+  },
+  "button": {
+    "back": "Go Back",
+    "next": "Continue"
+  },
+  "component": {
+    "info": {
+      "title": "Request an Appointment",
+      "condition": {
+        "label": "In order to continue, you'll need to guaranteed that",
+        "item": {
+          "1": "You are 18 years old or above",
+          "2": "Ensure to provide flagrant information"
+        }
+      },
+      "processing_time": "This appointment request will be processed at most 1 business day",
+      "emergency_1": "If this is an emergency, please contact ",
+      "emergency_2": " or go to the nearest emergency department"
+    },
+    "request-for": {
+      "title": "Request For",
+      "type": {
+        "me": "Me",
+        "other": "Someone Else"
+      }
+    },
+    "find-doctor": {
+      "title": "Find a Doctor suits your needs"
+    },
+    "detail": {
+      "title": "Appointment Detail",
+      "selected_doctor": "Current Selected Doctor",
+      "date_time": "Date & Time",
+      "reason": {
+        "title": "Reason for appointment",
+        "placeholder": "Please provide a brief description of your reason for appointment"
+      },
+      "referred": {
+        "title": "Are you being referred by a doctor?",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "confirm": {
+      "title": "Confirm Appointment Info",
+      "note1": "Please confirm the following information carefully as it will be used to schedule your appointment.",
+      "note2": "If you feel satisfied with this information, you can now proceed to the payment step.",
+      "note3": "(To make changes, please click the “{{button}}“ button otherwise you cannot make changes after confirming)",
+      "reminder": {
+        "title": "Also, would you like to receive a reminder for this appointment ?",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "appointment_summary": {
+      "for": "Appointment For",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "reason": "Reason",
+      "provider": "Provider"
+    },
+    "payment": {
+      "title": {
+        "payment": "Payment",
+        "receipt": "Receipt"
+      },
+      "note": "Payment is required to confirm your appointment, it will be processed through our secure payment gateway, as well as provide you further information about your appointment and inform you if there are any changes about the appointment.",
+      "fees": {
+        "title": "Total Fees",
+        "doctor_fee": "Doctor Fee",
+        "service_fee": "Service Fee",
+        "tax": "Tax",
+        "total": "Total"
+      },
+      "payment_method": {
+        "title": "Payment Method",
+        "or": "or",
+        "continue_button": "Continue with credit or debit card"
+      }
+    }
+  }
 }

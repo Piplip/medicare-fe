@@ -24,19 +24,20 @@ import AppointmentFindDoctor from "./components/request-appointment/AppointmentF
 export const UserContext  = React.createContext({})
 
 function App() {
-    useEffect(() => {
-        i18next.changeLanguage('vi')
-    }, []);
     const [language, setLanguage] = useState(localStorage.getItem('language') || 'vi');
-
+    useEffect(() => {
+        if(localStorage.getItem('language') === null) localStorage.setItem('language', 'vi');
+        i18next.changeLanguage(language)
+    }, []);
     const [currentUser, setCurrentUser] = useState({
         firstName: localStorage.getItem('firstName') || '',
         lastName: localStorage.getItem('lastName') || '',
-        email: ''
+        email: localStorage.getItem('email') || '',
     })
 
     function changeLanguage(newLanguage){
         i18next.changeLanguage(newLanguage);
+        localStorage.setItem('language', newLanguage);
         setLanguage(newLanguage);
     }
 
@@ -52,7 +53,7 @@ function App() {
                 },
                 {
                     path: 'schedule/:id',
-                    element: <RequestAppointment />,
+                    element: <RequestAppointment currentUser={currentUser}/>,
                     children: [
                         {path: 'info', element: <NeedToKnowInfo />},
                         {path: 'request-for', element: <RequestAppointmentFor />},

@@ -6,16 +6,19 @@ export default function NeedToKnowInfo(){
     const {t} = useTranslation('appointmentRequest')
     return (
         <>
-            <Typography level={'h1'} sx={{color: 'white'}}>Request an Appointment</Typography>
+            <Typography level={'h1'} sx={{color: 'white'}}>{t('component.info.title')}</Typography>
             <hr style={{width: '7.75rem', height: '.25rem', backgroundColor: 'yellow', borderColor: 'yellow'}}/>
             <Stack rowGap={2.5} fontSize={'1.25rem'}>
-                <p>In order to continue, you&apos;ll need to guaranteed that</p>
+                <p>{t('component.info.condition.label')}</p>
                 <ul style={{paddingLeft: '2em'}}>
-                    <li>You are 18 years old or above</li>
-                    <li>Ensure to provide flagrant information</li>
+                    <li>{t('component.info.condition.item.1')}</li>
+                    <li>{t('component.info.condition.item.2')}</li>
                 </ul>
-                <p>This appointment request will be processed at most 1 business day</p>
-                <p>If this is an emergency, please contact <span style={{color: 'yellow', fontWeight: 'bold'}}>{t('emergency_number', {ns: 'common'})}</span> or go to the nearest emergency department</p>
+                <p>{t('component.info.processing_time')}</p>
+                <p>{t('component.info.emergency_1')}
+                    <span style={{color: 'yellow', fontWeight: 'bold'}}>{t('emergency_number', {ns: 'common'})}</span>
+                    {t('component.info.emergency_2')}
+                </p>
             </Stack>
         </>
     )
