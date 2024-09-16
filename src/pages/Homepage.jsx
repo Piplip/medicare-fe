@@ -55,7 +55,7 @@ export default function Homepage(){
 
     return (
         <>
-            {showDialogAfter &&
+            {(showDialogAfter && currentUser.email !== '') &&
                 <Dialog open={open && localStorage.getItem('isVisited') !== 'true'}>
                     <DialogTitle sx={{m: 0, p: '1 3', color: 'yellow', fontWeight: 'bold', backgroundColor: '#000000'}}>
                         Medicare<span style={{color: 'orangered'}}>Plus</span>
@@ -162,15 +162,15 @@ export default function Homepage(){
                     <Stack borderBottom={'2px solid white'} rowGap={2} paddingBottom={'1rem'}>
                         <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.title')}</Typography>
                         <p>{t('contact.address-title')}<span className={'about-info'}>{t('contact.address')}</span></p>
-                        <p>{t('contact.phone')}<span className={'about-info'}>123-456-7890</span></p>
-                        <p>Email<span className={'about-info'}>medicareplus@gmail.com</span></p>
-                        <p>{t('contact.regular-hours')}<span className={'about-info'}>Mon - Fri, 8 AM - 6 PM</span></p>
-                        <p>{t('contact.emergency-hours')}<span className={'about-info'}>24/7</span></p>
+                        <p>{t('contact.phone')}<span className={'about-info'}>{t('phone.normal', {ns: 'common'})}</span></p>
+                        <p>Email<span className={'about-info'}>{t('email', {ns: 'common'})}</span></p>
+                        <p>{t('contact.regular-hours')}<span className={'about-info'}>{t('contact.working-hours')}</span></p>
                     </Stack>
                     <Stack rowGap={3}>
-                        <Typography variant={'h4'} fontWeight={'bold'}>Emergency Contact</Typography>
-                        <p>{t('contact.emergency-phone')}<span className={'about-info'}>123-456-7890</span></p>
+                        <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.emergency-contact')}</Typography>
                         <p>{t('contact.emergency-hours')}<span className={'about-info'}>24/7</span></p>
+                        <p>{t('contact.emergency-phone')}<span className={'about-info'}>{t('phone.emergency', {ns: 'common'})}</span></p>
+                        <p>{t('contact.emergency-address')}<span className={'about-info'}>{t('emergency_address', {ns: 'common'})}</span></p>
                     </Stack>
                 </div>
                 <img src={MapLocation} alt={'map-location'}/>

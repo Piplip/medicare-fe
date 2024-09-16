@@ -63,6 +63,7 @@ export default function LoginSignUp(props){
             localStorage.setItem('SESSION-ID', res.data.sessionID)
             localStorage.setItem('firstName', res.data.firstName)
             localStorage.setItem('lastName', res.data.lastName)
+            localStorage.setItem('email', res.data.email)
 
             await props.setCurrentUser(prev => ({
                 ...prev,
