@@ -1,0 +1,120 @@
+.find-provider-container{
+    background: linear-gradient(to bottom, #295457, #60d9d9);
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    padding-block: 3rem 1rem;
+}
+.search-input{
+    display: flex;
+}
+.provider-search-result-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.provider-card{
+    border: 1px solid white;
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    row-gap: 1rem;
+}
+.provider-info{
+    color: white;
+    display: flex;
+    column-gap: 5rem;
+}
+.provider-info > div{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem;
+}
+.provider-image{
+    height: 12rem;
+}
+.find-provider-main{
+    column-gap: 2rem;
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+.filter-inp{
+    background-color: #f2f2f2;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #f2f2f2;
+}
+.more-filter-btn{
+    text-align: center;
+    color: cyan;
+    width: fit-content;
+    align-self: center;
+    user-select: none;
+} 
+.more-filter-btn:hover{
+    cursor: pointer;
+}
+.more-filter-panel{
+    animation: appear 0.25s ease-in-out;
+}
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.more-info-tag{
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    color: black;
+    font-weight: bold;
+    background-color: #ffd600;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+    border-radius: 50%;
+    transition: transform 0.25s ease-in-out;
+}
+.more-info-tag:hover{
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 0 0.5rem 0.25rem #ffd600;
+}
+.more-info-content{
+    user-select: none;
+    visibility: hidden;
+    left: 0;
+    position: absolute;
+    background-color: black;
+    color: white;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid white;
+    width: 20rem;
+    display: flex;
+}
+.specialization-wrapper:has(.more-info-tag:hover) .more-info-content, .more-info-content:hover{
+    visibility: visible;
+    transform: translateY(0);
+}
+.MuiSkeleton-text{
+    background-color: #ff0000;
+}
+.clear-filter-btn{
+    color: orange;
+    font-size: 0.75rem;
+    width: fit-content;
+}
+.clear-filter-btn:hover{
+    cursor: pointer;
+    color: orangered;
+    user-select: none;
+}

@@ -1,0 +1,81 @@
+.side-nav{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: fit-content;
+    max-width: 500px;
+    background-color: #242424;
+    color: white;
+    padding: 1rem;
+    height: calc(100vh - 4rem);
+    position: sticky;
+    top: 4rem;
+}
+#profile-wrapper{
+    display: flex;
+    column-gap: 1rem;
+}
+#profile-wrapper img{
+    width: 5rem;
+    border-radius: 50%;
+}
+#profile-info{
+    align-self: center;
+}
+#profile-info p:first-child{
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.side-nav-main-wrapper{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 1rem;
+    font-size: 0.9rem;
+}
+#side-nav-main{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+.side-nav-item{
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    display: flex;
+    column-gap: 1rem;
+    padding: 0.5rem;
+    border: 1px solid wheat;
+    border-radius: 0.5rem;
+    transition: background-color 0.5s, color 0.5s, transform 0.25s;
+}
+.side-nav-item:hover{
+    background-color: #7eff95;
+    color: black;
+    border: 1px solid #0b5712;
+    transform: scale(1.1);
+}
+#collapse-nav-btn{
+    align-self: center;
+    background-color: #606060;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+.side-nav-item-des{
+    animation: sideNavAppear 0.5s;
+}
+@keyframes sideNavAppear {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+.side-nav-item-collapsed{
+    margin-top: 0.5rem;
+    transition: margin-top 0.5s;
+}

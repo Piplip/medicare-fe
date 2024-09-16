@@ -1,0 +1,21 @@
+{
+  "name-placeholder": "Tìm kiếm tên bác sĩ.",
+  "find-button": "Tìm kiếm",
+  "more-filter": "HIỆN BỘ LỌC +",
+  "less-filter": "ẨN BỘ LỌC -",
+  "note": "(*) Những thông tin được hiển thị trong kết quả tìm kiếm chỉ nhằm mục đích tìm hiểu khái quát. Mặc dù chúng tôi cập nhật thông tin liên tục, tuy nhiên chúng tôi không đảm bảo tính rõ ràng, đầy đủ, chính xác, tin cậy và phù hợp đối với thông tin, sản phẩm, dịch vụ có trên web . Việc dùng thông tin trên có trên web nhằm bất kỳ mục đích nào đều tồn tại nguy cơ đối với người sử dụng",
+  "clear-filter": "XÓA KẾT QUẢ BỘ LỌC",
+  "primary-lang": "NGÔN NGỮ CHÍNH",
+  "gender": {
+    "title": "GIỚI TÍNH",
+    "male": "Nam",
+    "female": "Nữ"
+  },
+  "row-per-page": "Kết quả theo trang",
+  "number-of-doctor_one": "{{count}} Bác sĩ",
+  "number-of-doctor_other": "{{count}} Bác sĩ",
+  "department": "KHOA",
+  "specialization": "CHUYÊN KHOA",
+  "language-spoken": "NGÔN NGỮ",
+  "schedule": "ĐẶT LỊCH KHÁM"
+}

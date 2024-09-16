@@ -1,0 +1,63 @@
+.patient-scheduling{
+    background-color: #295457;
+    color: white;
+    padding-inline: 5%;
+    padding-block: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.25rem;
+}
+.schedule-table{
+    display: flex;
+    flex-direction: column;
+}
+.schedule-table-header, .schedule-table-row{
+    display: flex;
+    text-align: center;
+    padding-inline: 1rem;
+}
+.schedule-table-row:not(:last-child){
+    border-bottom: 1px solid;
+}
+.schedule-table-header{
+    padding: 0.5rem 1rem;
+    background-color: #e1e1e1;
+    color: black;
+    font-weight: bold;
+}
+.schedule-table-content{
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+}
+.schedule-table-cell{;
+    width: calc(100% / 6);
+}
+.schedule-table-cell:not(:first-child){
+    padding-inline: 1rem;
+}
+.schedule-table-content .schedule-table-cell{
+    padding-block: .5rem;
+}
+.schedule-table-content .schedule-table-cell:not(:last-child){
+    border-right: 1px solid white;
+}
+.schedule-preview{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    align-self: center;
+    background-color: #f1f1f1;
+    color: black;
+    padding: 1rem 2rem;
+}
+.appointment-form{
+    align-self: center;
+    background-color: #f6f6f6;
+    color: black;
+    width: 50%;
+    padding: 1rem 2rem;
+    row-gap: 1rem;
+    display: flex;
+    flex-direction: column;
+}
