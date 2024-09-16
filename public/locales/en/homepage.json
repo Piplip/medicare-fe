@@ -56,9 +56,12 @@
     "emergency-title": "Emergency Contact",
     "address-title": "Hospital Address",
     "phone": "Phone",
+    "working-hours": "Mon - Fri, 8 AM - 6 PM",
     "regular-hours": "Regular Hours",
+    "emergency-contact": "Emergency Contact",
     "emergency-hours": "Emergency Hours",
     "emergency-phone": "Emergency Phone Number",
+    "emergency_address": "Emergency Building Address",
     "address": "1234 Health St, Wellness City"
   },
   "visitor-info": {

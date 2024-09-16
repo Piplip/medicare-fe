@@ -17,5 +17,6 @@
   "department": "DEPARTMENT",
   "specialization": "SPECIALIZATION",
   "language-spoken": "LANGUAGE SPOKEN",
-  "schedule": "SCHEDULE APPOINTMENT"
+  "schedule": "SCHEDULE APPOINTMENT",
+  "schedule-2": "CONTINUE WITH THIS DOCTOR"
 }

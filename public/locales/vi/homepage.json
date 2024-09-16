@@ -56,9 +56,11 @@
     "emergency-title": "Đường dây nóng",
     "address-title": "Địa chỉ bệnh viện",
     "phone": "Điện thoại",
+    "working-hours": "8:00 - 18:00, từ thứ 2 đến thứ 6",
     "regular-hours": "Giờ hoạt động",
     "emergency-hours": "Giờ cấp cứu",
     "emergency-phone": "Số điện thoại đường dây nóng",
+    "emergency-address": "Địa chỉ khoa cấp cứu",
     "address": "Số 6 Nguyễn Huệ, phường 3, tỉnh Bạc Liêu"
   },
   "visitor-info": {

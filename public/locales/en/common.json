@@ -1,6 +1,12 @@
 {
   "address": "1234 Health St, Wellness City",
+  "emergency_address": "I12/B1 Emergency St, Wellness City",
   "emergency_number": "0723 823 9129",
+  "email": "medicareplus@gmail.com",
+  "phone": {
+    "normal": "0723 823 9129",
+    "emergency": "0821 912 8213"
+  },
   "header": {
     "nav": {
       "nav1": "Find a Doctor",
@@ -8,8 +14,7 @@
       "nav3": "Patient & Visitor",
       "nav4": "Profile",
       "nav5": "Settings",
-      "nav6": "Log out",
-      "logged": "Logged as "
+      "nav6": "Log out"
     }
   },
   "footer": {
@@ -129,6 +134,7 @@
     "Vascular Surgery": "Vascular Surgery"
   },
   "lang": {
+    "title": "Language",
     "default": "Select a language",
     "en": "English",
     "es": "Spanish",

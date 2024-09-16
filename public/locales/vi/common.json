@@ -126,6 +126,7 @@
     "Vascular Surgery": "Chuyên khoa phẫu thuật mạch máu"
   },
   "lang": {
+    "title": "Ngôn ngữ",
     "default": "Lựa chọn ngôn ngữ",
     "en": "Tiếng Anh",
     "es": "Tiếng Tây Ban Nha",
@@ -144,6 +145,6 @@
     "German": "Tiếng Đức",
     "Italian": "Tiếng Ý",
     "Japanese": "Tiếng Nhật",
-    "Vietnamese": "Tiếng iệt"
+    "Vietnamese": "Tiếng Việt"
   }
 }
