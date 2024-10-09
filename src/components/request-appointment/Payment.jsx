@@ -5,12 +5,23 @@ import {Button, Stack} from "@mui/material";
 import MomoLogo from "../../assets/momo-logo.png"
 import NapasLogo from "../../assets/napas-logo.png"
 import PayLogo from "../../assets/9pay-logo.png"
-import VisaLogo from "../../assets/visa-logo.webp"
 import {useTranslation} from "react-i18next";
+import baseAxios from "../../config/axiosConfig.jsx";
+import VNPay from "../../assets/VNPay.webp"
 
 export default function Payment(){
     const [appointmentData, _] = useOutletContext()
     const {t} = useTranslation('appointmentRequest')
+
+    async function alertMsg(){
+        alert("You will be redirected to the payment page!")
+
+        baseAxios.get(`payment/vn-pay?appointmentID=${appointmentData.appointmentID}&amount=132000&bankCode=NCB`)
+            .then(r =>  {
+                window.location.href = r.data
+            })
+            .catch(err => console.log(err))
+    }
 
     return (
         <>
@@ -31,19 +42,19 @@ export default function Payment(){
                            </Typography>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.doctor_fee')}</Typography>
-                               <p>$300</p>
+                               <p>100 000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.service_fee')}</Typography>
-                               <p>$30</p>
+                               <p>20 000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.tax')}</Typography>
-                               <p>+10% * total fee = $33</p>
+                               <p>+10% * tổng số tiền = 12 000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.total')}</Typography>
-                               <p>$363</p>
+                               <p>132 000đ</p>
                            </Stack>
                        </div>
                         <Stack rowGap={'2rem'}>
@@ -64,9 +75,9 @@ export default function Payment(){
                                     <img className={'payment-method-logo'} src={PayLogo} alt={'9pay-logo'}/>
                                     <p>9PAY</p>
                                 </Stack>
-                                <Stack className={'payment-method-wrapper'} textAlign={'center'}>
-                                    <img className={'payment-method-logo'} src={VisaLogo} alt={'visa-logo'}/>
-                                    <p>VISA</p>
+                                <Stack className={'payment-method-wrapper'} textAlign={'center'} onClick={alertMsg}>
+                                    <img className={'payment-method-logo'} src={VNPay} alt={'vnpay-logo'}/>
+                                    <p>VNPay</p>
                                 </Stack>
                             </Stack>
                             <Stack rowGap={'1rem'}>
