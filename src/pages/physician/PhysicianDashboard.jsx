@@ -1,7 +1,7 @@
-import '../styles/physician-dashboard-style.css'
+import '../../styles/physician-dashboard-style.css'
 import {useEffect, useRef} from "react";
 import React from "react";
-import TableTemplate from "../components/TableTemplate.jsx";
+import TableTemplate from "../../components/TableTemplate.jsx";
 import {Button, FilledInput, FormControl, InputAdornment, InputLabel, Stack} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";

@@ -88,6 +88,7 @@ export default function PatientDetailView(){
     ]
 
     const [isNurse, setIsNurse] = useState(useLocation().pathname.includes('/nurse'))
+
     return (
         <section className={'patient-view-panel'}>
             <p className={'physician-panel-title'}>Patient Health Record</p>
