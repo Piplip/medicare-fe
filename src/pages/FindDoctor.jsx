@@ -15,7 +15,7 @@ import DefaultImage from '../assets/default.jpg'
 import {useSearchParams} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useLocation, useNavigate} from "react-router";
-
+import DepartmentSpecializationFilter from "../components/DepartmentSpecializationFilter.jsx";
 
 export default function FindDoctor(props){
     initializeApp(firebaseConfig);
@@ -28,15 +28,7 @@ export default function FindDoctor(props){
     const [isLoading, setIsLoading] = useState(false)
     const [enableMoreFilters, setEnableMoreFilters] = useState(false)
 
-    const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery"]
     const availableLanguage = ['en', 'es', 'fr', 'zh', 'ko', 'de', 'it', 'ja', 'vi']
-    const specialties = [
-        "Allergy and Immunology", "Anesthesiology", "Cardio thoracic Surgery", "Cardiology", "Cardiovascular Disease",
-        "Colon and Rectal Surgery", "Dermatology", "Emergency Medicine", "Endocrinology", "ENT (Ear, Nose, and Throat)", "Gastroenterology", "Geriatrics",
-        "Hematology/Oncology", "Infectious Diseases", "Internal Medicine", "Nephrology", "Neurology", "Neurosurgery", "Obstetrics and Gynecology", "Oncology",
-        "Orthopedic Surgery", "Orthopedics", "Pathology", "Pediatrics", "Physical Medicine and Rehabilitation",
-        "Plastic Surgery", "Psychiatry", "Pulmonology", "Radiology", "Rheumatology", "Sports Medicine", "Surgery", "Urology", "Vascular Surgery"
-    ]
 
     const [doctorData, setDoctorData] = useState([])
     const [queryName, setQueryName] = useState(searchParams.get('name') || '')
@@ -62,6 +54,7 @@ export default function FindDoctor(props){
         }
         setQueryName(e.target.value)
     }
+
     function handleSelectChange(type, value){
         if(searchData.pageNumber !== 1){
             setSearchData(prev => ({...prev, pageNumber: 1}))
@@ -70,6 +63,7 @@ export default function FindDoctor(props){
             return {...prev, [type]: value}
         })
     }
+
     function fetchStaffData(){
         setIsLoading(true)
         let subParams = {}
@@ -176,34 +170,7 @@ export default function FindDoctor(props){
                 <div className={'find-provider-main'}>
                     <Stack rowGap={3} color={'white'}>
                         <p className={'clear-filter-btn'} onClick={clearFilters}>{t('clear-filter')}</p>
-                        <Stack rowGap={1}>
-                            <Typography variant={'body2'}>{t('department.title', {ns: 'common'}).toUpperCase()}</Typography>
-                            <Select onChange={handleSelectChange} value={searchData.department} disabled={isLoading}>
-                                <Option select-type={'department'} value="default"
-                                    onClick={() => handleSelectChange('department', 'default')}
-                                >{t('department.default', {ns: 'common'})}</Option>
-                                {department.map((department, index) => (
-                                    <Option select-type={'department'} value={department} key={index}
-                                            onClick={() => handleSelectChange('department', department)}
-                                    >
-                                        {t(`department.${department}`, {ns: 'common'})}</Option>
-                                ))}
-                            </Select>
-                        </Stack>
-                        <Stack rowGap={1}>
-                            <Typography variant={'body2'}>{t('speciality.title', {ns: 'common'}).toUpperCase()}</Typography>
-                            <Select onChange={handleSelectChange} value={searchData.specialization} disabled={isLoading}>
-                                <Option value="default"
-                                        onClick={() => handleSelectChange('specialization', 'default')}
-                                >{t(`speciality.default`, {ns: 'common'})}</Option>
-                                {specialties.map((speciality, index) => (
-                                    <Option value={speciality} key={index}
-                                            onClick={() => handleSelectChange('specialization', speciality)}
-                                    >
-                                        {t(`speciality.${speciality}`, {ns: 'common'})}</Option>
-                                ))}
-                            </Select>
-                        </Stack>
+                        <DepartmentSpecializationFilter isLoading={isLoading} handleSelectChange={handleSelectChange} searchData={searchData}/>
                         <Stack rowGap={1}>
                             <Typography variant={'body2'}>{t('primary-lang')}</Typography>
                             <Select onChange={handleSelectChange} value={searchData.language} disabled={isLoading}>
@@ -345,34 +312,7 @@ export default function FindDoctor(props){
                     </p>
                     {enableMoreFilters &&
                         <div className={'more-filter-panel'} style={{display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '2rem'}}>
-                            <Stack rowGap={1}>
-                                <Typography variant={'body2'}>{t('department.title', {ns: 'common'}).toUpperCase()}</Typography>
-                                <Select onChange={handleSelectChange} value={searchData.department} disabled={isLoading}>
-                                    <Option select-type={'department'} value="default"
-                                            onClick={() => handleSelectChange('department', 'default')}
-                                    >{t('department.default', {ns: 'common'})}</Option>
-                                    {department.map((department, index) => (
-                                        <Option select-type={'department'} value={department} key={index}
-                                                onClick={() => handleSelectChange('department', department)}
-                                        >
-                                            {t(`department.${department}`, {ns: 'common'})}</Option>
-                                    ))}
-                                </Select>
-                            </Stack>
-                            <Stack rowGap={1}>
-                                <Typography variant={'body2'}>{t('speciality.title', {ns: 'common'}).toUpperCase()}</Typography>
-                                <Select onChange={handleSelectChange} value={searchData.specialization} disabled={isLoading}>
-                                    <Option value="default"
-                                            onClick={() => handleSelectChange('specialization', 'default')}
-                                    >{t(`speciality.default`, {ns: 'common'})}</Option>
-                                    {specialties.map((speciality, index) => (
-                                        <Option value={speciality} key={index}
-                                                onClick={() => handleSelectChange('specialization', speciality)}
-                                        >
-                                            {t(`speciality.${speciality}`, {ns: 'common'})}</Option>
-                                    ))}
-                                </Select>
-                            </Stack>
+                            <DepartmentSpecializationFilter isLoading={isLoading} handleSelectChange={handleSelectChange} searchData={searchData}/>
                         </div>
                     }
                 </div>

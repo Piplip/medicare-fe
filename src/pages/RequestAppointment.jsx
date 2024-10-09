@@ -28,7 +28,9 @@ export default function RequestAppointment(props){
         , "appointment-detail": noSelected ? 3:2, confirmation: noSelected?4:3, payment: noSelected?5:4}
     const [currentStep, setCurrentStep] = useState(refStep[location.pathname.split('/')[3].split('?')[0]])
     const navigate = useNavigate()
+
     const [appointmentData, setAppointmentData] = useState({
+        appointmentID: null,
         for: '',
         reminder: 'yes',
         date: null,
@@ -69,8 +71,14 @@ export default function RequestAppointment(props){
                 reason: appointmentData.reason,
                 isReferral: appointmentData.isReferral,
                 isReminder: appointmentData.reminder
-            }).then(r => console.log(r))
-                .catch(err => console.log(err))
+            })
+            .then(r => {
+                setAppointmentData(prev =>({
+                    ...prev,
+                    appointmentID: r.data
+                }))
+            })
+            .catch(err => console.log(err))
         }
         setCurrentStep(prev => prev + 1)
         navigate(steps[currentStep + 1].link)

@@ -2,7 +2,7 @@ import Typography from "@mui/joy/Typography";
 import {Stack} from "@mui/material";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {TimePicker} from "@mui/x-date-pickers";
-import {Radio, RadioGroup, Textarea} from "@mui/joy";
+import {Radio, RadioGroup} from "@mui/joy";
 import {useOutletContext} from "react-router-dom";
 import SelectedDoctor from "./SelectedDoctor.jsx";
 import {useTranslation} from "react-i18next";
@@ -10,7 +10,6 @@ import {useTranslation} from "react-i18next";
 export default function Detail(){
     const [appointmentData, setAppointmentData] = useOutletContext()
     const {t} = useTranslation('appointmentRequest')
-
     function handleDataChange(e){
         setAppointmentData(prev => ({...prev, [e.target.name] : e.target.value}))
     }
@@ -36,6 +35,8 @@ export default function Detail(){
                                     sx: {
                                         '& input': {
                                             backgroundColor: 'white',
+                                            fontSize: '1.25rem',
+                                            padding: '.75rem',
                                         },
                                     },
                                 },
@@ -48,6 +49,8 @@ export default function Detail(){
                                     sx: {
                                         '& input': {
                                             backgroundColor: 'white',
+                                            fontSize: '1.25rem',
+                                            padding: '.75rem',
                                         },
                                     },
                                 },
@@ -55,9 +58,14 @@ export default function Detail(){
                     </Stack>
                 </Stack>
                 <Stack rowGap={1} className={'appointment-detail-component'}>
-                    <Typography className={'mandatory-field'} level={'h4'} sx={{color: 'white'}}>{t('component.detail.reason.title')}</Typography>
-                    <Textarea name={'reason'} value={appointmentData.reason}
-                              onChange={handleDataChange} minRows={2} placeholder={t('component.detail.reason.placeholder')}/>
+                    <Typography className={'mandatory-field'} level={'h4'}
+                                sx={{color: 'white'}}>{t('component.detail.reason.title')}</Typography>
+                    <textarea name={'reason'} style={{padding: '0.25rem 0.5rem', fontSize: '1rem', width: '100%', minWidth: '100%', backgroundColor: 'rgb(246,246,246)',
+                        fontFamily: 'cursive, sans-serif', minHeight: '5rem', maxHeight: '10rem', maxWidth: '100%'}}
+                              placeholder={t('component.detail.reason.placeholder')}
+                              value={appointmentData.reason}
+                              onChange={handleDataChange}
+                    />
                 </Stack>
                 <Stack rowGap={1} className={'appointment-detail-component'}>
                     <Typography level={'h4'} sx={{color: 'white'}}>{t('component.detail.referred.title')}</Typography>

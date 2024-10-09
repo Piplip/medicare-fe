@@ -1,4 +1,4 @@
-import '../styles/patient-scheduling-style.css'
+import '../../styles/patient-scheduling-style.css'
 import {
     Button,
     FormControlLabel,
