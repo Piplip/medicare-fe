@@ -154,5 +154,38 @@
     "Italian": "Italian",
     "Japanese": "Japanese",
     "Vietnamese": "Vietnamese"
+  },
+  "verification": {
+    "success": {
+      "title": "VERIFIED SUCCESSFULLY",
+      "message": "To fully use all of our services, please confirm your identity by uploading your ID card",
+      "guarantee": "We guarantee that your information will be kept confidential and secure",
+      "max-size": "Maximum file size allow: 1MB",
+      "scanning": "Authenticating! Please wait",
+      "success-scanning": "SUCCESS",
+      "appear-image": "Your image will appear here",
+      "button": "AUTHENTICATE"
+    }
+  },
+  "user_profile": {
+    "nav": {
+      "nav1": "Personal Info",
+      "nav2": "Billing & Payment",
+      "nav3": "Appointment History"
+    },
+    "edit-btn": "Edit Profile",
+    "logout-btn": "Log Out",
+    "change-pass": "Change password",
+    "personal-info": {
+      "title": "Personal Information",
+      "description": "Manage your personal information, including your phone numbers and email address where you can be contacted",
+      "full_name": "Full Name",
+      "birthday": "Date of Birth",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "sec_phone": "Secondary Phone",
+      "empty": "empty"
+    }
   }
 }

@@ -146,5 +146,38 @@
     "Italian": "Tiếng Ý",
     "Japanese": "Tiếng Nhật",
     "Vietnamese": "Tiếng Việt"
+  },
+  "verification": {
+    "success": {
+      "title": "XÁC THỰC EMAIL THÀNH CÔNG",
+      "message": "Nhằm mục đích đem lại trải nghiệm người dùng tốt nhất, chúng tôi cần xác minh danh tính bằng căn cước công dân của bạn",   
+      "guarantee": "Chúng tôi đảm bảo thông tin của bạn sẽ được bảo mật và an toàn",
+      "max-size": "Dung lượng ảnh tối đa: 1MB",
+      "scanning": "Đang xác minh! Vui lòng đợi",
+      "success-scanning": "XÁC MINH DANH TÍNH THÀNH CÔNG",
+      "appear-image": "Ảnh của bạn sẽ được hiển thị tại đây",
+      "button": "XÁC MINH"
+    }
+  },
+  "user_profile": {
+    "nav": {
+      "nav1": "Thông tin cá nhân",
+      "nav2": "Hóa đơn thanh toán",
+      "nav3": "Lịch sử khám bệnh"
+    },
+    "edit-btn": "Chỉnh sửa thông tin",
+    "logout-btn": "Đăng xuất",
+    "change-pass": "Đổi mật khẩu",
+    "personal-info": {
+      "title": "Thông tin cá nhân",
+      "description": "Quản lý thông tin cá nhân của bạn",
+      "full_name": "Họ và tên",
+      "birthday": "Ngày sinh",
+      "address": "Địa chỉ",
+      "phone": "Số ĐT",
+      "email": "E-mail",
+      "sec_phone": "Số điện thoại phụ",
+      "empty": "trống"
+    }
   }
 }
