@@ -23,23 +23,14 @@ import {UserContext} from "../App.jsx";
 
 export default function RootTemplate(props){
     const location = useLocation()
-    const navigate = useNavigate()
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
 
     const {t} = useTranslation('common')
 
-    const {currentUser, setCurrentUser} = useContext(UserContext)
-    function logout(){
-        setCurrentUser({
-            firstName: '',
-            lastName: '',
-            email: ''
-        })
-        localStorage.clear()
-        navigate('/login')
-    }
+    const {currentUser, _} = useContext(UserContext)
+    const navigate = useNavigate()
 
     return (
         <>
@@ -74,22 +65,26 @@ export default function RootTemplate(props){
                                 </IconButton>
                                 <div className={'profile-menu'}>
                                     <p>{currentUser.lastName + " " + currentUser.firstName}</p>
-                                    <Link className={'profile-nav-links'} to={'/profile'}>{t('header.nav.nav4')}</Link>
+                                    <Link className={'profile-nav-links'} to={`/profile/${localStorage.getItem('SESSION-ID')}/personal-info`}>
+                                        {t('header.nav.nav4')}</Link>
                                     <Link className={'profile-nav-links'} to={'/settings'}>{t('header.nav.nav5')}</Link>
-                                    <div className={'profile-nav-links'} onClick={logout}>{t('header.nav.nav6')}</div>
+                                    <div className={'profile-nav-links'} onClick={() => {
+                                        props.logout()
+                                        navigate('/login')
+                                    }}>{t('header.nav.nav6')}</div>
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
-                <Outlet/>
+                <Outlet />
                 <section className={'root-footer'}>
                     <Stack direction={'row'} alignItems={'center'} columnGap={2}>
                         <img style={{width: '3rem'}} src={TempLogo} alt={'logo'}/>
                         <Typography variant={'h3'} color={'yellow'}>Medicare<span
                             style={{color: 'orangered'}}>Plus</span></Typography>
                     </Stack>
-                    {props.currentUser.email === '' &&
+                    {currentUser.email === '' &&
                         <div className={'footer-subscribe-form'}>
                             <Typography variant={'h5'} width={'50%'}>{t('footer.subscribe.title')}</Typography>
                             <FormControl variant="standard">
@@ -123,9 +118,10 @@ export default function RootTemplate(props){
                         </Stack>
                         <Stack rowGap={1}>
                             <Typography variant={'h5'}>{t('footer.contact.title')}</Typography>
-                            <p>{t('address')}</p>
-                            <p>{t('phone.normal')}</p>
-                            <p>{t('email')}</p>
+                            <p>{import.meta.env.VITE_ADDRESS}</p>
+                            <p>{import.meta.env.VITE_PHONE}</p>
+                            <p>{import.meta.env.VITE_EMAIL}</p>
+                            <p>Share your thoughts</p>
                         </Stack>
                         <Stack rowGap={1}>
                             <Typography variant={'h5'}>{t('footer.career.title')}</Typography>
@@ -148,7 +144,7 @@ export default function RootTemplate(props){
                 </section>
             </div>
             <div className={'chat-btn'}>
-                <ChatIcon/>
+                <ChatIcon />
             </div>
         </>
     )
