@@ -1,11 +1,22 @@
 import {Button, CircularProgress, Stack} from "@mui/material";
 import '../styles/verification-styles.css'
 import {useLocation} from "react-router";
-import {Link} from "react-router-dom";
 import baseAxios from "../config/axiosConfig.jsx";
 import {useState} from "react";
+import Typography from "@mui/joy/Typography";
+import {initializeApp} from "firebase/app";
+import {firebaseConfig} from "../config/FirebaseConfig.jsx";
+import { getStorage, ref, getDownloadURL, uploadBytes} from "firebase/storage";
+import {useTranslation} from "react-i18next";
 
 export default function Verification(){
+    initializeApp(firebaseConfig);
+    const storage = getStorage()
+    const [selectedFile, setSelectedFile] = useState(null)
+    const [previewUrl, setPreviewUrl] = useState(null)
+    const [isScanning, setIsScanning] = useState(false)
+    const {t} = useTranslation('common')
+
     const errorRef = {
         'ERR-1001': 'Account not found',
         'ERR-1002': 'Account already activated',
@@ -49,13 +60,86 @@ export default function Verification(){
             })
     }
 
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+
+        if (file.size > 1024 * 1024) {
+            alert('File size exceeds the maximum limit (1MB).');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setPreviewUrl(e.target.result);
+        };
+        reader.readAsDataURL(file);
+        setSelectedFile(file);
+    }
+
+    async function sendAuthenticateRequest(){
+        if(!selectedFile){
+            alert('Please select an image to authenticate')
+        }
+        else{
+            setIsScanning(true)
+            const storageRef = ref(storage, `/cccd/${selectedFile.name}`)
+            const uploadTask = await uploadBytes(storageRef, selectedFile)
+            const downloadURL = await getDownloadURL(uploadTask.ref);
+
+            const encodedURL = encodeURIComponent(downloadURL);
+            const targetURL = `/check-identity?accountID=${path.search.substring(11)}&url=${encodedURL}`
+            baseAxios.post(targetURL)
+                .then(async r => {
+                    await setIsScanning(false)
+                    alert(`${r.data}\nYou will be automatically redirected to login page.`)
+                    window.location.href = '/login'
+                })
+                .catch(e => console.log(e))
+        }
+    }
+
     return (
         <div className={'verification-wrapper'}>
             {path.pathname === "/verify/success" ?
-                <Stack rowGap={1}>
-                    <p style={{fontSize: '3.5rem', color: 'yellow', marginBlock: '4rem'}}>Medicare<span style={{color: 'orangered'}}>Plus</span></p>
-                    <h1 style={{color: 'lightgreen'}}>VERIFIED SUCCESSFULLY</h1>
-                    <p style={{color: 'white'}}>You can now close this page or head to <Link style={{color: 'yellow'}} to={'/login'}>login page.</Link></p>
+                <Stack rowGap={1} alignItems={'center'}>
+                    <p style={{fontSize: '3rem', color: 'yellow', marginBlock: '0.5rem'}}>Medicare<span style={{color: 'orangered'}}>Plus</span></p>
+                    <>
+                        <h1 style={{color: 'lightgreen'}}>{t('verification.success.title')}</h1>
+                        <Typography level={'h4'} color={'white'}>
+                            {t('verification.success.message')}
+                        </Typography>
+                        <Typography level={'body-md'} color={'white'}>
+                            {t('verification.success.guarantee')}
+                        </Typography>
+                        {/*<p style={{color: 'white'}}>You can now close this page or head to <Link style={{color: 'yellow'}} to={'/login'}>login page.</Link></p>*/}
+                        <div className={'image-receiver'}>
+                            <div>
+                                <input className={'image-file-select'} type={"file"} onChange={handleFileSelect}/>
+                                <p>{t('verification.success.title')}</p>
+                            </div>
+                            <div className={'image-shower'}>
+                                {isScanning &&
+                                    <div className={'image-shower is-scanning'}>
+                                        {isScanning ?
+                                            <p className={'twinkling-scanning'}>Authenticating! Please wait</p> :
+                                            <Typography level={'h1'} sx={{color: 'greenyellow'}}>SUCCESS</Typography>
+                                        }
+                                    </div>
+                                }
+                                {previewUrl ?
+                                    <img src={previewUrl} alt={'preview'} className={'image-preview'}/>
+                                    : <p>{t('verification.success.appear-image')}</p>
+                                }
+                            </div>
+                        </div>
+                        <Button sx={{width: 'fit-content', marginTop: 1}} variant={'contained'} disabled={isScanning}
+                                onClick={sendAuthenticateRequest}>
+                            {t('verification.success.button')}
+                        </Button>
+                    </>
                 </Stack>
                 :
                 <Stack rowGap={1} alignItems={'center'}>
