@@ -4,11 +4,11 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import FindDoctor from "./pages/FindDoctor.jsx";
 import Homepage from "./pages/Homepage.jsx";
 import RootTemplate from "./template/RootTemplate.jsx";
-import AppointmentScheduling from "./pages/AppointmentScheduling.jsx";
+import AppointmentScheduling from "./pages/physician/AppointmentScheduling.jsx";
 import LoginSignUp from "./pages/LoginSignup.jsx";
 import StaffTemplate from "./template/StaffTemplate.jsx";
-import PhysicianDashboard from "./pages/PhysicianDashboard.jsx";
-import PhysicianPatientView from "./pages/PhysicianPatientView.jsx";
+import PhysicianDashboard from "./pages/physician/PhysicianDashboard.jsx";
+import PhysicianPatientView from "./pages/physician/PhysicianPatientView.jsx";
 import Verification from "./pages/Verification.jsx";
 import i18next from './config/i18nConfig.jsx'
 import {useEffect, useState} from "react";
@@ -20,6 +20,17 @@ import Payment from "./components/request-appointment/Payment.jsx";
 import Detail from "./components/request-appointment/Detail.jsx";
 import React from "react";
 import AppointmentFindDoctor from "./components/request-appointment/AppointmentFindDoctor.jsx";
+import PaymentSuccess from "./components/PaymentSuccess.jsx";
+import UserProfile from "./components/UserProfile.jsx";
+import PersonalInfo from "./components/user-profile/PersonalInfo.jsx";
+import BillingPayment from "./components/user-profile/BillingPayment.jsx";
+import AppointmentHistory from "./components/user-profile/AppointmentHistory.jsx";
+import baseAxios, {adminAxios} from "./config/axiosConfig.jsx";
+import AdminAudit from "./pages/admin/AdminAudit.jsx";
+import AdminReport from "./pages/admin/AdminReport.jsx";
+import AdminSetting from "./pages/admin/AdminSetting.jsx";
+import AdminUserManagement from "./pages/admin/AdminUserManagement.jsx";
+import ContextMenu from "./components/ContextMenu.jsx";
 
 export const UserContext  = React.createContext({})
 
@@ -29,6 +40,7 @@ function App() {
         if(localStorage.getItem('language') === null) localStorage.setItem('language', 'vi');
         i18next.changeLanguage(language)
     }, []);
+
     const [currentUser, setCurrentUser] = useState({
         firstName: localStorage.getItem('firstName') || '',
         lastName: localStorage.getItem('lastName') || '',
@@ -41,10 +53,19 @@ function App() {
         setLanguage(newLanguage);
     }
 
+    function logout(){
+        setCurrentUser({
+            firstName: '',
+            lastName: '',
+            email: ''
+        })
+        localStorage.clear()
+    }
+
     const router = createBrowserRouter([
         {
             path: '/',
-            element: <RootTemplate language={language} changeLanguage={changeLanguage} currentUser={currentUser} setCurrentUser={setCurrentUser}/>,
+            element: <RootTemplate language={language} changeLanguage={changeLanguage} logout={logout}/>,
             children: [
                 {index: true, element: <Homepage />},
                 {
@@ -64,7 +85,26 @@ function App() {
                     ]
                 },
                 {path: 'login', element: <LoginSignUp setCurrentUser={setCurrentUser}/>},
-                {path: 'sign-up', element: <LoginSignUp />}
+                {path: 'sign-up', element: <LoginSignUp />},
+                {
+                    path: 'profile/:ssid',
+                    element: <UserProfile logout={logout} currentUser={currentUser}/>,
+                    children: [
+                        {
+                            path: 'personal-info', element: <PersonalInfo />,
+                            loader: async () => {
+                                return baseAxios.get('/profile?email=' + currentUser.email)
+                            },
+                        },
+                        {path: 'billing-payment', element: <BillingPayment />},
+                        {
+                            path: 'appointment-history', element: <AppointmentHistory />,
+                            loader: async () => {
+                                return baseAxios.get('/appointments?email=' + currentUser.email)
+                            }
+                        }
+                    ]
+                },
             ]
         },
         {
@@ -77,19 +117,41 @@ function App() {
             ]
         },
         {
-            path: '/verify/success',
-            element: <Verification />
+            path: 'admin',
+            element: <StaffTemplate language={language} setLanguage={setLanguage}/>,
+            children: [
+                {
+                    path: 'users', element: <AdminUserManagement />,
+                    loader: async () => {
+                        return adminAxios.get('/staff', {
+                            params: {
+                                name: "",
+                                department: "",
+                                "primary-language": "",
+                                specialization: "",
+                                gender: "",
+                                "page-size": 10,
+                                "page-number": 1,
+                                "staff-type": ""
+                            }
+                        })
+                    }
+                },
+                {path: 'settings', element: <AdminSetting />},
+                {path: 'audit', element: <AdminAudit />},
+                {path: 'report', element: <AdminReport />},
+            ]
         },
-        {
-            path: '/verify/fail',
-            element: <Verification />
-        }
+        {path: '/verify/success', element: <Verification />},
+        {path: '/verify/fail', element: <Verification />},
+        {path: '/payment/success', element: <PaymentSuccess />},
+        {path: '/dev', element: <ContextMenu />}
     ])
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <UserContext.Provider value={{currentUser: currentUser, setCurrentUser: setCurrentUser}}>
-                <RouterProvider router={router} />
+                <RouterProvider router={router}/>
             </UserContext.Provider>
         </LocalizationProvider>
     )
