@@ -74,7 +74,7 @@
     position: relative;
 }
 .profile-menu{
-    width: 12.5rem;
+    width: 15rem;
     display: flex;
     flex-direction: column;
     right: 0;

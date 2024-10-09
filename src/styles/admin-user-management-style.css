@@ -1,0 +1,24 @@
+.user-management-container{
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.user-table-wrapper{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+.table-filters-btn{
+    position: relative;
+}
+.sort-filter-panel{
+    color: white;
+    background-color: #273744;
+    padding: 1rem;
+    width: fit-content;
+    align-self: flex-end;
+    margin-block: .25rem .5rem;
+}
+.sort-filter-panel > .clear-filter-btn{
+    align-self: flex-end;
+}

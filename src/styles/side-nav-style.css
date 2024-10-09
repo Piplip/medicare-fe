@@ -4,7 +4,7 @@
     width: fit-content;
     min-width: fit-content;
     max-width: 500px;
-    background-color: #242424;
+    background-color: rgb(14, 21, 80);
     color: white;
     padding: 1rem;
     height: calc(100vh - 4rem);

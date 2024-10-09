@@ -98,11 +98,11 @@
     row-gap: 0.5rem;
     width: 25%;
 }
-/*.payment-method-logo:hover{*/
-/*    border-color: red;*/
-/*    background-color: darkred;*/
-/*    box-shadow: 0 0 5rem red, 0 0 1rem 0.5rem white;*/
-/*}*/
 .payment-wrapper:hover .payment-method-logo:not(:hover){
     filter: brightness(0.4) blur(2px);
+}
+.appointment-basic-info{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
 }

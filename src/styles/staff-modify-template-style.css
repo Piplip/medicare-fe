@@ -1,0 +1,59 @@
+.personal-details-item{
+    min-width: 25rem;
+    background-color: #e7e7e7;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.1rem;
+    transition: all 0.25s;
+}
+.personal-details-item:hover{
+    background-color: #d9d9d9;
+}
+.staff-detail-section-title{
+    color: #9f9f9f;
+    font-weight: 400;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+.personal-details-item-content{
+    font-weight: bold;
+    font-size: 1rem;
+    font-family: "Book Antiqua", Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+}
+.personal-details-item-inp{
+    width: 100%;
+    padding: 0.1rem 0.25rem;
+}
+.loader2 {
+    width: fit-content;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 1rem;
+    clip-path: inset(0 3ch 0 0);
+    animation: l4 1s steps(4) infinite;
+}
+.loader2:before {
+    content:"Saving changes..."
+}
+@keyframes l4 {to{clip-path: inset(0 -1ch 0 0)}}
+
+.success-modify{
+    position: absolute;
+    color: white;
+    background-color: black;
+    border-top: 10px solid #4BFF93;
+    padding: 0.5rem 1rem;
+    left: 1rem;
+    bottom: 1rem;
+}
+.change-profile-img-btn{
+    color: #1a6fa4;
+    text-decoration: underline;
+}
+.change-profile-img-btn:hover{
+    cursor: pointer;
+    color: #144f77;
+}

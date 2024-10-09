@@ -1,0 +1,83 @@
+.user-profile-wrapper{
+    display: flex;
+    flex-direction: column;
+    background-color: #295457;
+    padding-inline: 20%;
+    color: white;
+    row-gap: 1rem;
+    padding-block: 1rem 2rem;
+}
+.user-profile-main{
+    display: grid;
+    grid-template-columns: 35% 65%;
+    padding-block: 1rem;
+}
+.menu-panel{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /*row-gap: 2rem;*/
+}
+.profile-navigation{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    margin-block: 5rem;
+}
+.profile-navigation > a{
+    text-decoration: none;
+    color: white;
+    font-size: 1.25rem;
+}
+.personal-info-comp{
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    color: black;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+.personal-info-comp > .MuiSvgIcon-root{
+    color: darkblue;
+    font-size: 1.75rem;
+}
+.personal-info-main{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+.personal-info-wrapper{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+.change-password{
+    text-align: right;
+}
+.change-password:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.personal-info-input{
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+.user-profile-img{
+    width: 5rem;
+    height: 5rem;
+    background-color: #4a00d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 4rem;
+    border-radius: 1rem;
+    font-family: Bahnschrift, sans-serif;
+    box-shadow: 0 0 0.5rem 0.1rem #000000;
+}
+.user-info{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}

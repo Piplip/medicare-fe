@@ -1,0 +1,35 @@
+.admin-report-container{
+    padding: 1rem 2rem;
+}
+.admin-report-wrapper{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+.admin-report-section-container:not(:last-child){
+    padding-bottom: 1rem;
+    border-bottom: 1px solid;
+}
+.admin-report-section-wrapper{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 2rem;
+    margin-top: 1rem;
+}
+.admin-report-item{
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+.admin-report-item:hover{
+    filter: brightness(0.9);
+    border: none;
+    outline: 2px solid orange;
+    cursor: pointer;
+}
+.report-icon{
+    background-color: white;
+    font-size: 6rem;
+    padding-block: 0.5rem;
+    border: 1px solid;
+}

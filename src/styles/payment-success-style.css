@@ -1,0 +1,58 @@
+.payment-success{
+    height: 100dvh;
+    position: relative;
+    background-color: black;
+    display: grid;
+    place-items: center;
+    color: white;
+    overflow: hidden;
+}
+.share-your-thoughts{
+    border: 10px solid #5dbd00;
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: peachpuff;
+    padding: 0.5rem 1rem;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+.rating-icon{
+    width: 3rem
+}
+.ratings-item:hover > .rating-icon{
+    animation: bounce 1s infinite;
+}
+.rating-icon:hover{
+    cursor: pointer;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+.ratings-item{
+    padding: 1rem 0.5rem;
+    background-color: white;
+    border-radius: 5px;
+    transition: all 0.1s;
+}
+.ratings-item > .rating-icon{
+    width: 2rem;
+}
+.ratings-wrapper{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 1rem;
+}
+.ratings-item-active{
+    outline: 4px solid #5dbd00;
+}
