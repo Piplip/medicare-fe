@@ -22,6 +22,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import {Link} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
 import {UserContext} from "../App.jsx";
+import FirstTimeImg from '../assets/first-time-image.jpg'
 
 export default function Homepage(){
     const [open, setOpen] = useState(true)
@@ -55,7 +56,7 @@ export default function Homepage(){
 
     return (
         <>
-            {(showDialogAfter && currentUser.email !== '') &&
+            {showDialogAfter && localStorage.getItem('email') == null &&
                 <Dialog open={open && localStorage.getItem('isVisited') !== 'true'}>
                     <DialogTitle sx={{m: 0, p: '1 3', color: 'yellow', fontWeight: 'bold', backgroundColor: '#000000'}}>
                         Medicare<span style={{color: 'orangered'}}>Plus</span>
@@ -75,7 +76,7 @@ export default function Homepage(){
                                 </Typography>
                             </Stack>
                             <img style={{width: '40%'}}
-                                 src={'https://cdn.tuoitre.vn/471584752817336320/2023/5/10/iu6-1683694373791472731774.png'}
+                                 src={FirstTimeImg}
                                  alt={'medicare-plus'}/>
                         </Stack>
                         <Stack rowGap={1}>
@@ -161,15 +162,15 @@ export default function Homepage(){
                 <div className={'homepage-about'}>
                     <Stack borderBottom={'2px solid white'} rowGap={2} paddingBottom={'1rem'}>
                         <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.title')}</Typography>
-                        <p>{t('contact.address-title')}<span className={'about-info'}>{t('contact.address')}</span></p>
-                        <p>{t('contact.phone')}<span className={'about-info'}>{t('phone.normal', {ns: 'common'})}</span></p>
-                        <p>Email<span className={'about-info'}>{t('email', {ns: 'common'})}</span></p>
+                        <p>{t('contact.address-title')}<span className={'about-info'}>{import.meta.env.VITE_ADDRESS}</span></p>
+                        <p>{t('contact.phone')}<span className={'about-info'}>{import.meta.env.VITE_PHONE}</span></p>
+                        <p>Email<span className={'about-info'}>{import.meta.env.VITE_EMAIL}</span></p>
                         <p>{t('contact.regular-hours')}<span className={'about-info'}>{t('contact.working-hours')}</span></p>
                     </Stack>
                     <Stack rowGap={3}>
                         <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.emergency-contact')}</Typography>
                         <p>{t('contact.emergency-hours')}<span className={'about-info'}>24/7</span></p>
-                        <p>{t('contact.emergency-phone')}<span className={'about-info'}>{t('phone.emergency', {ns: 'common'})}</span></p>
+                        <p>{t('contact.emergency-phone')}<span className={'about-info'}>{import.meta.env.VITE_EMERGENCY_PHONE}</span></p>
                         <p>{t('contact.emergency-address')}<span className={'about-info'}>{t('emergency_address', {ns: 'common'})}</span></p>
                     </Stack>
                 </div>
