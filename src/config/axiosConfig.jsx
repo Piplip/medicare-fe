@@ -2,10 +2,18 @@ import axios from "axios";
 
 const baseAxios = axios.create({
     baseURL: 'http://localhost:8080/api/user',
-    timeout: 10000,
+    timeout: 60000,
     headers: {
         'Content-Type': 'application/json'
     },
 })
 
-export default baseAxios
+export const adminAxios = axios.create({
+    baseURL: 'http://localhost:8080/api/admin',
+    timeout: 60000,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+})
+
+export default baseAxios;
