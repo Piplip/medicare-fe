@@ -1,3 +1,18 @@
 .custom-context-menu{
-    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    background-color: #2c2c2c;
+    color: #cccccc;
+    padding-block: 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 5px rgba(0, 19, 124, 0.2);
+}
+.custom-context-menu > p{
+    padding: 0.25rem 0.75rem;
+}
+.custom-context-menu > p:hover{
+    background-color: #3c3c3c;
+    color: white;
 }

@@ -8,11 +8,14 @@ import {useState} from "react";
 import {useLoaderData} from "react-router";
 import MailIcon from '@mui/icons-material/Mail';
 import {useTranslation} from "react-i18next";
+import dayjs from "dayjs";
 
 export default function PersonalInfo(){
     const loaderData = useLoaderData()
     const [isModify, setIsModify] = useState(false)
     const {t} = useTranslation('common')
+
+    console.log(loaderData)
 
     return (
         <div className={'personal-info-wrapper'}>
@@ -38,7 +41,7 @@ export default function PersonalInfo(){
                 <div className={'personal-info-comp'}>
                     <Stack>
                         <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.birthday')}</Typography>
-                        <Typography color={'white'} level={'body1'}>{loaderData.data[2]}</Typography>
+                        <Typography color={'white'} level={'body1'}>{dayjs(loaderData.data[2]).format("DD-MM-YYYY")}</Typography>
                     </Stack>
                     <CalendarMonthIcon/>
                 </div>
@@ -47,7 +50,7 @@ export default function PersonalInfo(){
                         <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.address')}</Typography>
                         <Typography color={'white'} level={'body1'}>
                             {`${loaderData.data[4] ? loaderData.data[4] + ', ' : ''}` + `${loaderData.data[5] ? loaderData.data[5] + ', ' : ''}`
-                                + `${loaderData.data[6] ? loaderData.data[6] + ', ' : ''}` + `${loaderData.data[7] ? loaderData.data[7] + ', ' : ''}`}
+                                + `${loaderData.data[6] ? loaderData.data[6] + ', ' : ''}` + `${loaderData.data[7] ? loaderData.data[7] : ''}`}
                         </Typography>
                     </Stack>
                     <HomeIcon/>
@@ -73,7 +76,9 @@ export default function PersonalInfo(){
                 <div className={'personal-info-comp'}>
                     <Stack>
                         <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.sec_phone')}</Typography>
-                        <Typography color={'white'} level={'body1'}>Phone Number</Typography>
+                        <Typography color={'white'} level={'body1'}>
+                            {loaderData.data[4] ? loaderData.data[4] : `${t('user_profile.personal-info.empty')}`}
+                        </Typography>
                     </Stack>
                     <PhoneIcon/>
                 </div>

@@ -30,7 +30,8 @@ import AdminAudit from "./pages/admin/AdminAudit.jsx";
 import AdminReport from "./pages/admin/AdminReport.jsx";
 import AdminSetting from "./pages/admin/AdminSetting.jsx";
 import AdminUserManagement from "./pages/admin/AdminUserManagement.jsx";
-import ContextMenu from "./components/ContextMenu.jsx";
+import ContextMenu from "./components/context-menu/ContextMenu.jsx";
+import UserFeedback from "./components/UserFeedback.jsx";
 
 export const UserContext  = React.createContext({})
 
@@ -101,6 +102,12 @@ function App() {
                             path: 'appointment-history', element: <AppointmentHistory />,
                             loader: async () => {
                                 return baseAxios.get('/appointments?email=' + currentUser.email)
+                            }
+                        },
+                        {
+                            path: 'feedback', element: <UserFeedback />,
+                            loader: async () => {
+                                return baseAxios.get('/feedbacks?email=' + currentUser.email)
                             }
                         }
                     ]

@@ -75,6 +75,8 @@ export default function AdminUserManagement(){
     }
 
     function fetchStaffData(){
+
+
         let subParams = {}
         for(let key in searchData){
             if(searchData[key] !== 'default' && searchData[key] !== ''){
@@ -222,7 +224,13 @@ export default function AdminUserManagement(){
                 <Stack marginBlock={1} alignItems={'center'} direction={'row'} justifyContent={'space-between'}
                        className={'table-filters'}>
                     <Stack direction={'row'} columnGap={1}>
-                        <Input placeholder={'Search by name...'} sx={{minWidth: '25rem'}} value={queryName} onChange={handleQueryChange}/>
+                        <Input autoFocus placeholder={'Search by name...'} sx={{minWidth: '25rem'}} value={queryName} onChange={handleQueryChange}
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter'){
+                                    fetchStaffData()
+                                }
+                            }}
+                        />
                         <Button variant={'contained'} onClick={fetchStaffData}>FIND</Button>
                     </Stack>
                     <Button variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>Sort & Filter</Button>

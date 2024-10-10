@@ -112,9 +112,9 @@
     color: orange;
     font-size: 0.75rem;
     width: fit-content;
+    user-select: none;
 }
 .clear-filter-btn:hover{
     cursor: pointer;
     color: orangered;
-    user-select: none;
 }

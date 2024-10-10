@@ -19,9 +19,11 @@ import Button from '@mui/joy/Button';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import {styled} from "@mui/system";
+import AdminUserContextMenu from "./context-menu/ContextMenu.jsx";
 
 export default function TableTemplate({header, data, isPagination, handleClick, currentValues, setCurrentValues, allowCheckbox, handleDelete,
-    handleModify, allowModify, allowDelete, isMutable, ModifyTemplate, currentModifyData
+    handleModify, allowModify, allowDelete, isMutable, ModifyTemplate, currentModifyData, clickable
 }){
     const [selectAll, setSelectAll] = useState(false)
     const [checkboxes, setCheckboxes] = useState(new Array(data.length).fill(false))
@@ -99,7 +101,10 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                             <TableRow key={index} sx={{
                                 '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
                                 '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
-                            }} onClick={() => handleClick(index)}>
+                            }} onClick={() => {
+                                if(clickable)
+                                    handleClick(index)
+                            }}>
                                 {allowCheckbox &&
                                     <TableCell onClick={(event) => {
                                         event.stopPropagation()
@@ -185,16 +190,11 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                     </Stack>
                 </div>
             }
-            {clicked &&
-                <div style={{position: 'absolute', width: '300px', border: '5px solid red', height: 'fit-content',
-                    top: `${coords.y}px`, left: `${coords.x}px`}}>
-                    <ul>
-                        <li>Item A</li>
-                        <li>Item A</li>
-                        <li>Item A</li>
-                    </ul>
-                </div>
-            }
+            {clicked && (
+                <AdminUserContextMenu x={coords.x} y={coords.y} totalSelectCell={checkboxes.reduce((prev, curr) => {
+                    return prev + (curr ? 1 : 0)
+                })}/>
+            )}
             {ModifyTemplate &&
                 <ModifyTemplate data={currentModifyData} setShowModify={setShowModifyPanel} showModifyPanel={showModifyPanel}/>
             }
