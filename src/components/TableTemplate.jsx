@@ -91,57 +91,66 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                                 <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>{item}</TableCell>)}
                             {isMutable &&
                                 <TableCell sx={{color: 'white', userSelect: 'none'}}>
-                                    OPTION
+                                    Options
                                 </TableCell>
                             }
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item, index) => (
-                            <TableRow key={index} sx={{
-                                '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
-                                '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
-                            }} onClick={() => {
-                                if(clickable)
-                                    handleClick(index)
-                            }}>
-                                {allowCheckbox &&
-                                    <TableCell onClick={(event) => {
-                                        event.stopPropagation()
-                                    }}>
-                                        <Checkbox onClick={() => handleCheckboxChange(index)} checked={checkboxes[index]}/>
-                                    </TableCell>
-                                }
-                                {Object.keys(item).map((key, index) => (
-                                    <TableCell key={index}>{item[key]}</TableCell>
-                                ))}
-                                {allowCheckbox &&
-                                    <TableCell sx={{display: 'flex'}} onClick={(event) => {
-                                        event.stopPropagation()
-                                    }}>
-                                        {isMutable &&
-                                            <Stack rowGap={0.5}>
-                                                {allowModify &&
-                                                    <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'info'}
-                                                               onClick={() => {
-                                                                   _handleModify(item[0])
-                                                               }}
-                                                    >MODIFY</MuiButton>
-                                                }
-                                                {allowDelete &&
-                                                    <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'error'}
-                                                               onClick={() => {
-                                                                   setIndex(index)
-                                                                   setShowDeleteModal(true)
-                                                               }}
-                                                    >DELETE</MuiButton>
-                                                }
-                                            </Stack>
-                                        }
-                                    </TableCell>
-                                }
-                            </TableRow>
-                        ))}
+                        {
+                            data.map((item, index) => (
+                                <TableRow key={index} sx={{
+                                    '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                    '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                }} onClick={() => {
+                                    if(clickable)
+                                        handleClick(index)
+                                }}>
+                                    {allowCheckbox &&
+                                        <TableCell onClick={(event) => {
+                                            event.stopPropagation()
+                                        }}>
+                                            <Checkbox onClick={() => handleCheckboxChange(index)} checked={checkboxes[index]}/>
+                                        </TableCell>
+                                    }
+                                    {item &&
+                                        Object.keys(item).map((key, index) => (
+                                            <TableCell key={index}>{item[key]}</TableCell>
+                                        ))
+                                    }
+                                    {allowCheckbox &&
+                                        <TableCell sx={{display: 'flex'}} onClick={(event) => {
+                                            event.stopPropagation()
+                                        }}>
+                                            {isMutable &&
+                                                <Stack rowGap={0.5}>
+                                                    {allowModify &&
+                                                        <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'info'}
+                                                                   onClick={() => {
+                                                                       _handleModify(item[0])
+                                                                   }}
+                                                        >MODIFY</MuiButton>
+                                                    }
+                                                    {allowDelete &&
+                                                        <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'error'}
+                                                                   onClick={() => {
+                                                                       if(data[index][9] === 'Inactive'){
+                                                                           alert('This staff already inactive')
+                                                                       }
+                                                                       else{
+                                                                           setIndex(index)
+                                                                           setShowDeleteModal(true)
+                                                                       }
+                                                                   }}
+                                                        >DELETE</MuiButton>
+                                                    }
+                                                </Stack>
+                                            }
+                                        </TableCell>
+                                    }
+                                </TableRow>
+                            ))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -196,7 +205,7 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                 })}/>
             )}
             {ModifyTemplate &&
-                <ModifyTemplate data={currentModifyData} setShowModify={setShowModifyPanel} showModifyPanel={showModifyPanel}/>
+                <ModifyTemplate data={currentModifyData} setShowModify={setShowModifyPanel} showModifyPanel={showModifyPanel} handleDelete={handleDelete}/>
             }
         </>
     )

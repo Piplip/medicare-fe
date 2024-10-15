@@ -15,7 +15,6 @@ import baseAxios from "../../config/axiosConfig.jsx";
 
 export default function AppointmentHistory(){
     const loaderData = useLoaderData()
-    console.log(loaderData.data)
 
     const {t} = useTranslation(['findDoctor', 'common'])
     const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery"]
@@ -23,7 +22,7 @@ export default function AppointmentHistory(){
     const tableHeader = ['ID', 'Date & Time', 'Department', 'Doctor', 'Status']
     const [showModal, setShowModal] = useState(false)
     const [currentAppointment, setCurrentAppointment] = useState({})
-    const [sortedStaffData, setSortedStaffData] = useState(loaderData.data.records)
+    const [appointmentData, setAppointmentData] = useState(loaderData.data.records)
     const [searchParams, setSearchParams] = useSearchParams()
     const [filters, setFilters] = useState({
         query: searchParams.get('query') || '',
@@ -40,7 +39,7 @@ export default function AppointmentHistory(){
 
     useEffect(() => {
         if(loaderData.data.records){
-            const sortedData = [...loaderData.data.records]
+            const sortedData = [...appointmentData]
             if(sortOption.orderBy === 'dname'){
                 sortedData.sort((a, b) => {
                     return (a[7] + a[8]) > (b[7] + b[8]) ? 1 : -1
@@ -56,9 +55,9 @@ export default function AppointmentHistory(){
                     }
                 })
             }
-            setSortedStaffData(sortedData)
+            setAppointmentData(sortedData)
         }
-    }, [sortOption, loaderData]);
+    }, [sortOption]);
 
     useEffect(() => {
         fetchAppointments()
@@ -92,16 +91,28 @@ export default function AppointmentHistory(){
             status: filters.status,
             query: filters.query,
             department: filters.department,
-            startDate: filters.startDate ? filters.startDate.format('DD/MM/YYYY') : null,
-            endDate: filters.endDate ? filters.endDate.format('DD/MM/YYYY') : null
+            startDate: filters.startDate ? filters.startDate.format('DD/MM/YYYY') : "none",
+            endDate: filters.endDate ? filters.endDate.format('DD/MM/YYYY') : "none"
         }).toString()
-
+        console.log("param", params)
         baseAxios.get('/appointments?' + params)
-            .then(r => console.log(r))
+            .then(r => {
+                console.log("appointment results: ", r)
+                setAppointmentData(r.data.records)
+            })
             .catch(err => console.log(err))
     }
 
-    console.log("Filters", filters)
+    function clearFilters(){
+        setFilters({
+            query: '',
+            department: 'default',
+            status: 'default',
+            dateType: 'date',
+            startDate: null,
+            endDate: null
+        })
+    }
 
     return (
         <>
@@ -138,14 +149,16 @@ export default function AppointmentHistory(){
                                    return {...prev, query: e.target.value}
                                })}
                         />
-                        <Button variant="contained" onClick={fetchAppointments}>Search</Button>
+                        <Button variant="contained" onClick={fetchAppointments}>
+                            Search
+                        </Button>
                     </Stack>
                     <Button variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>Sort & Filter</Button>
                 </Stack>
                 {showFilters &&
                     <Stack>
                         <Stack rowGap={2} className={'sort-filter-panel'} sx={{width: '100%'}}>
-                            <p className={'clear-filter-btn'}>CLEAR ALL FILTERS</p>
+                            <p className={'clear-filter-btn'} onClick={clearFilters}>CLEAR ALL FILTERS</p>
                             <Stack direction={'row'} columnGap={3}>
                                 <Stack rowGap={1}>
                                     <Typography variant={'body2'}>DATE</Typography>
@@ -240,7 +253,7 @@ export default function AppointmentHistory(){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {sortedStaffData.map((item, index) => (
+                            {appointmentData.map((item, index) => (
                                 <Tooltip title={"Click to view detail"} key={index} followCursor>
                                     <TableRow onClick={() => showDetail(item[0])} sx={{
                                         '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},

@@ -11,6 +11,7 @@
 }
 .custom-context-menu > p{
     padding: 0.25rem 0.75rem;
+    user-select: none;
 }
 .custom-context-menu > p:hover{
     background-color: #3c3c3c;

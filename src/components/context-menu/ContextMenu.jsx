@@ -11,10 +11,10 @@ export default function AdminUserContextMenu(props){
 
     return (
         <CustomContextMenu className={'custom-context-menu'}>
-            <p>Delete selection row ({props.totalSelectCell} rows)</p>
+            <p>Delete selection ({props.totalSelectCell} rows)</p>
             <p>Copy</p>
             <p>Pin {props.totalSelectCell} row(s)</p>
-            <p>Export</p>
+            <p>Export data</p>
             <p>Select all</p>
         </CustomContextMenu>
     )

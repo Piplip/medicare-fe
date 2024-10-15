@@ -52,8 +52,25 @@
 .change-profile-img-btn{
     color: #1a6fa4;
     text-decoration: underline;
+    user-select: none;
 }
 .change-profile-img-btn:hover{
     cursor: pointer;
     color: #144f77;
+}
+.user-pp-preview-change-btn{
+    position: absolute;
+    color: #000000;
+}
+.user-pp-preview-change-btn:hover{
+    cursor: pointer;
+    animation: rotate 2s linear infinite;
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

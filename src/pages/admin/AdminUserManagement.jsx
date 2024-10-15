@@ -1,12 +1,13 @@
 import "../../styles/admin-user-management-style.css"
 import AddIcon from '@mui/icons-material/Add';
-import {Button, Stack, Typography,} from "@mui/material";
+import {Button, Stack, Tab, Typography,} from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import TableTemplate from "../../components/TableTemplate.jsx";
 import {useLoaderData} from "react-router";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {adminAxios} from "../../config/axiosConfig.jsx";
+import {Tabs} from "@mui/material";
 import {Modal} from "@mui/joy";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
@@ -16,6 +17,7 @@ import DepartmentSpecializationFilter from "../../components/DepartmentSpecializ
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import StaffModifyTemplate from "../../components/StaffModifyTemplate.jsx";
+import SimpleTableTemplate from "../../components/SimpleTableTemplate.jsx";
 
 export default function AdminUserManagement(){
     initializeApp(firebaseConfig);
@@ -26,11 +28,13 @@ export default function AdminUserManagement(){
     const [staffData, setStaffData] = useState(loaderData.data.records)
     const [sortedStaffData, setSortedStaffData] = useState(null)
     const [openModal, setOpenModal] = useState(false)
-    const tableHeader = ['ID', 'Last Name', 'First Name', 'Phone', 'Gender', 'Department', 'Specialization', 'Type', 'Email']
+    const tableHeader = ['ID', 'Last Name', 'First Name', 'Phone', 'Gender', 'Department', 'Specialization', 'Type', 'Email', 'Status']
     const [searchParams, setSearchParams] = useSearchParams()
-    const [createdStaffData, setCreatedStaffData] = useState(null)
+    const [successCreatedStaffData, setSuccessCreatedStaffData] = useState([])
+    const [failedCreatedStaffData, setFailedCreatedStaffData] = useState([])
     const [queryName, setQueryName] = useState(searchParams.get('name') || '')
     const [currentModifyData, setCurrentModifyData] = useState([])
+    const [viewMode, setViewMode] = useState(0)
     const [searchData, setSearchData] = useState({
         department: searchParams.get('department') || 'default',
         language: searchParams.get('language') || 'default',
@@ -38,7 +42,8 @@ export default function AdminUserManagement(){
         gender: searchParams.get('gender') || '',
         pageSize: parseInt(searchParams.get('pageSize')) || 10,
         pageNumber: parseInt(searchParams.get('pageNumber')) || 1,
-        type: searchParams.get('type') || ''
+        type: searchParams.get('type') || '',
+        status: searchParams.get('status') || 'default'
     })
 
     const [sortOption, setSortOption] = useState({
@@ -46,7 +51,15 @@ export default function AdminUserManagement(){
         order: 'asc'
     })
     const [showFilters, setShowFilters] = useState(false)
-    let tableHeader02 = []
+
+    const handleChangeViewMode = (event, newValue) => {
+        setViewMode(newValue)
+    };
+
+    const successStaffHeader = ['Account ID', 'Staff ID', 'First Name', 'Last Name', 'Date of Birth', 'ID Number', 'Phone Number', 'Email', 'Password', 'Role']
+    const successDataKey = ['accountID', 'staffID', 'firstname', 'lastname', 'dateOfBirth', 'CCCD', 'phoneNumber', 'email', 'password', 'role']
+    const failedStaffHeader = ['First Name', 'Last Name', 'Date of Birth', 'ID Number', 'Phone Number', 'Email', 'Password', 'Type']
+    const failedDataKey = ['firstname', 'lastname', 'dateOfBirth', 'cccd', 'phoneNumber', 'email', 'password', 'resultType']
 
     useEffect(() => {
         fetchStaffData()
@@ -75,8 +88,6 @@ export default function AdminUserManagement(){
     }
 
     function fetchStaffData(){
-
-
         let subParams = {}
         for(let key in searchData){
             if(searchData[key] !== 'default' && searchData[key] !== ''){
@@ -87,6 +98,7 @@ export default function AdminUserManagement(){
             subParams['q'] = queryName
         }
         setSearchParams(subParams)
+
         const params = new URLSearchParams({
             name: queryName,
             department: searchData.department,
@@ -95,7 +107,8 @@ export default function AdminUserManagement(){
             gender: searchData.gender,
             "page-size": searchData.pageSize,
             "page-number": searchData.pageNumber,
-            "staff-type": searchData.type
+            "staff-type": searchData.type,
+            "staff-status": searchData.status
         }).toString()
 
         adminAxios.get('/staff?' + params)
@@ -129,21 +142,25 @@ export default function AdminUserManagement(){
     }
 
     async function generateStaffData(){
+        if(!selectedFile){
+            alert('Please select a file to upload')
+            return
+        }
         setIsLoading(true)
         const storageRef = ref(storage, `/staff data/${selectedFile.name}`)
         const uploadTask = await uploadBytes(storageRef, selectedFile)
         const downloadURL = await getDownloadURL(uploadTask.ref);
         const encodedURL = encodeURIComponent(downloadURL);
-        const targetURL = `/excel?url=${encodedURL}`
+        const targetURL = `/staff/add?url=${encodedURL}`
 
         adminAxios.post(targetURL)
             .then(async r => {
-                for(const [key, _] of Object.entries(r.data[0])){
-                    tableHeader02.push(key.toUpperCase())
-                }
+                console.log("created staff data", r.data)
                 setIsLoading(false)
-                setCreatedStaffData(r.data)
-                console.log(r)
+                const successData = r.data.filter(item => item.resultType === 1)
+                const failedData = r.data.filter(item => item.resultType !== 1)
+                setSuccessCreatedStaffData(successData)
+                setFailedCreatedStaffData(failedData)
             })
             .catch(e => console.log(e))
     }
@@ -163,7 +180,6 @@ export default function AdminUserManagement(){
             order: 'asc'
         })
     }
-
     function deleteStaff(index){
         adminAxios.delete('/staff?id=' + staffData[index][0])
             .then(res => {
@@ -188,13 +204,22 @@ export default function AdminUserManagement(){
                    onClose={() => setOpenModal(false)}
                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-                <Stack sx={{ minWidth: 800, maxHeight: 600, backgroundColor: '#F0F4F8', padding: '1rem 1.25rem', overflowY: 'scroll'
+                <Stack sx={{ minWidth: 800, maxHeight: 600, backgroundColor: '#F0F4F8', padding: '1rem 1.25rem', overflowY: 'auto'
                     , boxShadow: '1rem 1rem green'}} rowGap={'1rem'}>
                     <Typography variant={'h4'} textAlign={'center'} borderBottom={'3px solid'}>ADDING STAFF</Typography>
-                    {createdStaffData ?
-                        <Stack>
-                            <Typography variant={'h5'} color={"green"}>SUCCESSFULLY! VERIFIED CREATED DATA AS SHOWN BELOW</Typography>
-                            <TableTemplate header={tableHeader02} data={createdStaffData}/>
+                    {(successCreatedStaffData.length !== 0 || failedCreatedStaffData.length !== 0) ?
+                        <Stack rowGap={2}>
+                            <Typography variant={'h5'} color={"green"}>SUCCESSFULLY! VERIFIED CREATED DATA SHOWED BELOW</Typography>
+                            <Tabs value={viewMode} onChange={handleChangeViewMode}>
+                                <Tab label="Item One"/>
+                                <Tab label="Item Two"/>
+                            </Tabs>
+                            {viewMode === 0 ?
+                                <SimpleTableTemplate header={successStaffHeader} data={successCreatedStaffData} keys={successDataKey}/>
+                                :
+                                <SimpleTableTemplate header={failedStaffHeader} data={failedCreatedStaffData} keys={failedDataKey}/>
+                            }
+                            <Button variant={'contained'} onClick={() => setOpenModal(false)}>FINISHED REVIEW</Button>
                         </Stack>
                         :
                         <>
@@ -210,9 +235,6 @@ export default function AdminUserManagement(){
                                 {isLoading ? <div className={'loader'}></div> : 'UPLOAD AND GENERATE'}
                             </Button>
                         </>
-                    }
-                    {createdStaffData &&
-                        <Button variant={'contained'} onClick={() => setOpenModal(false)}>FINISHED REVIEW</Button>
                     }
                 </Stack>
             </Modal>
@@ -262,6 +284,16 @@ export default function AdminUserManagement(){
                                         <Option value={'pharmacist'}>Pharmacist</Option>
                                         <Option value={'admin'}>Admin</Option>
                                         <Option value={'nurse'}>Nurse</Option>
+                                    </Select>
+                                </Stack>
+                                <Stack rowGap={1}>
+                                    <Typography variant={'body2'}>STATUS</Typography>
+                                    <Select value={searchData.status} onChange={(_, value) => setSearchData(prev => {
+                                        return {...prev, status: value}
+                                    })}>
+                                        <Option value={'default'}>All</Option>
+                                        <Option value={'active'}>Active</Option>
+                                        <Option value={'inactive'}>Inactive</Option>
                                     </Select>
                                 </Stack>
                                 <Stack columnGap={3} direction={'row'} sx={{borderLeft: '2px solid yellow', paddingLeft: '1.25rem'}}>

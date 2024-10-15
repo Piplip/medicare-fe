@@ -2,7 +2,7 @@ import {Modal, ModalClose, ModalDialog, Stack} from "@mui/joy";
 import {Typography} from "@mui/material";
 import Button from "@mui/joy/Button";
 import '../styles/staff-modify-template-style.css'
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import {useTranslation} from "react-i18next";
@@ -10,9 +10,12 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../config/FirebaseConfig.jsx";
-import {getDownloadURL, getStorage, ref} from "firebase/storage";
+import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 import DefaultImage from '../assets/default.jpg'
-import {adminAxios} from "../config/axiosConfig.jsx";
+import baseAxios, {adminAxios} from "../config/axiosConfig.jsx";
+import {useDropzone} from "react-dropzone";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
 
 export default function StaffModifyTemplate(props) {
     initializeApp(firebaseConfig);
@@ -20,7 +23,11 @@ export default function StaffModifyTemplate(props) {
     const {t} = useTranslation('common')
     const [isConfirm, setIsConfirm] = useState(false)
     const [isModify, setIsModify] = useState(false)
+    const [isDeleted, setIsDeleted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isPPChange, setIsPPChange] = useState(false)
+    const [previewImage, setPreviewImage] = useState(null)
+    const [selectedFile, setSelectedFile] = useState(null)
     const specialties = [
         "Allergy and Immunology", "Anesthesiology", "Cardio thoracic Surgery", "Cardiology", "Cardiovascular Disease",
         "Colon and Rectal Surgery", "Dermatology", "Emergency Medicine", "Endocrinology", "ENT (Ear, Nose, and Throat)", "Gastroenterology", "Geriatrics",
@@ -39,7 +46,7 @@ export default function StaffModifyTemplate(props) {
             secPhoneNumber: props.data[17],
             gender: props.data[18],
             birthday: dayjs(props.data[15]),
-            address: `${props.data[22]}, ${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}`,
+            address: `${props.data[22]} ${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}`,
             primaryLanguage: props.data[19],
             email: props.data[38],
             type: props.data[3],
@@ -51,6 +58,12 @@ export default function StaffModifyTemplate(props) {
             imageURL: loadImage(props.data[2])
         })
     }, [props.data]);
+
+    const onDrop = useCallback(acceptedFiles => {
+        setPreviewImage(URL.createObjectURL(acceptedFiles[0]));
+        setSelectedFile(acceptedFiles[0])
+    }, [])
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
     async function loadImage(url){
         let storageRef = ref(storage, url)
@@ -109,7 +122,29 @@ export default function StaffModifyTemplate(props) {
             .catch(err => console.log(err))
     }
 
-    console.log(currentStaffData)
+    function handleUpdatePP(){
+        if(!selectedFile){
+            alert('Please select an image file')
+            return
+        }
+        const storageRef = ref(storage, `/staff/${selectedFile.name}`)
+        uploadBytes(storageRef, selectedFile)
+            .then(res => {
+                console.log(res)
+                const imgURL = res.metadata.fullPath
+                adminAxios.patch('/staff/update/profile-img?' + new URLSearchParams({
+                    id: props.data[0],
+                    imageURL: imgURL
+                }))
+                    .then(r => {
+                        console.log(r)
+                        setIsPPChange(false)
+                        loadImage(`/staff/${selectedFile.name}`)
+                    })
+                    .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
+    }
 
     return (
         <>
@@ -117,6 +152,7 @@ export default function StaffModifyTemplate(props) {
                 <Modal open={props.showModifyPanel} onClose={() => {
                     setIsModify(false)
                     setIsConfirm(false)
+                    setIsPPChange(false)
                     props.setShowModify(false)
                 }}>
                     <ModalDialog sx={{paddingBlock: 1}}>
@@ -125,19 +161,78 @@ export default function StaffModifyTemplate(props) {
                                 variant={'h5'}>{props.data[13]} {props.data[14]} - {props.data[6]}</Typography>
                             <ModalClose/>
                         </Stack>
-                        <Stack direction={'row'} columnGap={4}>
+                        <Stack direction={'row'} columnGap={4} sx={{overflowY: 'auto'}}>
                             <Stack>
                                 <p className={'staff-detail-section-title'}>PROFILE PICTURE</p>
                                 <Stack sx={{marginBottom: 3}}>
-                                    <img
-                                        src={currentStaffData.imageURL}
-                                        alt={'image'} width={'250px'}/>
-                                    <p className={'change-profile-img-btn'}>Change profile picture</p>
+                                    {isPPChange ?
+                                        <Stack {...getRootProps()}
+                                               sx={{width: '250px', height: '350px', border: '2px solid', backgroundColor: '#7e7e7e', color: 'white',
+                                            padding: '1rem', textAlign: 'center'
+                                        }}
+                                               justifyContent={'center'}>
+                                            <input {...getInputProps()} />
+                                            {
+                                                previewImage ?
+                                                    <div style={{position: 'relative'}}>
+                                                        <ChangeCircleOutlinedIcon sx={{fontSize: 40}} className={'user-pp-preview-change-btn'}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                setPreviewImage(null)
+                                                            }}
+                                                        />
+                                                        <img src={previewImage} style={{width: '100%'}}
+                                                             onLoad={() => URL.revokeObjectURL(previewImage)}
+                                                             alt={'image'}/>
+                                                    </div>
+                                                    :
+                                                    isDragActive ?
+                                                        <Stack justifyContent={'center'} alignItems={'center'}>
+                                                            <CloudUploadIcon sx={{width: '5rem', height: '5rem'}}/>
+                                                        </Stack>
+                                                        :
+                                                        <p style={{userSelect: 'none'}}>Drag and drop image here<br/>or click to select file</p>
+                                            }
+                                        </Stack>
+                                        :
+                                        <img
+                                            src={currentStaffData.imageURL}
+                                            alt={'image'} width={'250px'}/>
+                                    }
+                                    {isPPChange ?
+                                        <Stack direction={'row'} justifyContent={'space-between'} sx={{marginTop: '0.25rem'}}>
+                                            <Button variant={'solid'} onClick={handleUpdatePP}>ACCEPT</Button>
+                                            <Button variant={'solid'} onClick={() => setIsPPChange(false)}>CANCEL</Button>
+                                        </Stack>
+                                        :
+                                        <p className={'change-profile-img-btn'} onClick={() => {
+                                            setPreviewImage(null)
+                                            setIsPPChange(prev => !prev)
+                                        }}>
+                                            Change profile picture</p>
+                                    }
                                 </Stack>
                                 <Stack rowGap={1}>
-                                    <Button variant={'soft'} onClick={() => setIsModify(true)}>Update
-                                        profile</Button>
-                                    <Button variant={'soft'} color={"danger"}>Delete profile</Button>
+                                    <Button variant={'soft'} onClick={() => {
+                                        setIsDeleted(false)
+                                        setIsModify(true)
+                                    }}>
+                                        Update profile
+                                    </Button>
+                                    <Button variant={'soft'} color={"danger"} onClick={() => {
+                                        setIsModify(false)
+                                        if(currentStaffData.status === 'inactive') {
+                                            alert('This staff is already deleted')
+                                        }
+                                        else {
+                                            setIsDeleted(prev => !prev)
+                                            if (isDeleted) {
+                                                props.handleDelete()
+                                            }
+                                        }
+                                    }}>
+                                        {isDeleted ? 'Click to confirm changes' : "Delete profile"}
+                                    </Button>
                                     {isModify && (
                                         isConfirm ? (
                                             <Button variant="solid" onClick={saveChanges}>
@@ -164,7 +259,7 @@ export default function StaffModifyTemplate(props) {
                                     )}
                                 </Stack>
                             </Stack>
-                            <Stack>
+                            <Stack sx={{overflowY: 'auto'}}>
                                 <p className={'staff-detail-section-title'}>PERSONAL DETAILS</p>
                                 <Stack rowGap={1}>
                                     <div className={'personal-details-item'}>
@@ -256,98 +351,100 @@ export default function StaffModifyTemplate(props) {
                                     </div>
                                 </Stack>
                             </Stack>
-                            <Stack rowGap={2}>
-                                <Stack>
-                                    <p className={'staff-detail-section-title'}>STAFF INFORMATION</p>
-                                    <Stack rowGap={1}>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>Email</p>
-                                            {isModify ?
-                                                <input className={'personal-details-item-inp'}
-                                                       value={currentStaffData.email}
-                                                       onChange={(e) => handleChange(e, 'email')}
-                                                /> :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.email}</p>
-                                            }
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>Certification</p>
-                                            <p className={'personal-details-item-content'}>{props.data[5]} - {props.data[6]}</p>
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>Staff Type</p>
-                                            {isModify ?
-                                                <Select size={"sm"} value={currentStaffData.type}
-                                                        onChange={(e, val) => handleSelectChange('type', val)}
-                                                >
-                                                    <Option value={'DOCTOR'}>Doctor</Option>
-                                                    <Option value={'PHARMACIST'}>Pharmacist</Option>
-                                                    <Option value={'NURSE'}>Nurse</Option>
-                                                    <Option value={'ADMIN'}>Admin</Option>
-                                                </Select>
-                                                :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.type}</p>
-                                            }
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>Start Contract</p>
-                                            {isModify ?
-                                                <DatePicker value={currentStaffData.startContract.subtract(1, "D")}
-                                                            format={"DD - MM - YYYY"}
-                                                            onChange={(date) => handleSelectChange('startContract', date)}
-                                                />
-                                                :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.startContract.toString().slice(0, 16)}</p>
-                                            }
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>End Contract</p>
-                                            {isModify ?
-                                                <DatePicker value={currentStaffData.endContract.subtract(1, "D")}
-                                                            format={"DD - MM - YYYY"}
-                                                            onChange={(date) => handleSelectChange('endContract', date)}
-                                                /> :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.endContract.toString().slice(0, 16) || "Unknown"}</p>
-                                            }
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}>Department</p>
-                                            {isModify ?
-                                                <Select size={"sm"} onChange={handleSelectChange}
-                                                        value={currentStaffData.department}>
-                                                    <Option select-type={'department'} value="default"
-                                                            onClick={() => handleSelectChange('department', 'default')}
-                                                    >{t('department.default', {ns: 'common'})}</Option>
-                                                    {department.map((department, index) => (
-                                                        <Option select-type={'department'} value={department}
-                                                                key={index}
-                                                                onClick={() => handleSelectChange('department', department)}
-                                                        >
-                                                            {t(`department.${department}`, {ns: 'common'})}</Option>
-                                                    ))}
-                                                </Select> :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.department}</p>
-                                            }
-                                        </div>
-                                        <div className={'personal-details-item'}>
-                                            <p className={'personal-details-item-title'}> Specialty</p>
-                                            {isModify ?
-                                                <Select size={"sm"} onChange={handleSelectChange}
-                                                        value={currentStaffData.specialty}>
-                                                    <Option value="default"
-                                                            onClick={() => handleSelectChange('specialty', 'default')}
-                                                    >{t(`speciality.default`, {ns: 'common'})}</Option>
-                                                    {specialties.map((speciality, index) => (
-                                                        <Option value={speciality} key={index}
-                                                                onClick={() => handleSelectChange('specialty', speciality)}
-                                                        >
-                                                            {t(`speciality.${speciality}`, {ns: 'common'})}</Option>
-                                                    ))}
-                                                </Select> :
-                                                <p className={'personal-details-item-content'}>{currentStaffData.specialty}</p>
-                                            }
-                                        </div>
-                                    </Stack>
+                            <Stack>
+                                <p className={'staff-detail-section-title'}>STAFF INFORMATION</p>
+                                <Stack rowGap={1}>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Email</p>
+                                        {isModify ?
+                                            <input className={'personal-details-item-inp'}
+                                                   value={currentStaffData.email}
+                                                   onChange={(e) => handleChange(e, 'email')}
+                                            /> :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.email}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Certification</p>
+                                        <p className={'personal-details-item-content'}>{props.data[5]} - {props.data[6]}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Staff Type</p>
+                                        {isModify ?
+                                            <Select size={"sm"} value={currentStaffData.type}
+                                                    onChange={(e, val) => handleSelectChange('type', val)}
+                                            >
+                                                <Option value={'DOCTOR'}>Doctor</Option>
+                                                <Option value={'PHARMACIST'}>Pharmacist</Option>
+                                                <Option value={'NURSE'}>Nurse</Option>
+                                                <Option value={'ADMIN'}>Admin</Option>
+                                            </Select>
+                                            :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.type}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Start Contract</p>
+                                        {isModify ?
+                                            <DatePicker value={currentStaffData.startContract.subtract(1, "D")}
+                                                        format={"DD - MM - YYYY"}
+                                                        onChange={(date) => handleSelectChange('startContract', date)}
+                                            />
+                                            :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.startContract.toString().slice(0, 16)}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>End Contract</p>
+                                        {isModify ?
+                                            <DatePicker value={currentStaffData.endContract.subtract(1, "D")}
+                                                        format={"DD - MM - YYYY"}
+                                                        onChange={(date) => handleSelectChange('endContract', date)}
+                                            /> :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.endContract.toString().slice(0, 16) || "Unknown"}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Department</p>
+                                        {isModify ?
+                                            <Select size={"sm"} onChange={handleSelectChange}
+                                                    value={currentStaffData.department}>
+                                                <Option select-type={'department'} value="default"
+                                                        onClick={() => handleSelectChange('department', 'default')}
+                                                >{t('department.default', {ns: 'common'})}</Option>
+                                                {department.map((department, index) => (
+                                                    <Option select-type={'department'} value={department}
+                                                            key={index}
+                                                            onClick={() => handleSelectChange('department', department)}
+                                                    >
+                                                        {t(`department.${department}`, {ns: 'common'})}</Option>
+                                                ))}
+                                            </Select> :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.department}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}> Specialty</p>
+                                        {isModify ?
+                                            <Select size={"sm"} onChange={handleSelectChange}
+                                                    value={currentStaffData.specialty}>
+                                                <Option value="default"
+                                                        onClick={() => handleSelectChange('specialty', 'default')}
+                                                >{t(`speciality.default`, {ns: 'common'})}</Option>
+                                                {specialties.map((speciality, index) => (
+                                                    <Option value={speciality} key={index}
+                                                            onClick={() => handleSelectChange('specialty', speciality)}
+                                                    >
+                                                        {t(`speciality.${speciality}`, {ns: 'common'})}</Option>
+                                                ))}
+                                            </Select> :
+                                            <p className={'personal-details-item-content'}>{currentStaffData.specialty}</p>
+                                        }
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>Status</p>
+                                        <p className={'personal-details-item-content'}>{currentStaffData.status}</p>
+                                    </div>
                                 </Stack>
                             </Stack>
                         </Stack>

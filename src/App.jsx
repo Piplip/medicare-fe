@@ -139,7 +139,8 @@ function App() {
                                 gender: "",
                                 "page-size": 10,
                                 "page-number": 1,
-                                "staff-type": ""
+                                "staff-type": "",
+                                "staff-status": "default"
                             }
                         })
                     }
