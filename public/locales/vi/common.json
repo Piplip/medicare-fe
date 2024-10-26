@@ -1,5 +1,6 @@
 {
   "address": "Số 6 đường Nguyễn Huệ, phường 3, thành phố Bạc Liêu, tỉnh Bạc Liêu",
+  "emergency_address": "I12/B1 Emergency St, Wellness City",
   "header": {
     "nav": {
       "nav1": "Tìm kiếm bác sĩ",
@@ -61,6 +62,13 @@
     "forgot-pass": "Quên mật khẩu ?",
     "register-rec": "Bạn chưa có tài khoản? Hãy đăng ký tại đây",
     "login-rec": "Bạn đã có tài khoản? Đăng nhập tại đây"
+  },
+  "status": {
+    "SCHEDULED": "Đã đặt lịch",
+    "CONFIRMED": "Đã xác nhận",
+    "CANCELLED": "Đã hủy",
+    "active": "Đang hoạt động",
+    "inactive": "Dừng hoạt động"
   },
   "department": {
     "title": "Khoa và Viện nghiên Cứu",
@@ -168,6 +176,7 @@
     "edit-btn": "Chỉnh sửa thông tin",
     "logout-btn": "Đăng xuất",
     "change-pass": "Đổi mật khẩu",
+    "sort-filter": "Bộ lọc thông tin",
     "personal-info": {
       "title": "Thông tin cá nhân",
       "description": "Quản lý thông tin cá nhân của bạn",
@@ -178,6 +187,159 @@
       "email": "E-mail",
       "sec_phone": "Số điện thoại phụ",
       "empty": "trống"
+    },
+    "appointment-history": {
+      "title": "Lịch sử khám bệnh",
+      "button": {
+        "search": "Tìm kiếm",
+        "sort-filter": "Bộ lọc thông tin",
+        "clear": "Xóa bộ lọc hiện tại"
+      },
+      "filter": {
+        "search-placeholder": "Tìm kiếm bác sĩ theo tên...",
+        "date": {
+          "title": "Ngày",
+          "title-2": "Chọn ngày",
+          "title-3": "Chọn khung ngày",
+          "date": "Ngày",
+          "range": "Khung ngày"
+        },
+        "status": {
+          "title": "Trạng thái",
+          "all": "Tất cả",
+          "scheduled": "Chờ xác nhận thanh toán",
+          "confirmed": "Đặt lịch thành công",
+          "cancelled": "Đã hủy lịch khám"
+        },
+        "order": {
+          "title": "Bác sĩ",
+          "title-2": "Sắp xếp",
+          "id": "ID",
+          "name": "Tên bác sĩ",
+          "datetime": "Ngày giờ"
+        }
+      }
+    },
+    "feedback": {
+      "title": "Phản hồi về dịch vụ",
+      "type": {
+        "scheduling": "Đã lưu lại"
+      },
+      "rating": {
+        "amazing": "Rất tốt",
+        "good": "Tốt",
+        "ok": "Bình thường",
+        "bad": "Không tốt",
+        "terrible": "Rất tệ"
+      },
+      "filter": {
+        "include-content": "Nội dung",
+        "type": {
+          "title": "Loại phản hồi",
+          "all": "Tất cả",
+          "scheduling": "Đã lưu lại"
+        },
+        "rating": {
+          "title": "Đánh giá",
+          "all": "Tất cả"
+        },
+        "order": {
+          "title": "Lọc theo",
+          "title-2": "Sắp xếp",
+          "id": "ID",
+          "rating": "Đánh giá",
+          "datetime": "Ngày giờ"
+        }
+      }
     }
+  },
+  "table": {
+    "id": "ID",
+    "datetime": "Ngày & Giờ",
+    "department": "Khoa",
+    "doctor": "Bác sĩ",
+    "status": "Trạng thái",
+    "feedback-type": "Loại Feedback",
+    "content": "Nội dung",
+    "rating": "Đánh giá",
+    "account-id": "ID tài khoản",
+    "staff-id": "ID nhân viên",
+    "fname": "Tên",
+    "lname": "Họ",
+    "dob": "Ngày sinh",
+    "id-number": "Số CCCD",
+    "phone": "Số ĐT",
+    "email": "E-mail",
+    "password": "Mật khẩu",
+    "role": "Vai trò",
+    "result-type": "Nguyên nhân",
+    "empty": "Không có dữ liệu",
+    "specialization": "Chuyên khoa",
+    "staff-type": "Loại",
+    "staff-type-2": "Chức vụ",
+    "options": "Tùy chọn",
+    "gender": "Giới tính",
+    "address": "Địa chỉ",
+    "primary-lang": "Ngôn ngữ chính",
+    "certification": "Chứng chỉ",
+    "start-contract": "Ngày bắt đầu hợp đồng",
+    "end-contract": "Ngày kết thúc hợp đồng"
+  },
+  "order": {
+    "asc": "Tăng dần",
+    "desc": "Giảm dần"
+  },
+  "feedback": {
+    "appointment": {
+      "title-1": "Hãy nêu cảm cảm nhận của bạn",
+      "title-2": "Bạn cảm thấy thoải mái với trải nghiệm dịch vụ của chúng tôi không?<br/>Hãy chia sẽ cảm nghĩ của bạn!",
+      "rating-level": {
+        "terrible": "Rất tệ",
+        "bad": "Không tốt",
+        "okay": "Bình thường",
+        "good": "Tốt",
+        "amazing": "Rất tốt"
+      },
+      "negative": "Chúng tôi thành thật xin lỗi và mong sự thông cảm nếu trong quá trình bạn sử dụng dịch vụ gặp vấn đề không như mong muốn.<br/>Đóng góp của bạn giúp chúng tôi hoàn thiện hơn",
+      "positive": "Bạn cảm thấy dịch vụ của chúng tôi đã đem lại cảm giác thoải mái cho bạn như thế nào, hãy chia sẻ với chúng tôi!",
+      "cta": {
+        "title": "Bạn cảm thấy quá trình trải nghiệm dịch vụ của chúng tôi như thế nào ?",
+        "title-2": "Chúng tôi rất mong muốn nhận được phản hồi từ bạn"
+      }
+    },
+    "button": {
+      "send": "Gửi",
+      "cancel": "Hủy"
+    }
+  },
+  "payment": {
+    "title": "Thanh toán thành công",
+    "description": "Chân thành cảm ơn bạn đã thanh toán. Thông tin thanh toán và hóa đơn cho việc sử dụng dịch vụ của chúng tôi đã được gửi đến email của bạn",
+    "button": "Trờ về trang chủ"
+  },
+   "button": {
+    "clear-filters": "Xóa bộ lọc hiện tại",
+     "modify": "Tùy chỉnh",
+     "delete": "Xóa"
+  },
+  "staff-type": {
+    "doctor": "Bác sĩ",
+    "DOCTOR": "Bác sĩ",
+    "nurse": "Y tá",
+    "NURSE": "Y tá",
+    "admin": "Quản trị viên",
+    "ADMIN": "Quản trị viên",
+    "pharmacist": "Dược sĩ",
+    "PHARMACIST": "Dược sĩ"
+  },
+  "result-type": {
+    "2": "Chưa đủ thông tin",
+    "3": "Dữ liệu đã tồn tại"
+  },
+  "gender": {
+    "male": "Nam",
+    "Male": "Nam",
+    "female": "Nữ",
+    "Female": "Nữ"
   }
 }

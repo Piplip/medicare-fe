@@ -1,0 +1,81 @@
+{
+  "user-management": {
+    "title": "Số lượng nhân viên({{count}})",
+    "button": {
+      "find": "Tìm Kiếm",
+      "sort-filter": "Bộ lọc thông tin",
+      "clear": "Xóa bộ lọc hiện tại"
+    },
+    "filter": {
+      "search-placeholder": "Tìm kiếm theo tên",
+      "status": {
+        "title": "Trạng thái",
+        "default": "Tất cả",
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động"
+      },
+      "order": {
+        "title": "Lọc theo",
+        "title-2": "Sắp xếp",
+        "id": "ID",
+        "fname": "Họ",
+        "lname": "Tên"
+      },
+      "staff-type": {
+        "title": "Chức vị",
+        "default": "Chọn chức vị"
+      },
+      "gender": {
+        "title": "Giới tính",
+        "default": "Lựa chọn giới tính",
+        "male": "Nam",
+        "female": "Nữ"
+      }
+    },
+    "modal": {
+      "adding-staff": {
+        "title": "THÊM NHÂN VIÊN",
+        "button": {
+          "upload": "THỰC THI THÊM NHÂN VIÊN",
+          "finish-review": "ĐÓNG",
+          "generate-new": "THÊM NHÂN VIÊN MỚI"
+        },
+        "success": "THÊM THÀNH CÔNG! KIỂM TRA TRẠNG THÁI NHẬP CỦA THÔNG TIN ĐƯỢC HIỂN THỊ TẠI BẢNG PHÍA DƯỚI",
+        "text": {
+          "success": "THÀNH CÔNG {{count}}",
+          "failed": "THẤT BẠI {{count}}"
+        }
+      },
+      "delete-staff": {
+        "title": "Xác nhận",
+        "description": "Bác có chắc muốn xóa nhân viên này không ?",
+        "button": {
+          "cancel": "Hủy",
+          "delete": "Xóa"
+        }
+      },
+      "staff-detail": {
+        "button": {
+          "change-pp": "Đổi ảnh đại diện",
+          "update-pp": "Cập nhật profile",
+          "delete-pp": "Xóa profile",
+          "save-changes": "Lưu thay đổi",
+          "confirm-changes": "Ấn để xác nhận",
+          "cancel": "Hủy",
+          "confirm-delete": "Ấn để xóa",
+          "accept": "Chấp nhận"
+        },
+        "pp": {
+          "title": "ẢNH ĐẠI DIỆN",
+          "description": "Drag and drop image here<br/>or click to select image"
+        },
+        "personal-info": {
+          "title": "THÔNG TIN CÁ NHÂN"
+        },
+        "staff-info": {
+          "title": "THÔNG TIN NHÂN VIÊN"
+        }
+      }
+    }
+  }
+}

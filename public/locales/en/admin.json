@@ -1,0 +1,81 @@
+{
+  "user-management": {
+    "title": "Employee ({{count}})",
+    "button": {
+      "find": "FIND",
+      "sort-filter": "Sort & Filter",
+      "clear": "CLEAR ALL FILTERS"
+    },
+    "filter": {
+      "search-placeholder": "Search by name...",
+      "status": {
+        "title": "STATUS",
+        "default": "All",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "order": {
+        "title": "SORT BY",
+        "title-2": "ORDER",
+        "id": "ID",
+        "fname": "First Name",
+        "lname": "Last Name"
+      },
+      "staff-type": {
+        "title": "STAFF TYPE",
+        "default": "Select a type"
+      },
+      "gender": {
+        "title": "GENDER",
+        "default": "Select a gender",
+        "male": "Male",
+        "female": "Female"
+      }
+    },
+    "modal": {
+      "adding-staff": {
+        "title": "ADDING STAFF",
+        "button": {
+          "upload": "UPLOAD AND GENERATE",
+          "finish-review": "FINISH REVIEW",
+          "generate-new": "GENERATE WITH NEW FILES"
+        },
+        "success": "EXECUTED COMPLETE! VERIFY DATA STATUS SHOWN BELOW",
+        "text": {
+          "success": "SUCCESS ({{count}})",
+          "failed": "FAILED ({{count}})"
+        }
+      },
+      "delete-staff": {
+        "title": "Confirmation",
+        "description": "Are you sure you want to delete this staff ?",
+        "button": {
+          "cancel": "Cancel",
+          "delete": "Delete"
+        }
+      },
+      "staff-detail": {
+        "button": {
+          "change-pp": "Change profile picture",
+          "update-pp": "Update profile",
+          "delete-pp": "Delete profile",
+          "save-changes": "Save changes",
+          "confirm-changes": "Click to confirm changes",
+          "cancel": "Cancel",
+          "confirm-delete": "Click to delete",
+          "accept": "Accept"
+        },
+        "pp": {
+          "title": "PROFILE PICTURE",
+          "description": "Drag and drop image here<br/>or click to select image"
+        },
+        "personal-info": {
+          "title": "PERSONAL DETAILS"
+        },
+        "staff-info": {
+          "title": "STAFF INFORMATION"
+        }
+      }
+    }
+  }
+}

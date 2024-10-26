@@ -1,12 +1,6 @@
 {
   "address": "1234 Health St, Wellness City",
   "emergency_address": "I12/B1 Emergency St, Wellness City",
-  "emergency_number": "0723 823 9129",
-  "email": "medicareplus@gmail.com",
-  "phone": {
-    "normal": "0723 823 9129",
-    "emergency": "0821 912 8213"
-  },
   "header": {
     "nav": {
       "nav1": "Find a Doctor",
@@ -69,7 +63,13 @@
     "register-rec": "New User? Register here",
     "login-rec": "Have an account? Login here"
   },
-
+  "status": {
+    "SCHEDULED": "Scheduled",
+    "CONFIRMED": "Confirmed",
+    "CANCELLED": "Cancelled",
+    "Active": "Active",
+    "Inactive": "Inactive"
+  },
   "department": {
     "title": "Institutes & Departments",
     "default": "Select a Department",
@@ -175,6 +175,7 @@
     },
     "edit-btn": "Edit Profile",
     "logout-btn": "Log Out",
+    "sort-filter": "Sort & Filter",
     "change-pass": "Change password",
     "personal-info": {
       "title": "Personal Information",
@@ -186,6 +187,159 @@
       "email": "Email",
       "sec_phone": "Secondary Phone",
       "empty": "empty"
+    },
+    "appointment-history": {
+      "title": "Appointment History",
+      "button": {
+        "search": "Search",
+        "sort-filter": "Sort & Filter",
+        "clear": "ClEAR ALL FILTERS"
+      },
+      "filter": {
+        "search-placeholder": "Find by doctor name...",
+        "date": {
+            "title": "DATE",
+            "title-2": "SELECT DATE",
+            "title-3": "SELECT DATE RANGE",
+            "date": "Specific Date",
+            "range": "Date Range"
+        },
+        "status": {
+            "title": "STATUS",
+            "all": "All",
+            "scheduled": "Scheduled",
+            "confirmed": "Confirmed",
+            "cancelled": "Cancelled"
+        },
+        "order": {
+            "title": "ORDER BY",
+            "title-2": "ORDER",
+            "id": "ID",
+            "name": "Doctor Name",
+            "datetime": "Date & Time"
+        }
+      }
+    },
+    "feedback": {
+      "title": "Feedback",
+      "type": {
+        "scheduling": "Scheduling"
+      },
+      "rating": {
+        "amazing": "Amazing",
+        "good": "Good",
+        "ok": "Okay",
+        "bad": "Bad",
+        "terrible": "Terrible"
+      },
+      "filter": {
+        "include-content": "Include Content",
+        "type": {
+          "title": "Feedback Type",
+          "all": "All",
+          "scheduling": "Scheduling"
+        },
+        "rating": {
+          "title": "Rating",
+          "all": "All"
+        },
+        "order": {
+          "title": "Sort by",
+          "title-2": "Order",
+          "id": "ID",
+          "rating": "Rating",
+          "datetime": "Date & Time"
+        }
+      }
     }
+  },
+  "table": {
+    "id": "ID",
+    "datetime": "Date & Time",
+    "department": "Department",
+    "doctor": "Doctor",
+    "status": "Status",
+    "feedback-type": "Feedback Type",
+    "content": "Content",
+    "rating": "Rating",
+    "account-id": "Account ID",
+    "staff-id": "Staff ID",
+    "fname": "First Name",
+    "lname": "Last Name",
+    "dob": "Date of Birth",
+    "id-number": "ID Number",
+    "phone": "Phone Number",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "result-type": "Result Type",
+    "empty": "No data available",
+    "specialization": "Specialization",
+    "staff-type": "Type",
+    "staff-type-2": "Staff Type",
+    "options": "Options",
+    "gender": "Gender",
+    "address": "Address",
+    "primary-lang": "Primary Language",
+    "certification": "Certification",
+    "start-contract": "Start Contract",
+    "end-contract": "End Contract"
+  },
+  "order": {
+    "asc": "Ascending",
+    "desc": "Descending"
+  },
+  "feedback": {
+    "appointment": {
+      "title-1": "Give your feedback",
+      "title-2": "Have good experience with our service?<br/>Share your thoughts with us!",
+      "rating-level": {
+        "terrible": "Terrible",
+        "bad": "Bad",
+        "okay": "Okay",
+        "good": "Good",
+        "amazing": "Amazing"
+      },
+      "negative": "Sorry for any inconvenience caused.<br/>Any feedback will help us improve our service",
+      "positive": "Tell us what you like about our service!",
+      "cta": {
+        "title": "How is your experience with our service ?",
+        "title-2": "We'd love to hear your feedback"
+      }
+    },
+    "button": {
+      "send": "Send",
+      "cancel": "Cancel"
+    }
+  },
+  "payment": {
+    "title": "Payment Success",
+    "description": "Thank you for your payment. Your transaction has been completed and a receipt for your purchase has been sent to your email",
+    "button": "Back to Homepage"
+  },
+  "button": {
+    "clear-filters": "CLEAR ALL FILTERS",
+    "modify": "Modify",
+    "delete": "Delete"
+  },
+  "staff-type": {
+    "doctor": "Doctor",
+    "DOCTOR": "Doctor",
+    "nurse": "Nurse",
+    "NURSE": "Nurse",
+    "admin": "Admin",
+    "ADMIN": "Admin",
+    "pharmacist": "Pharmacist",
+    "PHARMACIST": "Pharmacist"
+  },
+  "result-type": {
+    "2": "Missing Required Data",
+    "3": "Data Already Exists"
+  },
+  "gender": {
+    "male": "Male",
+    "Male": "Male",
+    "female": "Female",
+    "Female": "Female"
   }
 }
