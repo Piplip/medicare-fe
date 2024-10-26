@@ -14,7 +14,7 @@
 .sort-filter-panel{
     color: white;
     background-color: #273744;
-    padding: 1rem;
+    padding: .5rem 1rem;
     width: fit-content;
     align-self: flex-end;
     margin-block: .25rem .5rem;

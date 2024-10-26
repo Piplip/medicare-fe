@@ -1,0 +1,30 @@
+.statistic-filter{
+    background-color: #990011;
+    padding: 0.25rem .75rem;
+    border: 2px solid #FCF6F5;
+    display: flex;
+    column-gap: 2rem;
+    color: #FCF6F5;
+    font-size: 1.1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+}
+.statistic-filter-expand{
+    padding: 1rem;
+    font-size: 1.1rem;
+    align-items: center;
+    background-color: white;
+}
+.statistic-panel{
+    background-color: #ffffff;
+    color: #006633;
+    padding: 0.5rem 1rem;
+    font-family: Tahoma, serif;
+    transition: all 0.3s;
+    border: 3px solid;
+    box-shadow: 0 0 10px #006633;
+}
+.statistic-info-container:hover .statistic-panel:not(:hover){
+    filter: brightness(0.4) blur(7.5px);
+}
