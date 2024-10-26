@@ -19,12 +19,13 @@ import Button from '@mui/joy/Button';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
-import {styled} from "@mui/system";
 import AdminUserContextMenu from "./context-menu/ContextMenu.jsx";
+import {useTranslation} from "react-i18next";
 
 export default function TableTemplate({header, data, isPagination, handleClick, currentValues, setCurrentValues, allowCheckbox, handleDelete,
     handleModify, allowModify, allowDelete, isMutable, ModifyTemplate, currentModifyData, clickable
 }){
+    const {t} = useTranslation()
     const [selectAll, setSelectAll] = useState(false)
     const [checkboxes, setCheckboxes] = useState(new Array(data.length).fill(false))
     const {clicked, setClicked, coords, setCoords } = useContextMenu()
@@ -38,6 +39,11 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
         setCurrentValues(prev => {
             return {...prev, pageSize: size}
         })
+    }
+
+    function  _handleDelete(index){
+        handleDelete(index)
+        setShowDeleteModal(false)
     }
 
     async function _handleModify(id){
@@ -88,10 +94,12 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                                 </TableCell>
                             }
                             {header.map((item, index) =>
-                                <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>{item}</TableCell>)}
+                                <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>
+                                    {t(`table.${item}`)}
+                                </TableCell>)}
                             {isMutable &&
                                 <TableCell sx={{color: 'white', userSelect: 'none'}}>
-                                    Options
+                                    {t('table.options')}
                                 </TableCell>
                             }
                         </TableRow>
@@ -129,7 +137,9 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                                                                    onClick={() => {
                                                                        _handleModify(item[0])
                                                                    }}
-                                                        >MODIFY</MuiButton>
+                                                        >
+                                                            {t('button.modify')}
+                                                        </MuiButton>
                                                     }
                                                     {allowDelete &&
                                                         <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'error'}
@@ -142,7 +152,9 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                                                                            setShowDeleteModal(true)
                                                                        }
                                                                    }}
-                                                        >DELETE</MuiButton>
+                                                        >
+                                                            {t('button.delete')}
+                                                        </MuiButton>
                                                     }
                                                 </Stack>
                                             }
@@ -159,18 +171,18 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                     <ModalDialog variant="outlined" role="alertdialog" sx={{backgroundColor: 'black', color: 'white'}}>
                         <DialogTitle>
                             <WarningRoundedIcon />
-                            Confirmation
+                            {t('user-management.modal.delete-staff.title', {ns: 'admin'})}
                         </DialogTitle>
                         <Divider />
                         <DialogContent sx={{color: 'white'}}>
-                            Are you sure you want to delete this staff ?
+                            {t('user-management.modal.delete-staff.description', {ns: 'admin'})}
                         </DialogContent>
                         <DialogActions>
-                            <Button variant="solid" color="danger" onClick={() => handleDelete(index)}>
-                                Delete
+                            <Button variant="solid" color="danger" onClick={() => _handleDelete(index)}>
+                                {t('user-management.modal.delete-staff.button.delete', {ns: 'admin'})}
                             </Button>
                             <Button variant="plain" color="primary" onClick={() => setShowDeleteModal(false)}>
-                                Cancel
+                                {t('user-management.modal.delete-staff.button.cancel', {ns: 'admin'})}
                             </Button>
                         </DialogActions>
                     </ModalDialog>

@@ -1,6 +1,8 @@
 import {Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
-export default function SimpleTableTemplate({header, data, keys}){
+export default function SimpleTableTemplate({header, data, keys}) {
+    const {t} = useTranslation('common')
     return (
         <>
             <TableContainer>
@@ -8,7 +10,8 @@ export default function SimpleTableTemplate({header, data, keys}){
                     <TableHead>
                         <TableRow sx={{backgroundColor: '#36007B'}}>
                             {header.map((item, index) => (
-                                <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>{item}</TableCell>
+                                <TableCell sx={{color: 'white', userSelect: 'none'}}
+                                           key={index}>{t(`table.${item}`)}</TableCell>
                             ))}
                         </TableRow>
                     </TableHead>
@@ -22,7 +25,9 @@ export default function SimpleTableTemplate({header, data, keys}){
                                     }}>
                                         {keys.map((key, index) => (
                                             (item[key] !== null && item[key] !== undefined) ?
-                                                <TableCell key={index}>{item[key]}</TableCell> :
+                                                <TableCell key={index}>{item[key] ||
+                                                    <p style={{color: 'red'}}>-----X-----</p>
+                                                }</TableCell> :
                                                 <TableCell key={index}></TableCell>
                                         ))}
                                     </TableRow>
@@ -34,7 +39,8 @@ export default function SimpleTableTemplate({header, data, keys}){
             </TableContainer>
             {
                 data.length === 0 &&
-                <Stack sx={{height: '200px', width: '100%', backgroundColor: '#dadada', fontSize: '3rem'}} justifyContent={'center'} textAlign={'center'}>
+                <Stack sx={{height: '200px', width: '100%', backgroundColor: '#dadada', fontSize: '3rem'}}
+                       justifyContent={'center'} textAlign={'center'}>
                     EMPTY
                 </Stack>
             }
