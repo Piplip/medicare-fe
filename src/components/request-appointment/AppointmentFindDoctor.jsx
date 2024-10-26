@@ -5,7 +5,7 @@ import {AppointmentContext} from "../../pages/RequestAppointment.jsx";
 import Typography from "@mui/joy/Typography";
 import {useTranslation} from "react-i18next";
 
-export default function AppointmentFindDoctor(){
+export default function AppointmentFindDoctor() {
     const [_, setAppointmentData] = useOutletContext()
     const props = useContext(AppointmentContext)
     const {t} = useTranslation('appointmentRequest')

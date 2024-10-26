@@ -5,12 +5,12 @@ import {Radio, RadioGroup} from "@mui/joy";
 import AppointmentSummary from "./AppointmentSummary.jsx";
 import {useTranslation} from "react-i18next";
 
-export default function AppointmentConfirmation(){
+export default function AppointmentConfirmation() {
     const [appointmentData, setAppointmentData] = useOutletContext()
     const {t} = useTranslation('appointmentRequest')
 
-    function handleDataChange(e){
-        setAppointmentData(prev => ({...prev, [e.target.name] : e.target.value}))
+    function handleDataChange(e) {
+        setAppointmentData(prev => ({...prev, [e.target.name]: e.target.value}))
     }
 
     return (
@@ -29,7 +29,8 @@ export default function AppointmentConfirmation(){
             </Typography>
             <Stack>
                 <Stack rowGap={1} className={'appointment-detail-component'}>
-                    <Typography level={"body-lg"} sx={{color: 'white'}}>{t('component.confirm.reminder.title')}</Typography>
+                    <Typography level={"body-lg"}
+                                sx={{color: 'white'}}>{t('component.confirm.reminder.title')}</Typography>
                     <RadioGroup name={"reminder"} orientation="horizontal" onChange={handleDataChange}>
                         <Radio style={{color: 'white'}} value="yes" label={t('component.confirm.reminder.yes')}
                                checked={appointmentData.reminder === "yes"}/>

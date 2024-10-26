@@ -10,10 +10,10 @@ import {useLocation} from "react-router";
 import baseAxios from "../../config/axiosConfig.jsx";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
-import { getStorage, ref, getDownloadURL} from "firebase/storage";
+import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import {useTranslation} from "react-i18next";
 
-export default function RequestAppointmentFor(){
+export default function RequestAppointmentFor() {
     initializeApp(firebaseConfig);
     const storage = getStorage()
 
@@ -23,14 +23,14 @@ export default function RequestAppointmentFor(){
     const location = useLocation()
     const {t} = useTranslation('appointmentRequest')
 
-    function nextStep(type){
-        if(type === "me"){
+    function nextStep(type) {
+        if (type === "me") {
             setAppointmentData(prev => ({
                 ...prev,
                 for: currentUser.lastName + ' ' + currentUser.firstName
             }))
         }
-        if(!location.pathname.includes("none")){
+        if (!location.pathname.includes("none")) {
             const doctorID = location.pathname.split('/')[2]
             console.log("doctor ID", doctorID)
             baseAxios.get(`/staff/id?id=${doctorID}`)
