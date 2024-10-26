@@ -1,6 +1,17 @@
 import "../../styles/admin-user-management-style.css"
 import AddIcon from '@mui/icons-material/Add';
-import {Button, Stack, Tab, Typography,} from "@mui/material";
+import {
+    Button,
+    Stack,
+    Tab,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+} from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import TableTemplate from "../../components/TableTemplate.jsx";
 import {useLoaderData} from "react-router";
@@ -18,17 +29,20 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import StaffModifyTemplate from "../../components/StaffModifyTemplate.jsx";
 import SimpleTableTemplate from "../../components/SimpleTableTemplate.jsx";
+import {useTranslation} from "react-i18next";
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 export default function AdminUserManagement(){
     initializeApp(firebaseConfig);
     const storage = getStorage()
+    const {t} = useTranslation('admin')
     const [selectedFile, setSelectedFile] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const loaderData = useLoaderData()
     const [staffData, setStaffData] = useState(loaderData.data.records)
     const [sortedStaffData, setSortedStaffData] = useState(null)
     const [openModal, setOpenModal] = useState(false)
-    const tableHeader = ['ID', 'Last Name', 'First Name', 'Phone', 'Gender', 'Department', 'Specialization', 'Type', 'Email', 'Status']
+    const tableHeader = ['id', 'lname', 'fname', 'phone', 'gender', 'department', 'specialization', 'staff-type', 'email', 'status']
     const [searchParams, setSearchParams] = useSearchParams()
     const [successCreatedStaffData, setSuccessCreatedStaffData] = useState([])
     const [failedCreatedStaffData, setFailedCreatedStaffData] = useState([])
@@ -56,15 +70,14 @@ export default function AdminUserManagement(){
         setViewMode(newValue)
     };
 
-    const successStaffHeader = ['Account ID', 'Staff ID', 'First Name', 'Last Name', 'Date of Birth', 'ID Number', 'Phone Number', 'Email', 'Password', 'Role']
-    const successDataKey = ['accountID', 'staffID', 'firstname', 'lastname', 'dateOfBirth', 'CCCD', 'phoneNumber', 'email', 'password', 'role']
-    const failedStaffHeader = ['First Name', 'Last Name', 'Date of Birth', 'ID Number', 'Phone Number', 'Email', 'Password', 'Type']
+    const successStaffHeader = ['account-id', 'staff-id', 'fname', 'lname', 'dob', 'id-number', 'phone', 'email', 'password', 'role']
+    const successDataKey = ['accountID', 'staffID', 'firstname', 'lastname', 'dateOfBirth', 'cccd', 'phoneNumber', 'email', 'password', 'role']
+    const failedStaffHeader = ['fname', 'lname', 'dob', 'id-number', 'phone', 'email', 'password', 'result-type']
     const failedDataKey = ['firstname', 'lastname', 'dateOfBirth', 'cccd', 'phoneNumber', 'email', 'password', 'resultType']
 
     useEffect(() => {
         fetchStaffData()
     }, [searchData]);
-
     useEffect(() => {
         if(staffData){
             const sortedData = [...staffData]
@@ -206,20 +219,69 @@ export default function AdminUserManagement(){
             >
                 <Stack sx={{ minWidth: 800, maxHeight: 600, backgroundColor: '#F0F4F8', padding: '1rem 1.25rem', overflowY: 'auto'
                     , boxShadow: '1rem 1rem green'}} rowGap={'1rem'}>
-                    <Typography variant={'h4'} textAlign={'center'} borderBottom={'3px solid'}>ADDING STAFF</Typography>
+                    <Typography variant={'h4'} textAlign={'center'} borderBottom={'3px solid'}>
+                        {t('user-management.modal.adding-staff.title')}
+                    </Typography>
                     {(successCreatedStaffData.length !== 0 || failedCreatedStaffData.length !== 0) ?
                         <Stack rowGap={2}>
-                            <Typography variant={'h5'} color={"green"}>SUCCESSFULLY! VERIFIED CREATED DATA SHOWED BELOW</Typography>
+                            <Typography textAlign={'center'} variant={'h5'} color={"green"}>{t('user-management.modal.adding-staff.success')}</Typography>
                             <Tabs value={viewMode} onChange={handleChangeViewMode}>
-                                <Tab label="Item One"/>
-                                <Tab label="Item Two"/>
+                                <Tab label={t('user-management.modal.adding-staff.text.success', {count: successCreatedStaffData.length})}/>
+                                <Tab label={t('user-management.modal.adding-staff.text.failed', {count: failedCreatedStaffData.length})}/>
                             </Tabs>
                             {viewMode === 0 ?
                                 <SimpleTableTemplate header={successStaffHeader} data={successCreatedStaffData} keys={successDataKey}/>
                                 :
-                                <SimpleTableTemplate header={failedStaffHeader} data={failedCreatedStaffData} keys={failedDataKey}/>
+                                <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow sx={{backgroundColor: '#36007B'}}>
+                                                {failedStaffHeader.map((item, index) => (
+                                                    <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>
+                                                        {t(`table.${item}`, {ns: 'common'})}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        {failedCreatedStaffData.length > 0 &&
+                                            <TableBody>
+                                                {
+                                                    failedCreatedStaffData.map((item, index) => (
+                                                        <TableRow key={index} sx={{
+                                                            '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                                            '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                                        }}>
+                                                            {failedDataKey.map((key, index) => (
+                                                                (item[key] !== null && item[key] !== undefined) ?
+                                                                    <TableCell key={index} sx={{color: key === 'resultType' ? '#ff0f00' : ''}}>
+                                                                        {key === 'resultType' ?
+                                                                            t(`result-type.${item[key]}`, {ns: 'common'}) ||  <CloseOutlinedIcon sx={{color: 'red'}}/>
+                                                                            :
+                                                                            item[key] || <CloseOutlinedIcon sx={{color: 'red'}}/>
+                                                                        }
+                                                                    </TableCell>
+                                                                    :
+                                                                    <TableCell key={index}></TableCell>
+                                                            ))}
+                                                        </TableRow>
+                                                    ))
+                                                }
+                                            </TableBody>
+                                        }
+                                    </Table>
+                                </TableContainer>
                             }
-                            <Button variant={'contained'} onClick={() => setOpenModal(false)}>FINISHED REVIEW</Button>
+                            <Stack direction={'row'} alignSelf={'end'} columnGap={1}>
+                                <Button variant={'contained'} onClick={() => {
+                                    setSuccessCreatedStaffData([])
+                                    setFailedCreatedStaffData([])
+                                    setOpenModal(false)
+                                }}>{t('user-management.modal.adding-staff.button.finish-review')}</Button>
+                                <Button variant={'contained'} color={'warning'} onClick={() => {
+                                    setSuccessCreatedStaffData([])
+                                    setFailedCreatedStaffData([])
+                                }}>{t('user-management.modal.adding-staff.button.generate-new')}</Button>
+                            </Stack>
                         </Stack>
                         :
                         <>
@@ -232,88 +294,99 @@ export default function AdminUserManagement(){
                                         '&:hover': {backgroundColor: '#1b3c3f'
                                         }}}
                             >
-                                {isLoading ? <div className={'loader'}></div> : 'UPLOAD AND GENERATE'}
+                                {isLoading ? <div className={'loader'}></div> :
+                                    t('user-management.modal.adding-staff.button.upload')
+                                }
                             </Button>
                         </>
                     }
                 </Stack>
             </Modal>
             <Stack direction={'row'} alignItems={'center'} spacing={1} fontSize={'1.1rem'}>
-                <h1>Employee (1829)</h1>
+                <h1>{t('user-management.title', {count: 232})}</h1>
                 <AddIcon style={{backgroundColor: '#00D1FF', borderRadius: '50%', color: 'white',}} onClick={() => setOpenModal(true)}/>
             </Stack>
             <section className={'user-table-container'}>
                 <Stack marginBlock={1} alignItems={'center'} direction={'row'} justifyContent={'space-between'}
                        className={'table-filters'}>
                     <Stack direction={'row'} columnGap={1}>
-                        <Input autoFocus placeholder={'Search by name...'} sx={{minWidth: '25rem'}} value={queryName} onChange={handleQueryChange}
+                        <Input autoFocus placeholder={t('user-management.filter.search-placeholder')}
+                               sx={{minWidth: '25rem'}} value={queryName} onChange={handleQueryChange}
                             onKeyDown={(e) => {
                                 if(e.key === 'Enter'){
                                     fetchStaffData()
                                 }
                             }}
                         />
-                        <Button variant={'contained'} onClick={fetchStaffData}>FIND</Button>
+                        <Button variant={'contained'} onClick={fetchStaffData}>
+                            {t('user-management.button.find')}
+                        </Button>
                     </Stack>
-                    <Button variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>Sort & Filter</Button>
+                    <Button variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>
+                        {t('user-management.button.sort-filter')}
+                    </Button>
                 </Stack>
                 {showFilters &&
                     <Stack>
                         <Stack rowGap={2} className={'sort-filter-panel'}>
-                            <p className={'clear-filter-btn'} onClick={clearFilters}>CLEAR ALL FILTERS</p>
+                            <p className={'clear-filter-btn'} onClick={clearFilters}>
+                                {t('user-management.button.clear')}
+                            </p>
                             <Stack direction={'row'} columnGap={3}>
                                 <DepartmentSpecializationFilter isLoading={isLoading} searchData={searchData}
                                                                 handleSelectChange={handleSelectChange}/>
                                 <Stack rowGap={1}>
-                                    <Typography variant={'body2'}>GENDER</Typography>
+                                    <Typography variant={'body2'}>
+                                        {t('user-management.filter.gender.title')}
+                                    </Typography>
                                     <Select value={searchData.gender} onChange={(_, value) => setSearchData(prev => {
                                         return {...prev, gender: value}
                                     })}>
-                                        <Option value={''}>Select a gender</Option>
-                                        <Option value={'male'}>Male</Option>
-                                        <Option value={'female'}>Female</Option>
+                                        <Option value={''}>{t('user-management.filter.gender.default')}</Option>
+                                        <Option value={'male'}>{t('user-management.filter.gender.male')}</Option>
+                                        <Option value={'female'}>{t('user-management.filter.gender.female')}</Option>
                                     </Select>
                                 </Stack>
                                 <Stack rowGap={1}>
-                                    <Typography variant={'body2'}>STAFF TYPE</Typography>
+                                    <Typography variant={'body2'}>{t('user-management.filter.staff-type.title')}</Typography>
                                     <Select value={searchData.type} onChange={(_, value) => setSearchData(prev => {
                                         return {...prev, type: value}
                                     })}>
-                                        <Option value={''}>Select a type</Option>
-                                        <Option value={'doctor'}>Doctor</Option>
-                                        <Option value={'pharmacist'}>Pharmacist</Option>
-                                        <Option value={'admin'}>Admin</Option>
-                                        <Option value={'nurse'}>Nurse</Option>
+                                        <Option value={''}>{t('user-management.filter.staff-type.default')}</Option>
+                                        <Option value={'doctor'}>{t('staff-type.doctor', {ns: 'common'})}</Option>
+                                        <Option value={'pharmacist'}>{t('staff-type.pharmacist', {ns: 'common'})}</Option>
+                                        <Option value={'admin'}>{t('staff-type.admin', {ns: 'common'})}</Option>
+                                        <Option value={'nurse'}>{t('staff-type.nurse', {ns: 'common'})}</Option>
                                     </Select>
                                 </Stack>
                                 <Stack rowGap={1}>
-                                    <Typography variant={'body2'}>STATUS</Typography>
+                                    <Typography variant={'body2'}>{t('user-management.filter.status.title')}</Typography>
                                     <Select value={searchData.status} onChange={(_, value) => setSearchData(prev => {
                                         return {...prev, status: value}
                                     })}>
-                                        <Option value={'default'}>All</Option>
-                                        <Option value={'active'}>Active</Option>
-                                        <Option value={'inactive'}>Inactive</Option>
+                                        <Option value={'default'}>{t('user-management.filter.status.default')}</Option>
+                                        <Option value={'active'}>{t('user-management.filter.status.active')}</Option>
+                                        <Option value={'inactive'}>{t('user-management.filter.status.inactive')}</Option>
                                     </Select>
                                 </Stack>
                                 <Stack columnGap={3} direction={'row'} sx={{borderLeft: '2px solid yellow', paddingLeft: '1.25rem'}}>
                                     <Stack rowGap={1}>
-                                        <Typography variant={'body2'}>ORDER BY</Typography>
+                                        <Typography variant={'body2'}>{t('user-management.filter.order.title')}</Typography>
                                         <Select defaultValue={'id'} onChange={(_, value) => setSortOption(prev => {
                                             return {...prev, orderBy: value}
                                         })}>
-                                            <Option value={'id'}>ID</Option>
-                                            <Option value={'fname'}>First Name</Option>
-                                            <Option value={'lname'}>Last Name</Option>
+                                            <Option value={'id'}>{t('user-management.filter.order.id')}</Option>
+                                            <Option value={'fname'}>{t('user-management.filter.order.fname')}</Option>
+                                            <Option value={'lname'}>{t('user-management.filter.order.lname')}</Option>
                                         </Select>
                                     </Stack>
                                     <Stack rowGap={1}>
-                                        <Typography variant={'body2'}>ORDER</Typography>
+                                        <Typography variant={'body2'}>{t('user-management.filter.order.title-2')}</Typography>
                                         <Select defaultValue={'asc'} onChange={(_, value) => setSortOption(prev => {
                                             return {...prev, order: value}
                                         })}>
-                                            <Option value={'asc'}>Ascending</Option>
-                                            <Option value={'desc'}>Descending</Option>
+                                            <Option value={'asc'}>{t('order.asc', {ns: 'common'})}</Option>
+                                            <Option value={'desc'}>{t('order.desc', {ns: 'common'})}</Option>
                                         </Select>
                                     </Stack>
                                 </Stack>

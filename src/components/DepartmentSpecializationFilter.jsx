@@ -3,7 +3,7 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import {useTranslation} from "react-i18next";
 
-export default function DepartmentSpecializationFilter({isLoading, searchData, handleSelectChange}){
+export default function DepartmentSpecializationFilter({isLoading, searchData, handleSelectChange}) {
     const {t} = useTranslation(['findDoctor', 'common'])
     const specialties = [
         "Allergy and Immunology", "Anesthesiology", "Cardio thoracic Surgery", "Cardiology", "Cardiovascular Disease",
