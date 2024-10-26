@@ -8,15 +8,15 @@ i18next
     .init({
         lng: 'en',
         fallbackLng: 'en',
-        ns: ['common', 'homepage', 'findDoctor', 'appointmentRequest'],
+        ns: ['common', 'homepage', 'findDoctor', 'appointmentRequest', 'admin'],
         defaultNS: 'common',
-        debug: true,
+        debug: false,
         interpolation: {
             escapeValue: false
         },
         backend: {
             loadPath: '/locales/{{lng}}/{{ns}}.json',
-        }
+        },
     })
 
 export default i18next;
