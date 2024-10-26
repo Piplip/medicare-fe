@@ -12,7 +12,7 @@ import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../config/FirebaseConfig.jsx";
 import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
 import DefaultImage from '../assets/default.jpg'
-import baseAxios, {adminAxios} from "../config/axiosConfig.jsx";
+import {adminAxios} from "../config/axiosConfig.jsx";
 import {useDropzone} from "react-dropzone";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
@@ -20,7 +20,7 @@ import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
 export default function StaffModifyTemplate(props) {
     initializeApp(firebaseConfig);
     const storage = getStorage()
-    const {t} = useTranslation('common')
+    const {t} = useTranslation(['common', 'admin'])
     const [isConfirm, setIsConfirm] = useState(false)
     const [isModify, setIsModify] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
@@ -46,7 +46,7 @@ export default function StaffModifyTemplate(props) {
             secPhoneNumber: props.data[17],
             gender: props.data[18],
             birthday: dayjs(props.data[15]),
-            address: `${props.data[22]} ${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}`,
+            address: `${props.data[22]}, ${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}`,
             primaryLanguage: props.data[19],
             email: props.data[38],
             type: props.data[3],
@@ -65,32 +65,32 @@ export default function StaffModifyTemplate(props) {
     }, [])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
-    async function loadImage(url){
+    async function loadImage(url) {
         let storageRef = ref(storage, url)
         await getDownloadURL(storageRef)
             .then(url => setCurrentStaffData(prev => {
                 return {...prev, imageURL: url}
             }))
-            .catch(err => {
+            .catch(() => {
                 setCurrentStaffData(prev => {
                     return {...prev, imageURL: DefaultImage}
                 })
             })
     }
 
-    function handleChange(e, key){
+    function handleChange(e, key) {
         setCurrentStaffData(prev => {
             return {...prev, [key]: e.target.value}
         })
     }
 
-    function handleSelectChange(type, value){
+    function handleSelectChange(type, value) {
         setCurrentStaffData(prev => {
             return {...prev, [type]: value}
         })
     }
 
-    function saveChanges(){
+    function saveChanges() {
         console.log("ID CARD NUMBER BEFORE SEND:", currentStaffData.idCardNumber)
         adminAxios.patch('/staff/update', {
             staffID: props.data[0],
@@ -122,12 +122,22 @@ export default function StaffModifyTemplate(props) {
             .catch(err => console.log(err))
     }
 
-    function handleUpdatePP(){
-        if(!selectedFile){
+    function generateFileName() {
+        let seed = "abcdefghijklmnopqrstuvwxyz1234567890"
+        let result = ''
+        for (let i = 0; i < 20; i++) {
+            result += seed[Math.floor(Math.random() * seed.length)]
+        }
+        return result
+    }
+
+    function handleUpdatePP() {
+        if (!selectedFile) {
             alert('Please select an image file')
             return
         }
-        const storageRef = ref(storage, `/staff/${selectedFile.name}`)
+        const fileName = generateFileName()
+        const storageRef = ref(storage, `/staff/${fileName}`)
         uploadBytes(storageRef, selectedFile)
             .then(res => {
                 console.log(res)
@@ -139,7 +149,7 @@ export default function StaffModifyTemplate(props) {
                     .then(r => {
                         console.log(r)
                         setIsPPChange(false)
-                        loadImage(`/staff/${selectedFile.name}`)
+                        loadImage(`/staff/${fileName}`)
                     })
                     .catch(err => console.log(err))
             })
@@ -163,23 +173,32 @@ export default function StaffModifyTemplate(props) {
                         </Stack>
                         <Stack direction={'row'} columnGap={4} sx={{overflowY: 'auto'}}>
                             <Stack>
-                                <p className={'staff-detail-section-title'}>PROFILE PICTURE</p>
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.pp.title', {ns: 'admin'})}
+                                </p>
                                 <Stack sx={{marginBottom: 3}}>
                                     {isPPChange ?
                                         <Stack {...getRootProps()}
-                                               sx={{width: '250px', height: '350px', border: '2px solid', backgroundColor: '#7e7e7e', color: 'white',
-                                            padding: '1rem', textAlign: 'center'
-                                        }}
+                                               sx={{
+                                                   width: '250px',
+                                                   height: '350px',
+                                                   border: '2px solid',
+                                                   backgroundColor: '#7e7e7e',
+                                                   color: 'white',
+                                                   padding: '1rem',
+                                                   textAlign: 'center'
+                                               }}
                                                justifyContent={'center'}>
                                             <input {...getInputProps()} />
                                             {
                                                 previewImage ?
                                                     <div style={{position: 'relative'}}>
-                                                        <ChangeCircleOutlinedIcon sx={{fontSize: 40}} className={'user-pp-preview-change-btn'}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                setPreviewImage(null)
-                                                            }}
+                                                        <ChangeCircleOutlinedIcon sx={{fontSize: 40}}
+                                                                                  className={'user-pp-preview-change-btn'}
+                                                                                  onClick={(e) => {
+                                                                                      e.stopPropagation()
+                                                                                      setPreviewImage(null)
+                                                                                  }}
                                                         />
                                                         <img src={previewImage} style={{width: '100%'}}
                                                              onLoad={() => URL.revokeObjectURL(previewImage)}
@@ -191,7 +210,10 @@ export default function StaffModifyTemplate(props) {
                                                             <CloudUploadIcon sx={{width: '5rem', height: '5rem'}}/>
                                                         </Stack>
                                                         :
-                                                        <p style={{userSelect: 'none'}}>Drag and drop image here<br/>or click to select file</p>
+                                                        <p style={{userSelect: 'none'}}>
+                                                            {/*<Trans t={t} i18nKey={'admin.user-management.modal.staff-detail.pp.description'}/>*/}
+                                                            Drag and drop image here<br/>or click to select image
+                                                        </p>
                                             }
                                         </Stack>
                                         :
@@ -200,16 +222,22 @@ export default function StaffModifyTemplate(props) {
                                             alt={'image'} width={'250px'}/>
                                     }
                                     {isPPChange ?
-                                        <Stack direction={'row'} justifyContent={'space-between'} sx={{marginTop: '0.25rem'}}>
-                                            <Button variant={'solid'} onClick={handleUpdatePP}>ACCEPT</Button>
-                                            <Button variant={'solid'} onClick={() => setIsPPChange(false)}>CANCEL</Button>
+                                        <Stack direction={'row'} justifyContent={'space-between'}
+                                               sx={{marginTop: '0.25rem'}}>
+                                            <Button variant={'solid'} onClick={handleUpdatePP}>
+                                                {t('user-management.modal.staff-detail.button.accept', {ns: 'admin'})}
+                                            </Button>
+                                            <Button variant={'solid'} onClick={() => setIsPPChange(false)}>
+                                                {t('user-management.modal.staff-detail.button.cancel', {ns: 'admin'})}
+                                            </Button>
                                         </Stack>
                                         :
                                         <p className={'change-profile-img-btn'} onClick={() => {
                                             setPreviewImage(null)
                                             setIsPPChange(prev => !prev)
                                         }}>
-                                            Change profile picture</p>
+                                            {t('user-management.modal.staff-detail.button.change-pp', {ns: 'admin'})}
+                                        </p>
                                     }
                                 </Stack>
                                 <Stack rowGap={1}>
@@ -217,21 +245,22 @@ export default function StaffModifyTemplate(props) {
                                         setIsDeleted(false)
                                         setIsModify(true)
                                     }}>
-                                        Update profile
+                                        {t('user-management.modal.staff-detail.button.update-pp', {ns: 'admin'})}
                                     </Button>
                                     <Button variant={'soft'} color={"danger"} onClick={() => {
                                         setIsModify(false)
-                                        if(currentStaffData.status === 'inactive') {
+                                        if (currentStaffData.status === 'inactive') {
                                             alert('This staff is already deleted')
-                                        }
-                                        else {
+                                        } else {
                                             setIsDeleted(prev => !prev)
                                             if (isDeleted) {
                                                 props.handleDelete()
                                             }
                                         }
                                     }}>
-                                        {isDeleted ? 'Click to confirm changes' : "Delete profile"}
+                                        {isDeleted ? 'Click to confirm changes' :
+                                            t('user-management.modal.staff-detail.button.delete-pp', {ns: 'admin'})
+                                        }
                                     </Button>
                                     {isModify && (
                                         isConfirm ? (
@@ -239,7 +268,7 @@ export default function StaffModifyTemplate(props) {
                                                 {isLoading ?
                                                     <div className={'loader2'}></div>
                                                     :
-                                                    "Click to confirm changes"
+                                                    t('user-management.modal.staff-detail.button.confirm-changes', {ns: 'admin'})
                                                 }
                                             </Button>
                                         ) : (
@@ -249,10 +278,10 @@ export default function StaffModifyTemplate(props) {
                                                 columnGap: '0.5rem'
                                             }}>
                                                 <Button variant="solid" onClick={() => setIsConfirm(true)}>
-                                                    Save changes
+                                                    {t('user-management.modal.staff-detail.button.save-changes', {ns: 'admin'})}
                                                 </Button>
                                                 <Button variant="soft" onClick={() => setIsModify(false)}>
-                                                    Cancel
+                                                    {t('user-management.modal.staff-detail.button.cancel', {ns: 'admin'})}
                                                 </Button>
                                             </div>
                                         )
@@ -260,10 +289,12 @@ export default function StaffModifyTemplate(props) {
                                 </Stack>
                             </Stack>
                             <Stack sx={{overflowY: 'auto'}}>
-                                <p className={'staff-detail-section-title'}>PERSONAL DETAILS</p>
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.personal-info.title', {ns: 'admin'})}
+                                </p>
                                 <Stack rowGap={1}>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>First Name</p>
+                                        <p className={'personal-details-item-title'}>{t('table.lname')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.firstName}
@@ -273,7 +304,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Last Name</p>
+                                        <p className={'personal-details-item-title'}>{t('table.fname')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.lastName}
@@ -283,7 +314,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>ID Card Number</p>
+                                        <p className={'personal-details-item-title'}>{t('table.id-number')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.idCardNumber}
@@ -293,7 +324,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Phone Number</p>
+                                        <p className={'personal-details-item-title'}>{t('table.phone')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.phoneNumber}
@@ -303,19 +334,19 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Gender</p>
+                                        <p className={'personal-details-item-title'}>{t('table.gender')}</p>
                                         {isModify ?
                                             <Select size={"sm"} value={currentStaffData.gender}
                                                     onChange={(e, val) => handleSelectChange('gender', val)}>
-                                                <Option value={'Male'}>Male</Option>
-                                                <Option value={'Female'}>Female</Option>
+                                                <Option value={'Male'}>{t('gender.male')}</Option>
+                                                <Option value={'Female'}>{t('gender.female')}</Option>
                                             </Select>
                                             :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.gender}</p>
+                                            <p className={'personal-details-item-content'}>{t(`gender.${currentStaffData.gender}`)}</p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Date of Birth</p>
+                                        <p className={'personal-details-item-title'}>{t('table.dob')}</p>
                                         {isModify ?
                                             <DatePicker value={currentStaffData.birthday.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
@@ -325,7 +356,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Address</p>
+                                        <p className={'personal-details-item-title'}>{t('table.address')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.address}
@@ -337,25 +368,27 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Primary Language</p>
+                                        <p className={'personal-details-item-title'}>{t('table.primary-lang')}</p>
                                         {isModify ?
                                             <Select size={"sm"} value={currentStaffData.primaryLanguage}
                                                     onChange={(e, val) => handleSelectChange('primaryLanguage', val)}
                                             >
-                                                <Option value={'English'}>English</Option>
-                                                <Option value={'Vietnamese'}>Vietnamese</Option>
-                                                <Option value={'French'}>French</Option>
+                                                <Option value={'English'}>{t('lang.en')}</Option>
+                                                <Option value={'Vietnamese'}>{t('lang.vi')}</Option>
+                                                <Option value={'French'}>{t('lang.fr')}</Option>
                                             </Select> :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.primaryLanguage}</p>
+                                            <p className={'personal-details-item-content'}>{t(`lang.${currentStaffData.primaryLanguage}`)}</p>
                                         }
                                     </div>
                                 </Stack>
                             </Stack>
                             <Stack>
-                                <p className={'staff-detail-section-title'}>STAFF INFORMATION</p>
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.staff-info.title', {ns: 'admin'})}
+                                </p>
                                 <Stack rowGap={1}>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Email</p>
+                                        <p className={'personal-details-item-title'}>{t('table.email')}</p>
                                         {isModify ?
                                             <input className={'personal-details-item-inp'}
                                                    value={currentStaffData.email}
@@ -365,26 +398,26 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Certification</p>
+                                        <p className={'personal-details-item-title'}>{t('table.certification')}</p>
                                         <p className={'personal-details-item-content'}>{props.data[5]} - {props.data[6]}</p>
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Staff Type</p>
+                                        <p className={'personal-details-item-title'}>{t('table.staff-type-2')}</p>
                                         {isModify ?
                                             <Select size={"sm"} value={currentStaffData.type}
                                                     onChange={(e, val) => handleSelectChange('type', val)}
                                             >
-                                                <Option value={'DOCTOR'}>Doctor</Option>
-                                                <Option value={'PHARMACIST'}>Pharmacist</Option>
-                                                <Option value={'NURSE'}>Nurse</Option>
-                                                <Option value={'ADMIN'}>Admin</Option>
+                                                <Option value={'DOCTOR'}>{t('staff-type.doctor')}</Option>
+                                                <Option value={'PHARMACIST'}>{t('staff-type.pharmacist')}</Option>
+                                                <Option value={'NURSE'}>{t('staff-type.nurse')}</Option>
+                                                <Option value={'ADMIN'}>{t('staff-type.admin')}</Option>
                                             </Select>
                                             :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.type}</p>
+                                            <p className={'personal-details-item-content'}>{t(`staff-type.${currentStaffData.type}`)}</p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Start Contract</p>
+                                        <p className={'personal-details-item-title'}>{t('table.start-contract')}</p>
                                         {isModify ?
                                             <DatePicker value={currentStaffData.startContract.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
@@ -395,7 +428,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>End Contract</p>
+                                        <p className={'personal-details-item-title'}>{t('table.end-contract')}</p>
                                         {isModify ?
                                             <DatePicker value={currentStaffData.endContract.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
@@ -405,7 +438,7 @@ export default function StaffModifyTemplate(props) {
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Department</p>
+                                        <p className={'personal-details-item-title'}>{t('table.department')}</p>
                                         {isModify ?
                                             <Select size={"sm"} onChange={handleSelectChange}
                                                     value={currentStaffData.department}>
@@ -420,11 +453,11 @@ export default function StaffModifyTemplate(props) {
                                                         {t(`department.${department}`, {ns: 'common'})}</Option>
                                                 ))}
                                             </Select> :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.department}</p>
+                                            <p className={'personal-details-item-content'}>{t(`department.${currentStaffData.department}`)}</p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}> Specialty</p>
+                                        <p className={'personal-details-item-title'}> {t('table.specialization')}</p>
                                         {isModify ?
                                             <Select size={"sm"} onChange={handleSelectChange}
                                                     value={currentStaffData.specialty}>
@@ -438,12 +471,12 @@ export default function StaffModifyTemplate(props) {
                                                         {t(`speciality.${speciality}`, {ns: 'common'})}</Option>
                                                 ))}
                                             </Select> :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.specialty}</p>
+                                            <p className={'personal-details-item-content'}>{t(`speciality.${currentStaffData.specialty}`)}</p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
-                                        <p className={'personal-details-item-title'}>Status</p>
-                                        <p className={'personal-details-item-content'}>{currentStaffData.status}</p>
+                                        <p className={'personal-details-item-title'}>{t('table.status')}</p>
+                                        <p className={'personal-details-item-content'}>{t(`status.${currentStaffData.status}`)}</p>
                                     </div>
                                 </Stack>
                             </Stack>
