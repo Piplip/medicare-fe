@@ -4,7 +4,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from '@mui/icons-material/Lock';
 import {useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {useLocation, useNavigate} from "react-router";
+import {useLocation} from "react-router";
 import {Form, Link} from "react-router-dom";
 import {Formik} from "formik";
 import * as Yup from "yup";
@@ -12,7 +12,6 @@ import baseAxios from "../config/axiosConfig.jsx";
 import {useTranslation} from "react-i18next";
 
 export default function LoginSignUp(props){
-    const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
     const isSignUpPage = useLocation().pathname.includes('sign-up')
     const [awaitResponse, setAwaitResponse] = useState(false)
@@ -165,5 +164,3 @@ export default function LoginSignUp(props){
         </div>
     )
 }
-
-// TODO: Have better display for showing successful account verification

@@ -1,24 +1,52 @@
 import "../styles/side-nav-style.css"
 import {NavLink} from "react-router-dom";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Link} from "@mui/material";
+import {initializeApp} from "firebase/app";
+import {firebaseConfig} from "../config/FirebaseConfig.jsx";
+import {getDownloadURL, getStorage, ref} from "firebase/storage";
+import DefaultImage from '../assets/default.jpg'
+import {staffAxios} from "../config/axiosConfig.jsx";
 
 export default function SideNav(props){
+    initializeApp(firebaseConfig);
+    const storage = getStorage()
     const [isCollapsed, setIsCollapsed] = useState(true)
+    const [ppImage, setPPImage] = useState(localStorage.getItem('imageURL') || '/absent')
+
+    useEffect(() => {
+        if(localStorage.getItem('email') !== null){
+            staffAxios.get('/fetch')
+                .then(res => {
+                    localStorage.setItem('imageURL', res.data)
+                    setPPImage(res.data)
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
+    }, []);
+
+    useEffect(() => {
+        let storageRef = ref(storage, ppImage)
+        getDownloadURL(storageRef)
+            .then(url => setPPImage(url))
+            .catch(() => setPPImage(null))
+    }, [ppImage]);
+
     return (
-        <nav className={'side-nav'}>
+        <nav className={'side-nav'} style={{position: isCollapsed ? '' : 'fixed', zIndex: 10}}>
             {!isCollapsed &&
                 <section id={`profile-wrapper`}>
                     <Link to={'profile'}>
                         <img
-                            src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzKZ6mH6XAVIT487Fk0t-r6VOeCSbeqwTUNw&s"}
+                            src={ppImage === null ? DefaultImage : ppImage}
                             alt={"profile-picture"}/>
                     </Link>
                     <div id={'profile-info'}>
-                        <p>Dwayne Johnson</p>
-                        <p>Welcome</p>
+                        <p>{localStorage.getItem('firstName') + " " + localStorage.getItem('lastName')}</p>
+                        <p>{localStorage.getItem('email')}</p>
                     </div>
                 </section>
             }
