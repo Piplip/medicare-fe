@@ -9,4 +9,7 @@
 .page-template-outlet-wrapper{
     background-color: #BDEBFF;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
