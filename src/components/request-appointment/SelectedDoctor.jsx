@@ -3,7 +3,7 @@ import DefaultImage from "../../assets/default.jpg";
 import Typography from "@mui/joy/Typography";
 import {useTranslation} from "react-i18next";
 
-export default function SelectedDoctor(props){
+export default function SelectedDoctor(props) {
     const {t} = useTranslation('common')
 
     return (
@@ -26,7 +26,8 @@ export default function SelectedDoctor(props){
                             <div className={'specialization-wrapper'}
                                  style={{position: 'relative', width: 'fit-content'}}>
                                 <Stack direction={'row'} alignItems={'center'}>
-                                    <p>{t(`speciality.${props.appointmentData.doctor.specialization}`)}<span className={'more-info-tag'}>?</span></p>
+                                    <p>{t(`speciality.${props.appointmentData.doctor.specialization}`)}<span
+                                        className={'more-info-tag'}>?</span></p>
                                     <div
                                         className={'more-info-content'}>{props.appointmentData.doctor["specialization-detail"]}</div>
                                 </Stack>

@@ -1,86 +1,62 @@
 import '../../styles/physician-dashboard-style.css'
-import {useEffect, useRef} from "react";
-import React from "react";
+import {useEffect, useState} from "react";
 import TableTemplate from "../../components/TableTemplate.jsx";
-import {Button, FilledInput, FormControl, InputAdornment, InputLabel, Stack} from "@mui/material";
+import {
+    Alert,
+    Button,
+    FilledInput,
+    FormControl, FormControlLabel,
+    InputAdornment,
+    InputLabel,
+    Stack, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow, Tooltip,
+    Typography
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SortIcon from "@mui/icons-material/Sort";
+import {useLoaderData} from "react-router";
+import UnauthenticatedModal from "../../components/UnauthenticatedModal.jsx";
+import Input from "@mui/joy/Input";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import Checkbox from "@mui/joy/Checkbox";
+import dayjs from "dayjs";
 
 export default function PhysicianDashboard(){
-    const hours = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
-    const timelineRef = useRef(null)
-    const [width, setWidth] = React.useState(0);
+    const loaderData = useLoaderData()
+    const appointments = loaderData === null ? null : loaderData.data.records
+    const [filterAppointments, setFilterAppointments] = useState([])
+    const todayAppointments = appointments && appointments.filter(item => compareDate(item[3]))
+    const [currentAppointment, setCurrentAppointment] = useState(null)
+    const [filter, setFilter] = useState({
+        query: "",
+        startDate: null,
+        endDate: null,
+        status: [1,1,1,1]
+    })
+    const refStatus = {"DONE": 0, "CANCELLED": 1, "SCHEDULED": 2, "CONFIRMED": 3}
+    const statusBadgeBgColor = {"SCHEDULED": "brown", "CONFIRMED": "green", "CANCELLED": "#ff0000", "DONE": "blue"}
+    const statusBadgeTextColor = {"SCHEDULED": "white", "CONFIRMED": "white", "CANCELLED": "white", "DONE": "white"}
+    const [showAlert, setShowAlert] = useState(false)
 
     useEffect(() => {
-        const handleResize = () => {
-            if (timelineRef.current) {
-                setWidth(timelineRef.current.offsetWidth)
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        handleResize()
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+        setFilterAppointments(appointments)
+    }, [loaderData]);
 
-    const timelineData = [
-        { start: 8, end: 9, title: 'John Doe - General Checkup' },
-        { start: 9, end: 10.5, title: 'Jane Smith - Follow-up' },
-        { start: 10, end: 11.75, title: 'Mary Johnson - Consultation' },
-        { start: 11, end: 12.75, title: 'James Brown - Physical Therapy' },
-        { start: 13, end: 15.5, title: 'Patricia Williams - New Patient' },
-        { start: 14, end: 16.5, title: 'Michael Miller - Routine Checkup' },
-        { start: 15, end: 17.75, title: 'Linda Davis - Specialist Referral' },
-        { start: 16, end: 19.5, title: 'Barbara Wilson - Follow-up' },
-        { start: 17, end: 20, title: 'David Taylor - Final Consultation' },
-    ];
+    useEffect(() => {
+        if(appointments !== null){
+            setFilterAppointments(appointments.filter(item => {
+                const fullName = item[6] + " " + item[5]
+                if(filter.query !== "" && !fullName.toLowerCase().match(filter.query.toLowerCase())) return false
+                if(filter.startDate !== null && dayjs(filter.startDate).isAfter(new Date(item[3]))) return false
+                if(filter.endDate !== null && dayjs(filter.endDate).isBefore(new Date(item[3]))) return false
+                if(filter.status[refStatus[item[14]]] !== 1) return false
+                return item
+            }))
+        }
+    }, [filter]);
 
-    const convertAndFormatHour = (hour) => {
-        const date = new Date(0, 0, 0, Math.floor(hour), (hour % 1) * 60);
-        return date.toLocaleTimeString(['vi-VN'], { hour: '2-digit', minute: '2-digit' });
-    };
-
-    const header = ['Patient Name', 'Reason', 'Location', 'Time', 'Duration', 'Status', 'Notes']
-    const data = [
-        {
-            "Patient Name": "John Doe",
-            "Reason": "Annual Checkup",
-            "Location": "Exam Room 2",
-            "Time": "10:00",
-            "Duration": "30m",
-            "Status": "Completed",
-            "Notes": "Blood pressure slightly elevated, follow-up appointment recommended."
-        },
-        {
-            "Patient Name": "Jane Smith",
-            "Reason": "Follow-up for Flu",
-            "Location": "Exam Room 1",
-            "Time": "11:15",
-            "Duration": "15m",
-            "Status": "Pending",
-            "Notes": "Symptoms improving, continue medication."
-        },
-        {
-            "Patient Name": "David Lee",
-            "Reason": "Sprained Ankle",
-            "Location": "X-Ray Room",
-            "Time": "13:00",
-            "Duration": "45m",
-            "Status": "Scheduled",
-            "Notes": "Needs X-ray and referral to Ortho specialist."
-        },
-        {
-            "Patient Name": "David Lee",
-            "Reason": "Sprained Ankle",
-            "Location": "X-Ray Room",
-            "Time": "13:00",
-            "Duration": "45m",
-            "Status": "Scheduled",
-            "Notes": "Needs X-ray and referral to Ortho specialist."
-        },
-    ];
-
-    const header2 = ['Patient Name', 'Current Treatment Plan', 'Last Appointmnet Date', 'Admitting Status', 'EHR', 'Primary Diagnosis']
+    const header2 = ['Patient Name', 'Current Treatment Plan', 'Last Appointment Date', 'Admitting Status', 'EHR', 'Primary Diagnosis']
     const data2 = [
         {
             "Patient Name": "John Doe",
@@ -109,45 +85,169 @@ export default function PhysicianDashboard(){
         // ... add more patient data objects as needed
     ];
 
+    function compareDate(date){
+        const _date = new Date(date)
+        const now = new Date()
+        return now.getDay() === _date.getDay() && now.getMonth() === _date.getMonth() && now.getFullYear() === _date.getFullYear()
+    }
+
+    const header = ['Appointment ID', 'Patient Name', 'Address', 'Appointment Time', 'Reason', 'Status']
+
+    function handleChangeStatus(index){
+        const prevStatus = [...filter.status]
+        if(prevStatus.reduce((a, b) => a + b) === 1 && prevStatus[index] === 1){
+            setShowAlert(true)
+            setTimeout(() => setShowAlert(false), 3000)
+            return
+        }
+        prevStatus[index] ^= 1
+        setFilter(prev => ({...prev, status: prevStatus}))
+    }
+
+    console.log(filter.status)
+
     return (
         <div className={'physician-dashboard'}>
-            <div className={'appointment-timeline-view'}>
-                <p className={'physician-panel-title'}>{`Today's Appointment`}</p>
-                <div style={{padding: '1rem'}}>
-                    <section style={{display: 'flex', flexDirection: 'column', marginLeft: '20px', marginBottom: '1rem'}}>
-                        {timelineData.map((item, index) => {
-                            const startHour = item.start;
-                            const endHour = item.end;
-                            const eventWidth = (endHour - startHour) * (width / 15);
-                            const marginLeft = (startHour - 8) * (width / 15);
-                            return (
-                                <div
-                                    key={index}
-                                    className="timeline-data-item"
-                                    style={{
-                                        width: `${eventWidth}px`,
-                                        marginLeft: `${marginLeft}px`,
-                                    }}
-                                >
-                                    {convertAndFormatHour(item.start)} - {convertAndFormatHour(item.end)} | <b>{item.title}</b>
-                                </div>
-                            );
-                        })}
-                    </section>
-                    <div ref={timelineRef} className={'timeline-bar'}>
-                        {hours.map(hour => {
-                            return (
-                                <p className={'timeline-hour-indicator'}
-                                   key={hour}>{hour >= 10 ? hour : `0${hour}`}:00</p>
-                            )
-                        })}
+            <UnauthenticatedModal />
+            <div style={{backgroundColor: 'white'}}>
+                <p className={'physician-panel-title'}>Appointments</p>
+                <Stack columnGap={1} rowGap={.5} padding={'1rem'}>
+                    <div style={{borderBottom: '2px solid', paddingBottom: '.5rem'}}>
+                       <Typography variant={'h6'}>Upcoming Appointments ({todayAppointments && todayAppointments.length})</Typography>
+                        <Stack direction={'row'} gap={1} sx={{flexWrap: 'wrap'}}>
+                            {todayAppointments && todayAppointments.map((item, index) => {
+                                return (
+                                    compareDate(item[3]) &&
+                                    <Stack key={index} className={'simple-appointment-card'}
+                                           onClick={() => setCurrentAppointment(index)}>
+                                        <Stack direction={'row'} justifyContent={'space-between'}>
+                                            <p>{item[6] + " " + item[5]}</p>
+                                            <p>{item[4]}</p>
+                                        </Stack>
+                                        <p style={{marginTop: '0.5rem'}}>{item[2]}</p>
+                                    </Stack>
+                                )
+                            })}
+                        </Stack>
                     </div>
-                </div>
-                <TableTemplate header={header} data={data} isPagination={false}/>
+                    {appointments && appointments[currentAppointment] &&
+                        <Stack sx={{border: '5px solid', padding: '0.5rem 1rem'}}>
+                            <Typography variant={'h5'} textAlign={'center'}>DETAIL</Typography>
+                            <div className={'detail-appointment-view'}>
+                                <p>Patient Name: {appointments[currentAppointment][6]} {appointments[currentAppointment][5]}</p>
+                                <p>Birthday: {appointments[currentAppointment][7]}</p>
+                                <p>Address: {appointments[currentAppointment][9]}, {appointments[currentAppointment][10]}, {appointments[currentAppointment][11]}, {appointments[currentAppointment][12]}</p>
+                                <p>Gender: {appointments[currentAppointment][8]}</p>
+                                <p>Appointment Time: {appointments[currentAppointment][4]} {appointments[currentAppointment][3]}</p>
+                                <p>Appointment Description: {appointments[currentAppointment][2]}</p>
+                            </div>
+                            <Button sx={{alignSelf: 'end', width: 'fit-content'}} variant={'contained'}
+                                onClick={() => setCurrentAppointment(null)}
+                            >Close</Button>
+                        </Stack>
+                    }
+                    <Stack>
+                        <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} paddingBottom={1}>
+                            <Input autoFocus placeholder={'Search by name...'}
+                                   sx={{minWidth: '25rem'}} value={filter.query}
+                                   onChange={(e) => {
+                                        setFilter(prev => {
+                                            return {...prev, query: e.target.value}
+                                        })
+                                    }}
+                            />
+                            <Stack direction={'row'} columnGap={'1rem'}>
+                                <Stack rowGap={1}>
+                                    <Stack direction={'row'} alignItems={'center'} columnGap={1}>
+                                        <p>Status</p>
+                                        {showAlert &&
+                                            <Alert severity="warning"
+                                                   sx={{fontSize: '0.9rem', padding: '0rem 1rem', width: 'fit-content'}}
+                                            >
+                                                At least 1 must be selected
+                                            </Alert>
+                                        }
+                                    </Stack>
+                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem'}}>
+                                        <FormControlLabel control={<Checkbox sx={{marginRight: 1}} onChange={() => setFilter(prev => ({...prev, status: [1,1,1,1]}))}
+                                                                             checked={filter.status.every(val => val === 1)}/>} label="ALL"
+                                            disabled={filter.status.every(val => val === 1)}
+                                        />
+                                        <FormControlLabel
+                                            control={<Checkbox sx={{marginRight: 1}} onChange={() => handleChangeStatus(0)}
+                                                               checked={filter.status.every(val => val === 1) || filter.status[0] === 1}/>} label="DONE" />
+                                        <FormControlLabel
+                                            control={<Checkbox sx={{marginRight: 1}} onChange={() => handleChangeStatus(1)}
+                                                               checked={filter.status.every(val => val === 1) || filter.status[1] === 1}/>} label="CANCELLED" />
+                                        <FormControlLabel
+                                            control={<Checkbox sx={{marginRight: 1}} onChange={() => handleChangeStatus(2)}
+                                                               checked={filter.status.every(val => val === 1) || filter.status[2] === 1}/>} label="SCHEDULED" />
+                                        <FormControlLabel
+                                            control={<Checkbox sx={{marginRight: 1}} onChange={() => handleChangeStatus(3)}
+                                                               checked={filter.status.every(val => val === 1) || filter.status[3] === 1}/>} label="CONFIRMED" />
+                                    </div>
+                                </Stack>
+                                <Stack direction={'row'} alignItems={'center'} columnGap={'1rem'}>
+                                    <DatePicker format={"DD-MM-YYYY"} label={"Start Date"}
+                                                onChange={(date) => setFilter(prev => ({...prev, startDate: date}))}
+                                                sx={{width: '200px'}}
+                                                slotProps={{
+                                                    field: { clearable: true, onClear: () => setFilter(prev => ({...prev, startDate: null}))},
+                                                }}
+                                    />
+                                    <DatePicker format={"DD-MM-YYYY"} label={"End Date"} sx={{width: '200px'}}
+                                                onChange={(date) => setFilter(prev => ({...prev, endDate: date}))}
+                                                slotProps={{
+                                                    field: { clearable: true, onClear: () => setFilter(prev => ({...prev, endDate: null}))},
+                                                }}
+                                    />
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow sx={{backgroundColor: '#36007B'}}>
+                                        {header.map((item, index) =>
+                                            <TableCell sx={{color: 'white'}} key={index}>{item}</TableCell>)}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filterAppointments && filterAppointments.map((item, index) => (
+                                        <Tooltip title={"Click to view detail"} key={index} followCursor>
+                                            <TableRow sx={{
+                                                '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                                '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                            }}>
+                                                <TableCell>{item[0]}</TableCell>
+                                                <TableCell>{item[6] + " " + item[5]}</TableCell>
+                                                <TableCell>{item[9]} {item[10]}, {item[11]}, {item[12]}</TableCell>
+                                                <TableCell>{item[4]} {item[3]}</TableCell>
+                                                <TableCell>{item[2]}</TableCell>
+                                                <TableCell>
+                                                    <p style={{padding: '0.25rem .5rem',
+                                                        backgroundColor: statusBadgeBgColor[item[14]],
+                                                        color: statusBadgeTextColor[item[14]],
+                                                        width: 'fit-content',
+                                                        borderRadius: '0.3rem', fontSize: '0.6rem'
+                                                    }}
+                                                    >
+                                                        {item[14]}
+                                                    </p>
+                                                </TableCell>
+                                            </TableRow>
+                                        </Tooltip>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Stack>
+                </Stack>
             </div>
             <Stack spacing={1} style={{backgroundColor: 'white'}}>
                 <p className={'physician-panel-title'}>My Patients</p>
-                <Stack marginBlock={1} alignItems={'center'} direction={'row'} justifyContent={'space-between'} paddingInline={1} paddingBlock={0.5}
+                <Stack marginBlock={1} alignItems={'center'} direction={'row'} justifyContent={'space-between'}
+                       paddingInline={1} paddingBlock={0.5}
                        className={'table-filters'}>
                     <FormControl size={'small'} sx={{width: '30%'}} variant="filled">
                         <InputLabel>Search by first name, last name, department,...</InputLabel>

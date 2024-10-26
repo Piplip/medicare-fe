@@ -8,7 +8,7 @@ import AppointmentScheduling from "./pages/physician/AppointmentScheduling.jsx";
 import LoginSignUp from "./pages/LoginSignup.jsx";
 import StaffTemplate from "./template/StaffTemplate.jsx";
 import PhysicianDashboard from "./pages/physician/PhysicianDashboard.jsx";
-import PhysicianPatientView from "./pages/physician/PhysicianPatientView.jsx";
+import PhysicianStatistic from "./pages/physician/PhysicianStatistic.jsx";
 import Verification from "./pages/Verification.jsx";
 import i18next from './config/i18nConfig.jsx'
 import {useEffect, useState} from "react";
@@ -25,13 +25,15 @@ import UserProfile from "./components/UserProfile.jsx";
 import PersonalInfo from "./components/user-profile/PersonalInfo.jsx";
 import BillingPayment from "./components/user-profile/BillingPayment.jsx";
 import AppointmentHistory from "./components/user-profile/AppointmentHistory.jsx";
-import baseAxios, {adminAxios} from "./config/axiosConfig.jsx";
+import baseAxios, {adminAxios, staffAxios} from "./config/axiosConfig.jsx";
 import AdminAudit from "./pages/admin/AdminAudit.jsx";
 import AdminReport from "./pages/admin/AdminReport.jsx";
 import AdminSetting from "./pages/admin/AdminSetting.jsx";
 import AdminUserManagement from "./pages/admin/AdminUserManagement.jsx";
 import ContextMenu from "./components/context-menu/ContextMenu.jsx";
 import UserFeedback from "./components/UserFeedback.jsx";
+import StaffLogin from "./pages/StaffLogin.jsx";
+import {getCookie} from "./components/Utilities.jsx";
 
 export const UserContext  = React.createContext({})
 
@@ -115,12 +117,24 @@ function App() {
             ]
         },
         {
+            path: 'staff',
+            element: <StaffTemplate />,
+            children: [
+                {path: 'login', element: <StaffLogin />},
+            ]
+        },
+        {
             path: 'physician',
             element: <StaffTemplate />,
             children: [
-                {path: 'dashboard', element: <PhysicianDashboard />},
+                {path: 'dashboard', element: <PhysicianDashboard />,
+                    loader: () => {
+                        if(getCookie('STAFF-ID') == null) return null
+                        return staffAxios.get('/fetch/appointments')
+                    }
+                },
                 {path: 'appointment-scheduling', element: <AppointmentScheduling />},
-                {path: 'patient-view', element: <PhysicianPatientView />},
+                {path: 'statistic', element: <PhysicianStatistic />},
             ]
         },
         {
