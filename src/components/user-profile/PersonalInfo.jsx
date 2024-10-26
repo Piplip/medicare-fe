@@ -10,7 +10,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import {useTranslation} from "react-i18next";
 import dayjs from "dayjs";
 
-export default function PersonalInfo(){
+export default function PersonalInfo() {
     const loaderData = useLoaderData()
     const [isModify, setIsModify] = useState(false)
     const {t} = useTranslation('common')
@@ -24,16 +24,18 @@ export default function PersonalInfo(){
             <div className={'personal-info-main'}>
                 <div className={'personal-info-comp'} onDoubleClickCapture={() => setIsModify(true)}>
                     <Stack>
-                        <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.full_name')}</Typography>
+                        <Typography color={'white'}
+                                    level={'h4'}>{t('user_profile.personal-info.full_name')}</Typography>
                         {
                             isModify ?
-                            <input className={'personal-info-input'} type={'text'} placeholder={'Full Name'} autoFocus value={loaderData.data[1] + " " + loaderData.data[0]}
-                                   onKeyDown={(e) => {
-                                       if(e.key === 'Enter') setIsModify(false)
-                                   }}/>
+                                <input className={'personal-info-input'} type={'text'} placeholder={'Full Name'}
+                                       autoFocus value={loaderData.data[1] + " " + loaderData.data[0]}
+                                       onKeyDown={(e) => {
+                                           if (e.key === 'Enter') setIsModify(false)
+                                       }}/>
                                 : <Typography color={'white'} level={'body1'}>
                                     {loaderData.data[1] + " " + loaderData.data[0]}
-                            </Typography>
+                                </Typography>
                         }
                     </Stack>
                     <PersonIcon/>
@@ -41,7 +43,8 @@ export default function PersonalInfo(){
                 <div className={'personal-info-comp'}>
                     <Stack>
                         <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.birthday')}</Typography>
-                        <Typography color={'white'} level={'body1'}>{dayjs(loaderData.data[2]).format("DD-MM-YYYY")}</Typography>
+                        <Typography color={'white'}
+                                    level={'body1'}>{dayjs(loaderData.data[2]).format("DD-MM-YYYY")}</Typography>
                     </Stack>
                     <CalendarMonthIcon/>
                 </div>
@@ -71,11 +74,12 @@ export default function PersonalInfo(){
                             {loaderData.data[8]}
                         </Typography>
                     </Stack>
-                    <MailIcon />
+                    <MailIcon/>
                 </div>
                 <div className={'personal-info-comp'}>
                     <Stack>
-                        <Typography color={'white'} level={'h4'}>{t('user_profile.personal-info.sec_phone')}</Typography>
+                        <Typography color={'white'}
+                                    level={'h4'}>{t('user_profile.personal-info.sec_phone')}</Typography>
                         <Typography color={'white'} level={'body1'}>
                             {loaderData.data[4] ? loaderData.data[4] : `${t('user_profile.personal-info.empty')}`}
                         </Typography>
@@ -83,7 +87,8 @@ export default function PersonalInfo(){
                     <PhoneIcon/>
                 </div>
             </div>
-            <Typography className={'change-password'} sx={{color: 'yellow'}} level={'body-sm'}>{t('user_profile.change-pass')}</Typography>
+            <Typography className={'change-password'} sx={{color: 'yellow'}}
+                        level={'body-sm'}>{t('user_profile.change-pass')}</Typography>
         </div>
     )
 }
