@@ -1,5 +1,5 @@
 import {Stack} from "@mui/material";
-import TableTemplate from "./TableTemplate.jsx";
+import TableTemplate from "./root/TableTemplate.jsx";
 import {useState} from "react";
 import {useLocation} from "react-router";
 

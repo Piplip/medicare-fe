@@ -1,7 +1,17 @@
 import Typography from "@mui/joy/Typography";
-import {Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material";
+import {
+    AppBar,
+    Button, Dialog, IconButton, Pagination,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow, Toolbar,
+    Tooltip
+} from "@mui/material";
 import {useEffect, useState} from "react";
-import {Modal, ModalClose, Sheet} from "@mui/joy";
 import {useLoaderData} from "react-router";
 import Input from "@mui/joy/Input";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -12,17 +22,17 @@ import {useTranslation} from "react-i18next";
 import dayjs from "dayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import baseAxios from "../../config/axiosConfig.jsx";
+import CloseIcon from "@mui/icons-material/Close";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 
 export default function AppointmentHistory() {
     const loaderData = useLoaderData()
-
     const {t} = useTranslation(['findDoctor', 'common'])
     const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery"]
     const [showFilters, setShowFilters] = useState(false)
     const tableHeader = [t('table.id', {ns: 'common'}), t('table.datetime', {ns: 'common'}), t('table.department', {ns: 'common'}), t('table.doctor', {ns: 'common'}), t('table.status', {ns: 'common'})]
-    const [showModal, setShowModal] = useState(false)
-    const [currentAppointment, setCurrentAppointment] = useState({})
-    const [appointmentData, setAppointmentData] = useState(loaderData.data.records)
+    const [showAppointmentDetail, setShowAppointmentDetail] = useState(false)
+    const [appointmentData, setAppointmentData] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const [filters, setFilters] = useState({
         query: searchParams.get('query') || '',
@@ -30,12 +40,23 @@ export default function AppointmentHistory() {
         status: searchParams.get('status') || 'default',
         dateType: 'date',
         startDate: searchParams.get('startDate') ? dayjs(searchParams.get('startDate')) : null,
-        endDate: searchParams.get('endDate') ? dayjs(searchParams.get('endDate')) : null
+        endDate: searchParams.get('endDate') ? dayjs(searchParams.get('endDate')) : null,
+        page: searchParams.get('page') || 1
     })
     const [sortOption, setSortOption] = useState({
         orderBy: 'id',
         order: 'asc'
     })
+    const medicationHeader = ['Name', 'Dosage', 'Frequency', 'Quantity', 'Start Date', 'End Date', "Doctor's Note"]
+    const [currentDetail, setCurrentDetail] = useState(null)
+    const [totalPage, setTotalPage] = useState(parseInt(loaderData.data[0], 10) + 1)
+
+    console.log(appointmentData)
+
+    useEffect(() => {
+        setAppointmentData(JSON.parse(loaderData.data[1])['records'])
+
+    }, []);
 
     useEffect(() => {
         if (loaderData.data.records) {
@@ -60,11 +81,7 @@ export default function AppointmentHistory() {
 
     useEffect(() => {
         fetchAppointments()
-    }, [filters.department, filters.status, filters.startDate, filters.endDate]);
-
-    function showDetail(appointmentID) {
-        setShowModal(true)
-    }
+    }, [filters.department, filters.status, filters.startDate, filters.endDate, filters.page]);
 
     function handleSelectChange(type, value) {
         setFilters(prev => {
@@ -90,13 +107,12 @@ export default function AppointmentHistory() {
             query: filters.query,
             department: filters.department,
             startDate: filters.startDate ? filters.startDate.format('DD/MM/YYYY') : "none",
-            endDate: filters.endDate ? filters.endDate.format('DD/MM/YYYY') : "none"
+            endDate: filters.endDate ? filters.endDate.format('DD/MM/YYYY') : "none",
+            page: filters.page
         }).toString()
-        console.log("param", params)
         baseAxios.get('/appointments?' + params)
             .then(r => {
-                console.log("appointment results: ", r)
-                setAppointmentData(r.data.records)
+                setAppointmentData(JSON.parse(r.data[1])['records'])
             })
             .catch(err => console.log(err))
     }
@@ -114,29 +130,93 @@ export default function AppointmentHistory() {
 
     return (
         <>
-            <Modal aria-labelledby="modal-title"
-                   open={showModal} onClose={() => setShowModal(false)}
-                   sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-            >
-                <Sheet variant="outlined" sx={{minWidth: '30%', maxWidth: '50%', borderRadius: 'md', p: 3}}>
-                    <Stack borderBottom={'1px solid'} marginBottom={'1rem'}>
-                        <ModalClose variant="plain" sx={{m: 1}}/>
-                        <Typography level="h4" sx={{fontWeight: 'lg', mb: 1}}>
-                            Appointment Detail
+            <Dialog fullScreen open={showAppointmentDetail} onClose={() => setShowAppointmentDetail(false)}>
+                <AppBar sx={{position: 'relative'}}>
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={() => {
+                                setShowAppointmentDetail(false)
+                            }}
+                        >
+                            <CloseIcon/>
+                        </IconButton>
+                        <Typography sx={{ml: 2, flex: 1, fontSize: '20px', fontWeight: 'bold', color: 'white'}}>
+                            Detailed Prescription View
                         </Typography>
+                        <Stack direction={'row'} columnGap={1}>
+                            <Button variant="contained" color={'primary'} startIcon={<LocalPrintshopIcon/>}>
+                                Print
+                            </Button>
+                        </Stack>
+                    </Toolbar>
+                </AppBar>
+                {currentDetail &&
+                    <Stack sx={{paddingBlock: '20px'}} rowGap={1}>
+                        <Stack className={'prescription-detail-section'}>
+                            <p className={'prescription-detail-main-title'}>Prescription Details</p>
+                            <Stack>
+                                <div className={'prescription-detail-doctor-info'}>
+                                    <p>Prescribing Doctor: <b>{currentDetail['doctorName']}</b></p>
+                                    <p>Prescription Time: <b>{currentDetail['prescribedTime']}</b></p>
+                                    <p>Specialization: <b>Cardiology</b></p>
+                                    <p>Phone: <b>{currentDetail['phoneNumber'] || "------"}</b></p>
+                                    <p>Total Medications: <b>{currentDetail['medicationList'].length}</b></p>
+                                </div>
+                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>Doctor Diagnosis
+                                    <p className={'doctor-diagnosis'}>{currentDetail['diagnosis']}</p>
+                                </div>
+                            </Stack>
+                            <Stack>
+                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>Prescribed Medications</p>
+                                <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow sx={{backgroundColor: '#36007B'}}>
+                                                {medicationHeader.map((item, index) =>
+                                                    <TableCell sx={{color: 'white'}} key={index}>{item}</TableCell>)}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {currentDetail['medicationList'].map((item, index) => (
+                                                <TableRow key={index} sx={{
+                                                    '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                                    '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                                }}>
+                                                    <TableCell>{item['name']}</TableCell>
+                                                    <TableCell>{item['dosage']}</TableCell>
+                                                    <TableCell>{item['frequency']}</TableCell>
+                                                    <TableCell>{item['quantity']}</TableCell>
+                                                    <TableCell>{dayjs(item['startDate']).format('DD-MM-YYYY')}</TableCell>
+                                                    <TableCell>{dayjs(item['endDate']).format('DD-MM-YYYY')}</TableCell>
+                                                    <TableCell>{item['note']}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Stack>
+                        </Stack>
+                        <Stack className={'prescription-detail-section'}>
+                            <p className={'prescription-detail-main-title'}>Pharmacist Notes</p>
+                            <textarea style={{
+                                padding: '0.25rem 0.5rem',
+                                fontSize: '14px',
+                                width: '100%',
+                                minWidth: '100%',
+                                backgroundColor: '#f9f9f9',
+                                fontFamily: 'cursive, sans-serif',
+                                minHeight: '5rem',
+                                maxHeight: '10rem',
+                                maxWidth: '100%'
+                            }}
+                                      placeholder={'Enter note here'}
+                            />
+                        </Stack>
                     </Stack>
-                    <div className={'appointment-basic-info'}>
-                        <Typography level="body1">Appointment ID: {currentAppointment.id}</Typography>
-                        <Typography level="body1">Date & Time: {currentAppointment.date}</Typography>
-                        <Typography level="body1">Department: {currentAppointment.department}</Typography>
-                        <Typography level="body1">Provider: {currentAppointment.provider}</Typography>
-                        <Typography level="body1">Status: {currentAppointment.status}</Typography>
-                    </div>
-                    <Stack marginTop={'1rem'} paddingTop={'1rem'} borderTop={'1px solid'}>
-                        <Typography level="h4">Prescribed Medication</Typography>
-                    </Stack>
-                </Sheet>
-            </Modal>
+                }
+            </Dialog>
             <Stack rowGap={'1rem'}>
                 <Typography color={'white'}
                             level={'h2'}>{t('user_profile.appointment-history.title', {ns: 'common'})}</Typography>
@@ -295,24 +375,53 @@ export default function AppointmentHistory() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {appointmentData.map((item, index) => (
-                                <Tooltip title={"Click to view detail"} key={index} followCursor>
-                                    <TableRow onClick={() => showDetail(item[0])} sx={{
-                                        '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
-                                        '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
-                                    }}>
-                                        <TableCell>{item[0]}</TableCell>
-                                        <TableCell>{item[2] + " " + dayjs(item[1]).format("DD/MM/YYYY")}</TableCell>
-                                        <TableCell>
-                                            {t(`department.${item[6]}`, {ns: 'common'})}
-                                        </TableCell>
-                                        <TableCell>{item[7] + " " + item[8]}</TableCell>
-                                        <TableCell>{t(`status.${item[4]}`, {ns: 'common'})}</TableCell>
-                                    </TableRow>
-                                </Tooltip>
-                            ))}
+                            {appointmentData &&
+                                appointmentData.map((item, index) => (
+                                    <Tooltip title={"Click to view detail"} key={index} followCursor>
+                                        <TableRow sx={{
+                                            '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                            '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                        }}
+                                                  onClick={() => {
+                                                      baseAxios.get('/appointment/detail?appointmentID=' + item[0])
+                                                          .then(r => {
+                                                              console.log(r)
+                                                              setCurrentDetail(r.data)
+                                                              setShowAppointmentDetail(true)
+                                                          })
+                                                          .catch(err => {
+                                                              alert("This appointment doesn't have detail because you are not showing up!")
+                                                          })
+                                                  }}
+                                        >
+                                            <TableCell>{item[0]}</TableCell>
+                                            <TableCell>{item[2] + " " + dayjs(item[1]).format("DD/MM/YYYY")}</TableCell>
+                                            <TableCell>
+                                                {t(`department.${item[6]}`, {ns: 'common'})}
+                                            </TableCell>
+                                            <TableCell>{item[7] + " " + item[8]}</TableCell>
+                                            <TableCell>{t(`${item[4]}`, {ns: 'common'})}</TableCell>
+                                        </TableRow>
+                                    </Tooltip>
+                                ))
+                            }
                         </TableBody>
                     </Table>
+                    {appointmentData && appointmentData.length == 0 &&
+                        <div className={'empty-table'}>
+                            No appointments
+                        </div>
+                    }
+                    <Stack alignSelf={'center'} marginTop={1} direction={'row'} justifyContent={'center'} columnGap={2}
+                        sx={{backgroundColor: 'white', paddingBlock: '.25rem'}}
+                    >
+                        <Pagination count={totalPage} color={'primary'} page={parseInt(filters.page, 10)}
+                                    onChange={(_, page) => {
+                                        setFilters(prev => {
+                                            return {...prev, page: page}
+                                        })
+                                    }}/>
+                    </Stack>
                 </TableContainer>
             </Stack>
         </>

@@ -1,10 +1,12 @@
 .page-template{
     display: flex;
     flex-direction: column;
+    height: 100dvh
 }
 .page-content-wrapper{
     display: flex;
     width: 100%;
+    flex-grow: 1;
 }
 .page-template-outlet-wrapper{
     background-color: #BDEBFF;

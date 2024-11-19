@@ -9,10 +9,6 @@ export default function AppointmentSummary(props) {
     const location = useLocation()
     const {t} = useTranslation('appointmentRequest')
 
-    function pad(num) {
-        return num.toString().padStart(2, '0')
-    }
-
     return (
         <div className={'appointment-confirmation-wrapper'}>
             <div>
@@ -22,13 +18,13 @@ export default function AppointmentSummary(props) {
             <div>
                 <Typography level={'h4'} sx={{color: '#919191'}}>{t('component.appointment_summary.date')}</Typography>
                 <Typography level={'body-lg'} sx={{color: 'white'}}>
-                    {pad(appointmentData.date['$D']) + '/' + pad(appointmentData.date['$M'] + 1) + '/' + appointmentData.date['$y']}
+                    {appointmentData.date}
                 </Typography>
             </div>
             <div>
                 <Typography level={'h4'} sx={{color: '#919191'}}>{t('component.appointment_summary.time')}</Typography>
                 <Typography level={'body-lg'} sx={{color: 'white'}}>
-                    {pad(appointmentData.time['$H']) + ':' + pad(appointmentData.time['$m'])}
+                    {appointmentData.time}
                 </Typography>
             </div>
             {location.pathname.includes("/payment") &&

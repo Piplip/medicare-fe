@@ -1,7 +1,7 @@
 import {Button, Stack} from "@mui/material";
 import Typography from "@mui/joy/Typography";
 import {Outlet, useLocation, useNavigate} from "react-router";
-import '../styles/user-profile-style.css'
+import '../../styles/user-profile-style.css'
 import {NavLink} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 

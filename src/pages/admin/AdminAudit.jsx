@@ -3,7 +3,7 @@ import {FilledInput, FormControl, InputAdornment, InputLabel, Stack,} from "@mui
 import SearchIcon from "@mui/icons-material/Search";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SelectBasic from "../../components/CustomSelect.jsx";
-import TableTemplate from "../../components/TableTemplate.jsx";
+import TableTemplate from "../../components/root/TableTemplate.jsx";
 
 export default function AdminAudit(){
     const tableHeader = ['Staff Name', 'Staff Email', 'Action Type', 'Data Access', 'Timestamp', 'Detail']

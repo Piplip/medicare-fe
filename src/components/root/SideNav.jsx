@@ -1,20 +1,20 @@
-import "../styles/side-nav-style.css"
+import "../../styles/side-nav-style.css"
 import {NavLink} from "react-router-dom";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import {useEffect, useState} from "react";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Link} from "@mui/material";
 import {initializeApp} from "firebase/app";
-import {firebaseConfig} from "../config/FirebaseConfig.jsx";
+import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
-import DefaultImage from '../assets/default.jpg'
-import {staffAxios} from "../config/axiosConfig.jsx";
+import DefaultImage from '../../assets/default.jpg'
+import {staffAxios} from "../../config/axiosConfig.jsx";
 
 export default function SideNav(props){
     initializeApp(firebaseConfig);
     const storage = getStorage()
     const [isCollapsed, setIsCollapsed] = useState(true)
-    const [ppImage, setPPImage] = useState(localStorage.getItem('imageURL') || '/absent')
+    const [ppImage, setPPImage] = useState(localStorage.getItem('imageURL') || null)
 
     useEffect(() => {
         if(localStorage.getItem('email') !== null){
@@ -29,10 +29,15 @@ export default function SideNav(props){
     }, []);
 
     useEffect(() => {
-        let storageRef = ref(storage, ppImage)
-        getDownloadURL(storageRef)
-            .then(url => setPPImage(url))
-            .catch(() => setPPImage(null))
+        if(ppImage !== null){
+           let storageRef = ref(storage, ppImage)
+           getDownloadURL(storageRef)
+               .then(url => setPPImage(url))
+               .catch((err) => {
+                   console.log(err)
+                   setPPImage(null)
+               })
+       }
     }, [ppImage]);
 
     return (

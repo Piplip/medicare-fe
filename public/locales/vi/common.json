@@ -92,7 +92,8 @@
     "Pulmonology": "Khoa hô hấp",
     "Radiology": "Khoa chẩn đoán hình ảnh",
     "Speech Therapy": "Khoa ngôn ngữ trị liệu",
-    "Surgery": "Khoa phẫu thuật"
+    "Surgery": "Khoa phẫu thuật",
+    "Main Hospital Building": "Tòa nhà chính"
   },
   "speciality": {
     "title": "Chuyên khoa",

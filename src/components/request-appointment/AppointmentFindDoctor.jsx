@@ -1,7 +1,7 @@
-import FindDoctor from "../../pages/FindDoctor.jsx";
+import FindDoctor from "../../pages/user/FindDoctor.jsx";
 import {useOutletContext} from "react-router-dom";
 import {useContext} from "react";
-import {AppointmentContext} from "../../pages/RequestAppointment.jsx";
+import {AppointmentContext} from "../../pages/user/RequestAppointment.jsx";
 import Typography from "@mui/joy/Typography";
 import {useTranslation} from "react-i18next";
 

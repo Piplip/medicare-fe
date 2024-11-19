@@ -118,3 +118,9 @@
     cursor: pointer;
     color: orangered;
 }
+
+@media screen and (max-width: 1000px){
+    .main-filter{
+        display: none;
+    }
+}

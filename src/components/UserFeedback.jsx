@@ -178,34 +178,40 @@ export default function UserFeedback(){
                 </Stack>
             }
             <div>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow sx={{backgroundColor: '#36007B'}}>
-                                {header.map((item, index) =>
-                                    <TableCell sx={{color: 'white'}} key={index}>{t(`table.${item}`)}</TableCell>)}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredData.map((item, index) => (
-                                <Tooltip title={"Click to view detail"} key={index} followCursor>
-                                    <TableRow sx={{
-                                        '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
-                                        '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
-                                    }}>
-                                        <TableCell>{item[0]}</TableCell>
-                                        <TableCell>{t(`user_profile.feedback.type.${item[1]}`)}</TableCell>
-                                        <TableCell>{item[2] || "------------------"}</TableCell>
-                                        <TableCell>{item[3] ?
-                                            t(`user_profile.feedback.rating.${item[3]}`)
-                                            : "------------------"}</TableCell>
-                                        <TableCell>{dayjs(item[4]).format("HH:ss DD-MM-YYYY")}</TableCell>
-                                    </TableRow>
-                                </Tooltip>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                {filteredData.length !== 0 ?
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow sx={{backgroundColor: '#36007B'}}>
+                                    {header.map((item, index) =>
+                                        <TableCell sx={{color: 'white'}} key={index}>{t(`table.${item}`)}</TableCell>)}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredData.map((item, index) => (
+                                    <Tooltip title={"Click to view detail"} key={index} followCursor>
+                                        <TableRow sx={{
+                                            '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                            '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                        }}>
+                                            <TableCell>{item[0]}</TableCell>
+                                            <TableCell>{t(`user_profile.feedback.type.${item[1]}`)}</TableCell>
+                                            <TableCell>{item[2] || "------------------"}</TableCell>
+                                            <TableCell>{item[3] ?
+                                                t(`user_profile.feedback.rating.${item[3]}`)
+                                                : "------------------"}</TableCell>
+                                            <TableCell>{dayjs(item[4]).format("HH:ss DD-MM-YYYY")}</TableCell>
+                                        </TableRow>
+                                    </Tooltip>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    :
+                    <div className={'empty-table'}>
+                        You haven't make any feedback
+                    </div>
+                }
             </div>
         </Stack>
     )

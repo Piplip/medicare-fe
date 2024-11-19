@@ -1,4 +1,4 @@
-import '../styles/find-a-doctor-style.css'
+import '../../styles/find-a-doctor-style.css'
 import {Button, FormControlLabel, Pagination, Skeleton, Stack, Typography} from "@mui/material";
 import Input from "@mui/material/Input";
 import SearchIcon from '@mui/icons-material/Search';
@@ -7,15 +7,15 @@ import StarIcon from '@mui/icons-material/Star';
 import {useEffect, useState} from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import {initializeApp} from "firebase/app";
-import {firebaseConfig} from "../config/FirebaseConfig.jsx";
+import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
-import baseAxios from "../config/axiosConfig.jsx";
-import DefaultImage from '../assets/default.jpg'
+import baseAxios from "../../config/axiosConfig.jsx";
+import DefaultImage from '../../assets/default.jpg'
 import {useSearchParams} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useLocation, useNavigate} from "react-router";
-import DepartmentSpecializationFilter from "../components/DepartmentSpecializationFilter.jsx";
+import DepartmentSpecializationFilter from "../../components/DepartmentSpecializationFilter.jsx";
 
 export default function FindDoctor(props){
     initializeApp(firebaseConfig);
@@ -40,6 +40,7 @@ export default function FindDoctor(props){
         pageSize: parseInt(searchParams.get('pageSize')) || 10,
         pageNumber: parseInt(searchParams.get('pageNumber')) || 1
     })
+    const [totalPage, setTotalPage] = useState(null)
 
     useEffect(() => {
         if(showMain || searchParams.get('name') || searchParams.get('department') || searchParams.get('language')
@@ -85,13 +86,14 @@ export default function FindDoctor(props){
 
         baseAxios.get('/staff?' + params)
         .then(async res => {
-            console.log(res.data)
-            setDoctorData(res.data.records)
+            setTotalPage(parseInt(res?.data[0], 10))
+            const data = JSON.parse(res?.data[1])['records']
+            setDoctorData(data)
             setIsLoading(false)
             setShowMain(true)
 
-            for (let i = 0; i < res.data.records.length; i++) {
-                let storageRef = ref(storage, res.data.records[i][2])
+            for (let i = 0; i < data.length; i++) {
+                let storageRef = ref(storage, data[i][2])
                 await getDownloadURL(storageRef)
                     .then(url => {
                         setDoctorData(prev => {
@@ -168,7 +170,7 @@ export default function FindDoctor(props){
             </div>
             {showMain ?
                 <div className={'find-provider-main'}>
-                    <Stack rowGap={3} color={'white'}>
+                    <Stack className={'main-filter'} rowGap={3} color={'white'}>
                         <p className={'clear-filter-btn'} onClick={clearFilters}>{t('clear-filter')}</p>
                         <DepartmentSpecializationFilter isLoading={isLoading} handleSelectChange={handleSelectChange} searchData={searchData}/>
                         <Stack rowGap={1}>
@@ -214,7 +216,7 @@ export default function FindDoctor(props){
                             </Typography>
                             <Stack direction={'row'} alignItems={'center'} columnGap={2} color={'white'}>
                                 <Typography variant={'body1'}>{t('row-per-page')}</Typography>
-                                <Select defaultValue={10} onChange={handleSelectChange}>
+                                <Select value={searchData.pageSize} defaultValue={10} onChange={(_, val) => handleSelectChange('pageSize', val)}>
                                     <Option select-type={'pageSize'} value={10}>10</Option>
                                     <Option select-type={'pageSize'} value={15}>15</Option>
                                     <Option select-type={'pageSize'} value={20}>20</Option>
@@ -222,87 +224,96 @@ export default function FindDoctor(props){
                             </Stack>
                         </Stack>
                         <div className={'provider-search-result-container'}>
-                            {doctorData.map((doctor, index) => (
-                                <div key={index} className={'provider-card'}>
-                                    <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} sx={{color: 'cyan'}}>
-                                        <Typography variant={'h6'}>
-                                            {isLoading
-                                                ? <Skeleton variant={'text'}/>
-                                                : doctor[4] + " " + doctor[5]
+                            {doctorData && doctorData.length !== 0 ?
+                                doctorData.map((doctor, index) => (
+                                    <div key={index} className={'provider-card'}>
+                                        <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} sx={{color: 'cyan'}}>
+                                            <Typography variant={'h6'}>
+                                                {isLoading
+                                                    ? <Skeleton variant={'text'}/>
+                                                    : doctor[4] + " " + doctor[5]
+                                                }
+                                            </Typography>
+                                            <Typography variant={'h6'}>
+                                                {isLoading
+                                                    ? <Skeleton variant={'text'} />
+                                                    : doctor[6]
+                                                }
+                                            </Typography>
+                                        </Stack>
+                                        <Stack direction={'row'} columnGap={5}>
+                                            {
+                                                (doctor[2].length < 15 && doctor[2] !== DefaultImage)
+                                                    ? <Skeleton variant={'rectangular'} height={'12rem'} width={'12rem'}/>
+                                                    : <img alt={""} className={'provider-image'} src={doctor[2]}/>
                                             }
-                                        </Typography>
-                                        <Typography variant={'h6'}>
-                                            {isLoading
-                                                ? <Skeleton variant={'text'} />
-                                                : doctor[6]
-                                            }
-                                        </Typography>
-                                    </Stack>
-                                    <Stack direction={'row'} columnGap={5}>
-                                        {
-                                            (doctor[2].length < 15 && doctor[2] !== DefaultImage)
-                                                ? <Skeleton variant={'rectangular'} height={'12rem'} width={'12rem'}/>
-                                                : <img alt={""} className={'provider-image'} src={doctor[2]}/>
-                                        }
-                                        <div className={'provider-info'}>
-                                            <div>
-                                                <Stack direction={'row'}>
-                                                    <StarIcon color={'warning'}/>
-                                                    <StarIcon color={'warning'}/>
-                                                    <StarIcon color={'warning'}/>
-                                                    <StarIcon color={'warning'}/>
-                                                    <StarIcon/>
-                                                    <p style={{marginLeft: '0.5rem'}}>4.8 out of 5</p>
+                                            <div className={'provider-info'}>
+                                                <div>
+                                                    <Stack direction={'row'}>
+                                                        {Array(5).fill(null).map((_, index) => {
+                                                            return (
+                                                                <StarIcon key={index} color={index <= 3 ? 'warning' : ''}/>
+                                                            )
+                                                        })}
+                                                        <p style={{marginLeft: '0.5rem'}}>4.1</p>
+                                                    </Stack>
+                                                    <p>293 Patient Satisfaction Ratings</p>
+                                                    <p>45 Patients give comments</p>
+                                                </div>
+                                                <Stack spacing={1.25}>
+                                                    <Stack>
+                                                        <Typography variant={'body1'}>{t('department')}</Typography>
+                                                        <p>
+                                                            {isLoading
+                                                                ? <Skeleton variant={'text'}/>
+                                                                : t(`department.${doctor[9]}`, {ns: 'common'})
+                                                            }
+                                                        </p>
+                                                    </Stack>
+                                                    <Stack>
+                                                        <Typography variant={'body1'}>{t('specialization')}</Typography>
+                                                        <div className={'specialization-wrapper'}
+                                                             style={{position: 'relative', width: 'fit-content'}}>
+                                                            <Stack direction={'row'} alignItems={'center'}>
+                                                                <p>
+                                                                    {isLoading
+                                                                        ? <Skeleton variant={'text'}/>
+                                                                        : t(`speciality.${doctor[11]}`, {ns: 'common'})
+                                                                    }
+                                                                    <span className={'more-info-tag'}>?</span>
+                                                                </p>
+                                                                <div className={'more-info-content'}>{doctor[12]}</div>
+                                                            </Stack>
+                                                        </div>
+                                                    </Stack>
+                                                    <Stack>
+                                                        <Typography variant={'body1'}>{t('language-spoken')}</Typography>
+                                                        <p>
+                                                            {isLoading
+                                                                ? <Skeleton variant={'text'}/>
+                                                                : t(`lang.${doctor[8]}`, {ns: 'common'})
+                                                            }
+                                                        </p>
+                                                    </Stack>
                                                 </Stack>
-                                                <p>293 Patient Satisfaction Ratings</p>
-                                                <p>45 Patients give comments</p>
                                             </div>
-                                            <Stack spacing={1.25}>
-                                                <Stack>
-                                                    <Typography variant={'body1'}>{t('department')}</Typography>
-                                                    <p>
-                                                        {isLoading
-                                                            ? <Skeleton variant={'text'}/>
-                                                            : t(`department.${doctor[9]}`, {ns: 'common'})
-                                                        }
-                                                    </p>
-                                                </Stack>
-                                                <Stack>
-                                                    <Typography variant={'body1'}>{t('specialization')}</Typography>
-                                                    <div className={'specialization-wrapper'}
-                                                         style={{position: 'relative', width: 'fit-content'}}>
-                                                        <Stack direction={'row'} alignItems={'center'}>
-                                                            <p>
-                                                                {isLoading
-                                                                    ? <Skeleton variant={'text'}/>
-                                                                    : t(`speciality.${doctor[11]}`, {ns: 'common'})
-                                                                }
-                                                                <span className={'more-info-tag'}>?</span>
-                                                            </p>
-                                                            <div className={'more-info-content'}>{doctor[12]}</div>
-                                                        </Stack>
-                                                    </div>
-                                                </Stack>
-                                                <Stack>
-                                                    <Typography variant={'body1'}>{t('language-spoken')}</Typography>
-                                                    <p>
-                                                    {isLoading
-                                                            ? <Skeleton variant={'text'}/>
-                                                            : t(`lang.${doctor[8]}`, {ns: 'common'})
-                                                        }
-                                                    </p>
-                                                </Stack>
-                                            </Stack>
-                                        </div>
-                                    </Stack>
-                                    <Button variant={'contained'} sx={{width: 'fit-content'}}
-                                        onClick={() => schedule(doctor)}
-                                    >{location.pathname.includes('/none/find-a-doctor') ? t('schedule-2') : t('schedule')}</Button>
+                                        </Stack>
+                                        <Button variant={'contained'} sx={{width: 'fit-content'}}
+                                                onClick={() => schedule(doctor)}
+                                        >{location.pathname.includes('/none/find-a-doctor') ? t('schedule-2') : t('schedule')}</Button>
+                                    </div>
+                                ))
+                                :
+                                <div className={'empty-table'}>
+                                    No doctor
                                 </div>
-                            ))}
-                            <Pagination page={searchData.pageNumber} sx={{alignSelf: 'center', backgroundColor: 'white', padding: '0.25rem 1rem'}} count={10} color="primary"
-                                onChange={(_, page) => setSearchData(prev => ({...prev, pageNumber: page}))}
-                            />
+                            }
+                            {(doctorData && doctorData.length !== 0 && totalPage) ?
+                                <Pagination page={searchData.pageNumber} sx={{alignSelf: 'center', backgroundColor: 'white', padding: '0.25rem 1rem'}}
+                                            count={totalPage} color="primary"
+                                            onChange={(_, page) => setSearchData(prev => ({...prev, pageNumber: page}))}
+                                /> : <></>
+                            }
                         </div>
                     </Stack>
                 </div> :

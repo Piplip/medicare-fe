@@ -106,3 +106,71 @@
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem 1rem;
 }
+.doctor-schedule{
+    width: 100%;
+    position: relative;
+}
+.schedule-header, .schedule-body{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.schedule-body-item-time{
+    border-bottom: 1px solid gray;
+    /*add bottom shadow effect*/
+    box-shadow: 0 2px 2px -2px black;
+    padding-block: .5rem;
+    margin-bottom: .5rem;
+}
+.schedule-header .schedule-body-item-time{
+    font-size: .9rem;
+    font-weight: bold;
+    font-family: DengXian, sans-serif;
+}
+.schedule-body-item .schedule-body-item-time{
+    font-family: "Bookman Old Style", sans-serif;
+}
+.time-cell .schedule-body-item-time{
+    transition: all 0.1s;
+    color: darkred;
+}
+.time-cell .available-time{
+    color: greenyellow;
+}
+.time-cell .schedule-body-item-time:hover{
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+}
+.time-cell .schedule-body-item-time:hover{
+    box-shadow: 0 0 0 5px white;
+    z-index: 2;
+    backdrop-filter: blur(5px);
+}
+.detail-datetime{
+    border: 5px solid white;
+    padding: .25rem 1rem;
+    font-size: 1.25rem;
+    font-family: "Bookman Old Style", sans-serif;
+    transition: all 0.1s ease-in-out;
+}
+.navigate-btn{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.25;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.navigate-before{
+    left: -5rem;
+}
+.navigate-after{
+    right: -5rem;
+}
+.navigate-btn:hover{
+    opacity: 1;
+    cursor: pointer;
+    background-color: rgba(124, 124, 124, 0.66);
+}

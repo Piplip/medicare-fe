@@ -27,4 +27,13 @@ export const staffAxios = axios.create({
     },
 })
 
+export const webSocketAxios = axios.create({
+    baseURL: 'http://localhost:8080',
+    timeout: 10000,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+})
+
 export default baseAxios;

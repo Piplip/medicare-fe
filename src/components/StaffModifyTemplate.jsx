@@ -35,27 +35,27 @@ export default function StaffModifyTemplate(props) {
         "Orthopedic Surgery", "Orthopedics", "Pathology", "Pediatrics", "Physical Medicine and Rehabilitation",
         "Plastic Surgery", "Psychiatry", "Pulmonology", "Radiology", "Rheumatology", "Sports Medicine", "Surgery", "Urology", "Vascular Surgery"
     ]
-    const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery"]
+    const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery", "Main Hospital Building"]
     const [currentStaffData, setCurrentStaffData] = useState({})
     useEffect(() => {
         setCurrentStaffData({
-            firstName: props.data[13],
-            lastName: props.data[14],
-            idCardNumber: props.data[37],
-            phoneNumber: props.data[16],
-            secPhoneNumber: props.data[17],
-            gender: props.data[18],
-            birthday: dayjs(props.data[15]),
-            address: `${props.data[22]}, ${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}`,
-            primaryLanguage: props.data[19],
-            email: props.data[38],
+            firstName: props.data[14],
+            lastName: props.data[15],
+            idCardNumber: props.data[38],
+            phoneNumber: props.data[17],
+            secPhoneNumber: props.data[18],
+            gender: props.data[19],
+            birthday: dayjs(props.data[16]),
+            address: `${props.data[23]}, ${props.data[24]}, ${props.data[25]}, ${props.data[26]}, ${props.data[27]}`,
+            primaryLanguage: props.data[20],
+            email: props.data[39],
             type: props.data[3],
             startContract: dayjs(props.data[8]),
             endContract: dayjs(props.data[7]),
-            department: props.data[28],
-            specialty: props.data[33],
+            department: props.data[30],
+            specialty: props.data[29],
             status: props.data[10],
-            imageURL: loadImage(props.data[2])
+            imageURL: loadImage(props?.data[2] ?? null)
         })
     }, [props.data]);
 
@@ -66,6 +66,7 @@ export default function StaffModifyTemplate(props) {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
     async function loadImage(url) {
+        if(url === null) return
         let storageRef = ref(storage, url)
         await getDownloadURL(storageRef)
             .then(url => setCurrentStaffData(prev => {
@@ -91,7 +92,6 @@ export default function StaffModifyTemplate(props) {
     }
 
     function saveChanges() {
-        console.log("ID CARD NUMBER BEFORE SEND:", currentStaffData.idCardNumber)
         adminAxios.patch('/staff/update', {
             staffID: props.data[0],
             staffType: currentStaffData.type,
@@ -156,13 +156,21 @@ export default function StaffModifyTemplate(props) {
             .catch(err => console.log(err))
     }
 
+    function resetStates(){
+        setIsModify(false)
+        setIsConfirm(false)
+        setIsPPChange(false)
+        setIsDeleted(false)
+        setIsLoading(false)
+        setPreviewImage(null)
+        setSelectedFile(null)
+    }
+
     return (
         <>
             {props.data.length > 0 &&
                 <Modal open={props.showModifyPanel} onClose={() => {
-                    setIsModify(false)
-                    setIsConfirm(false)
-                    setIsPPChange(false)
+                    resetStates()
                     props.setShowModify(false)
                 }}>
                     <ModalDialog sx={{paddingBlock: 1}}>
@@ -172,74 +180,76 @@ export default function StaffModifyTemplate(props) {
                             <ModalClose/>
                         </Stack>
                         <Stack direction={'row'} columnGap={4} sx={{overflowY: 'auto'}}>
-                            <Stack>
-                                <p className={'staff-detail-section-title'}>
-                                    {t('user-management.modal.staff-detail.pp.title', {ns: 'admin'})}
-                                </p>
-                                <Stack sx={{marginBottom: 3}}>
-                                    {isPPChange ?
-                                        <Stack {...getRootProps()}
-                                               sx={{
-                                                   width: '250px',
-                                                   height: '350px',
-                                                   border: '2px solid',
-                                                   backgroundColor: '#7e7e7e',
-                                                   color: 'white',
-                                                   padding: '1rem',
-                                                   textAlign: 'center'
-                                               }}
-                                               justifyContent={'center'}>
-                                            <input {...getInputProps()} />
-                                            {
-                                                previewImage ?
-                                                    <div style={{position: 'relative'}}>
-                                                        <ChangeCircleOutlinedIcon sx={{fontSize: 40}}
-                                                                                  className={'user-pp-preview-change-btn'}
-                                                                                  onClick={(e) => {
-                                                                                      e.stopPropagation()
-                                                                                      setPreviewImage(null)
-                                                                                  }}
-                                                        />
-                                                        <img src={previewImage} style={{width: '100%'}}
-                                                             onLoad={() => URL.revokeObjectURL(previewImage)}
-                                                             alt={'image'}/>
-                                                    </div>
-                                                    :
-                                                    isDragActive ?
-                                                        <Stack justifyContent={'center'} alignItems={'center'}>
-                                                            <CloudUploadIcon sx={{width: '5rem', height: '5rem'}}/>
-                                                        </Stack>
+                            <Stack >
+                                <div>
+                                    <p className={'staff-detail-section-title'}>
+                                        {t('user-management.modal.staff-detail.pp.title', {ns: 'admin'})}
+                                    </p>
+                                    <Stack sx={{marginBottom: 3}}>
+                                        {isPPChange ?
+                                            <Stack {...getRootProps()}
+                                                   sx={{
+                                                       width: '250px',
+                                                       height: '350px',
+                                                       border: '2px solid',
+                                                       backgroundColor: '#7e7e7e',
+                                                       color: 'white',
+                                                       padding: '1rem',
+                                                       textAlign: 'center'
+                                                   }}
+                                                   justifyContent={'center'}>
+                                                <input {...getInputProps()} />
+                                                {
+                                                    previewImage ?
+                                                        <div style={{position: 'relative'}}>
+                                                            <ChangeCircleOutlinedIcon sx={{fontSize: 40}}
+                                                                                      className={'user-pp-preview-change-btn'}
+                                                                                      onClick={(e) => {
+                                                                                          e.stopPropagation()
+                                                                                          setPreviewImage(null)
+                                                                                      }}
+                                                            />
+                                                            <img src={previewImage} style={{width: '100%'}}
+                                                                 onLoad={() => URL.revokeObjectURL(previewImage)}
+                                                                 alt={'image'}/>
+                                                        </div>
                                                         :
-                                                        <p style={{userSelect: 'none'}}>
-                                                            {/*<Trans t={t} i18nKey={'admin.user-management.modal.staff-detail.pp.description'}/>*/}
-                                                            Drag and drop image here<br/>or click to select image
-                                                        </p>
-                                            }
-                                        </Stack>
-                                        :
-                                        <img
-                                            src={currentStaffData.imageURL}
-                                            alt={'image'} width={'250px'}/>
-                                    }
-                                    {isPPChange ?
-                                        <Stack direction={'row'} justifyContent={'space-between'}
-                                               sx={{marginTop: '0.25rem'}}>
-                                            <Button variant={'solid'} onClick={handleUpdatePP}>
-                                                {t('user-management.modal.staff-detail.button.accept', {ns: 'admin'})}
-                                            </Button>
-                                            <Button variant={'solid'} onClick={() => setIsPPChange(false)}>
-                                                {t('user-management.modal.staff-detail.button.cancel', {ns: 'admin'})}
-                                            </Button>
-                                        </Stack>
-                                        :
-                                        <p className={'change-profile-img-btn'} onClick={() => {
-                                            setPreviewImage(null)
-                                            setIsPPChange(prev => !prev)
-                                        }}>
-                                            {t('user-management.modal.staff-detail.button.change-pp', {ns: 'admin'})}
-                                        </p>
-                                    }
-                                </Stack>
+                                                        isDragActive ?
+                                                            <Stack justifyContent={'center'} alignItems={'center'}>
+                                                                <CloudUploadIcon sx={{width: '5rem', height: '5rem'}}/>
+                                                            </Stack>
+                                                            :
+                                                            <p style={{userSelect: 'none'}}>
+                                                                {/*<Trans t={t} i18nKey={'admin.user-management.modal.staff-detail.pp.description'}/>*/}
+                                                                Drag and drop image here<br/>or click to select image
+                                                            </p>
+                                                }
+                                            </Stack>
+                                            :
+                                            <img
+                                                src={currentStaffData.imageURL}
+                                                alt={'image'} width={'250px'}/>
+                                        }
+                                        {isPPChange ?
+                                            <Stack direction={'row'} justifyContent={'space-between'}
+                                                   sx={{marginTop: '0.25rem'}}>
+                                                <Button variant={'solid'} onClick={handleUpdatePP}>
+                                                    {t('user-management.modal.staff-detail.button.accept', {ns: 'admin'})}
+                                                </Button>
+                                                <Button variant={'solid'} onClick={() => setIsPPChange(false)}>
+                                                    {t('user-management.modal.staff-detail.button.cancel', {ns: 'admin'})}
+                                                </Button>
+                                            </Stack>
+                                            :
+                                            <p className={'change-profile-img-btn'} onClick={() => {
+                                                setPreviewImage(null)
+                                                setIsPPChange(prev => !prev)
+                                            }}>
+                                                {t('user-management.modal.staff-detail.button.change-pp', {ns: 'admin'})}
+                                            </p>
+                                        }
+                                    </Stack>
+                                </div>
                                 <Stack rowGap={1}>
                                     <Button variant={'soft'} onClick={() => {
                                         setIsDeleted(false)
@@ -247,21 +257,21 @@ export default function StaffModifyTemplate(props) {
                                     }}>
                                         {t('user-management.modal.staff-detail.button.update-pp', {ns: 'admin'})}
                                     </Button>
-                                    <Button variant={'soft'} color={"danger"} onClick={() => {
-                                        setIsModify(false)
-                                        if (currentStaffData.status === 'inactive') {
-                                            alert('This staff is already deleted')
-                                        } else {
-                                            setIsDeleted(prev => !prev)
-                                            if (isDeleted) {
-                                                props.handleDelete()
-                                            }
-                                        }
-                                    }}>
-                                        {isDeleted ? 'Click to confirm changes' :
-                                            t('user-management.modal.staff-detail.button.delete-pp', {ns: 'admin'})
-                                        }
-                                    </Button>
+                                    {/*<Button variant={'soft'} color={"danger"} onClick={() => {*/}
+                                    {/*    setIsModify(false)*/}
+                                    {/*    if (currentStaffData.status === 'Inactive') {*/}
+                                    {/*        alert('This staff is already deleted')*/}
+                                    {/*    } else {*/}
+                                    {/*        setIsDeleted(prev => !prev)*/}
+                                    {/*        if (isDeleted) {*/}
+                                    {/*            props.handleDelete()*/}
+                                    {/*        }*/}
+                                    {/*    }*/}
+                                    {/*}}>*/}
+                                    {/*    {isDeleted ? 'Click to confirm changes' :*/}
+                                    {/*        t('user-management.modal.staff-detail.button.delete-pp', {ns: 'admin'})*/}
+                                    {/*    }*/}
+                                    {/*</Button>*/}
                                     {isModify && (
                                         isConfirm ? (
                                             <Button variant="solid" onClick={saveChanges}>
@@ -351,6 +361,7 @@ export default function StaffModifyTemplate(props) {
                                             <DatePicker value={currentStaffData.birthday.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
                                                         onChange={(date) => handleSelectChange('birthday', date)}
+                                                        sx={{backgroundColor: 'white'}}
                                             /> :
                                             <p className={'personal-details-item-content'}>{currentStaffData.birthday.toString().slice(0, 16)}</p>
                                         }
@@ -422,6 +433,7 @@ export default function StaffModifyTemplate(props) {
                                             <DatePicker value={currentStaffData.startContract.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
                                                         onChange={(date) => handleSelectChange('startContract', date)}
+                                                        sx={{backgroundColor: 'white'}}
                                             />
                                             :
                                             <p className={'personal-details-item-content'}>{currentStaffData.startContract.toString().slice(0, 16)}</p>
@@ -433,6 +445,7 @@ export default function StaffModifyTemplate(props) {
                                             <DatePicker value={currentStaffData.endContract.subtract(1, "D")}
                                                         format={"DD - MM - YYYY"}
                                                         onChange={(date) => handleSelectChange('endContract', date)}
+                                                        sx={{backgroundColor: 'white'}}
                                             /> :
                                             <p className={'personal-details-item-content'}>{currentStaffData.endContract.toString().slice(0, 16) || "Unknown"}</p>
                                         }

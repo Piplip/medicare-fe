@@ -1,13 +1,19 @@
-.root-container > *:not(:nth-child(-n+2)){
+.root-container > *:not(:nth-child(-n+2), .chat-btn){
     padding-top: 5rem;
     padding-bottom: 1rem;
 }
+.root-container {
+    position: relative;
+}
 .root-nav{
     display: flex;
-    background-color: #295457;
+    background-color: rgb(41, 84, 87);
     color: white;
-    padding: 1rem 2rem;
+    padding: .75rem 2rem;
     justify-content: space-between;
+    top: 0;
+    position: sticky;
+    z-index: 2;
 }
 .nav-logo{
     font-size: 1.25rem;
@@ -57,18 +63,14 @@
     flex-grow: 1;
     text-align: center;
 }
-.chat-btn{
+.chat-help-wrapper{
     position: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
     bottom: 1.25rem;
     left: 1.25rem;
-    background-color: #007dff;
-    border-radius: 50%;
     color: white;
-    padding: 1.25rem;
-    font-size: 2rem;
 }
 .profile{
     position: relative;
@@ -105,4 +107,19 @@
 }
 .profile-menu > .profile-nav-links:hover{
     background-color: #c2c2c2;
+}
+.chat-help-btn{
+    background-color: blue;
+    padding: .75rem;
+    border-radius: 50%;
+}
+.footer-links-wrapper{
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-between;
+}
+.footer-links-wrapper > *{
+    display: flex;
+    flex-direction: column;
+    row-gap: .25rem;
 }

@@ -4,11 +4,11 @@ import StepIndicator, { stepIndicatorClasses } from '@mui/joy/StepIndicator';
 import Typography, { typographyClasses } from '@mui/joy/Typography';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
-import '../styles/request-appointment-style.css'
-import {Button, Stack} from "@mui/material";
+import '../../styles/request-appointment-style.css'
+import {Backdrop, Button, CircularProgress, Stack} from "@mui/material";
 import React, {useState} from "react";
 import {Outlet, useLocation, useNavigate} from "react-router";
-import baseAxios from "../config/axiosConfig.jsx";
+import baseAxios from "../../config/axiosConfig.jsx";
 import {useTranslation} from "react-i18next";
 
 export const AppointmentContext = React.createContext({})
@@ -25,8 +25,9 @@ export default function RequestAppointment(props){
         {title: 'payment', link: 'payment'}
     ]
     const refStep = {'info': 0, "request-for": 1, "find-a-doctor": 2
-        , "appointment-detail": noSelected ? 3:2, confirmation: noSelected?4:3, payment: noSelected?5:4}
+        , "appointment-detail": noSelected ? 3:2, confirmation: noSelected ? 4:3, payment: noSelected ? 5:4}
     const [currentStep, setCurrentStep] = useState(refStep[location.pathname.split('/')[3].split('?')[0]])
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate()
 
     const [appointmentData, setAppointmentData] = useState({
@@ -35,6 +36,7 @@ export default function RequestAppointment(props){
         reminder: 'yes',
         date: null,
         time: null,
+        invalidDate: null,
         reason: '',
         isReferral: "no",
         doctor: {
@@ -56,23 +58,24 @@ export default function RequestAppointment(props){
         navigate(steps[currentStep - 1].link)
     }
 
-    function pad(num){
-        return num.toString().padStart(2, '0')
-    }
-
     async function goNextStep(){
         if(currentStep === steps.length - 1) return
         if(location.pathname.includes("/confirmation")){
+            console.log("Sending make appointment request")
+            setIsLoading(true)
             await baseAxios.post('/appointment', {
                 patientEmail: props.currentUser.email,
+                patientName: props.currentUser.lastName + ' ' + props.currentUser.firstName,
                 doctorID: appointmentData.doctor.doctorID,
                 appointmentDate: appointmentData.date,
-                appointmentTime: pad(appointmentData.time['$H']) + ':' + pad(appointmentData.time['$m']),
+                appointmentTime: appointmentData.time,
                 reason: appointmentData.reason,
                 isReferral: appointmentData.isReferral,
                 isReminder: appointmentData.reminder
             })
             .then(r => {
+                console.log(r)
+                setIsLoading(false)
                 setAppointmentData(prev =>({
                     ...prev,
                     appointmentID: r.data
@@ -80,12 +83,28 @@ export default function RequestAppointment(props){
             })
             .catch(err => console.log(err))
         }
+        else if(location.pathname.includes('/appointment-detail')){
+            if(appointmentData.date === null || appointmentData.time === null){
+                alert("Please select a date and time for an appointment")
+                return
+            }
+            if(appointmentData.invalidDate){
+                alert("The selected time is not available or invalid")
+                return
+            }
+        }
         setCurrentStep(prev => prev + 1)
         navigate(steps[currentStep + 1].link)
     }
 
     return (
         <div className={'request-appointment-wrapper'}>
+            <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <Stepper orientation="horizontal"
                 sx={(theme) => ({
                     '--Stepper-verticalGap': '2.5rem',

@@ -48,6 +48,10 @@ export default function StaffLogin(){
                     break
                 case 'ADMIN':
                     redirectURL = '/admin/users'
+                    break
+                case 'PHARMACIST':
+                    redirectURL = '/pharmacist/dashboard'
+                    break
             }
 
             setShowSuccessLogin(true)
@@ -63,7 +67,7 @@ export default function StaffLogin(){
     }
 
     return (
-        <div className={'login-wrapper'}>
+        <div className={'login-wrapper'} style={{height: '100%', backgroundColor: '#295457'}}>
             <div className={'login-form'}>
                 <Stack rowGap={'1rem'}>
                     <Typography variant={'h4'} marginBottom={3}>

@@ -1,5 +1,5 @@
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import '../styles/top-nav-style.css'
+import '../../styles/top-nav-style.css'
 import {Link} from "react-router-dom";
 
 export default function TopNav(props){

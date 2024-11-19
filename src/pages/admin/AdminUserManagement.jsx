@@ -13,13 +13,13 @@ import {
     Typography,
 } from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import TableTemplate from "../../components/TableTemplate.jsx";
-import {useLoaderData} from "react-router";
+import TableTemplate from "../../components/root/TableTemplate.jsx";
+import {useLoaderData, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {adminAxios} from "../../config/axiosConfig.jsx";
 import {Tabs} from "@mui/material";
-import {Modal} from "@mui/joy";
+import {Modal, ModalDialog} from "@mui/joy";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
@@ -31,6 +31,7 @@ import StaffModifyTemplate from "../../components/StaffModifyTemplate.jsx";
 import SimpleTableTemplate from "../../components/SimpleTableTemplate.jsx";
 import {useTranslation} from "react-i18next";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import UnauthenticatedModal from "../../components/UnauthenticatedModal.jsx";
 
 export default function AdminUserManagement(){
     initializeApp(firebaseConfig);
@@ -39,7 +40,7 @@ export default function AdminUserManagement(){
     const [selectedFile, setSelectedFile] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const loaderData = useLoaderData()
-    const [staffData, setStaffData] = useState(loaderData.data.records)
+    const [staffData, setStaffData] = useState(loaderData !== null && JSON.parse(loaderData.data[1])['records'])
     const [sortedStaffData, setSortedStaffData] = useState(null)
     const [openModal, setOpenModal] = useState(false)
     const tableHeader = ['id', 'lname', 'fname', 'phone', 'gender', 'department', 'specialization', 'staff-type', 'email', 'status']
@@ -49,6 +50,7 @@ export default function AdminUserManagement(){
     const [queryName, setQueryName] = useState(searchParams.get('name') || '')
     const [currentModifyData, setCurrentModifyData] = useState([])
     const [viewMode, setViewMode] = useState(0)
+    const [deleteReason, setDeleteReason] = useState("")
     const [searchData, setSearchData] = useState({
         department: searchParams.get('department') || 'default',
         language: searchParams.get('language') || 'default',
@@ -57,9 +59,10 @@ export default function AdminUserManagement(){
         pageSize: parseInt(searchParams.get('pageSize')) || 10,
         pageNumber: parseInt(searchParams.get('pageNumber')) || 1,
         type: searchParams.get('type') || '',
-        status: searchParams.get('status') || 'default'
+        status: searchParams.get('status') || 'default',
     })
-
+    const [totalPage, setTotalPage] = useState(parseInt(loaderData?.data[0], 10))
+    const navigate = useNavigate()
     const [sortOption, setSortOption] = useState({
         orderBy: 'id',
         order: 'asc'
@@ -126,7 +129,8 @@ export default function AdminUserManagement(){
 
         adminAxios.get('/staff?' + params)
             .then(async res => {
-                setStaffData(res.data.records)
+                setStaffData(JSON.parse(res?.data[1])['records'])
+                setTotalPage(parseInt(res?.data[0], 10))
             })
             .catch(err => console.log(err))
     }
@@ -168,7 +172,6 @@ export default function AdminUserManagement(){
 
         adminAxios.post(targetURL)
             .then(async r => {
-                console.log("created staff data", r.data)
                 setIsLoading(false)
                 const successData = r.data.filter(item => item.resultType === 1)
                 const failedData = r.data.filter(item => item.resultType !== 1)
@@ -194,9 +197,10 @@ export default function AdminUserManagement(){
         })
     }
     function deleteStaff(index){
-        adminAxios.delete('/staff?id=' + staffData[index][0])
+        setDeleteReason("")
+        adminAxios.delete('/staff/delete?id=' + staffData[index][0] + "&note=" + deleteReason)
             .then(res => {
-                console.log(res)
+                alert(res.data)
                 fetchStaffData()
             })
             .catch(err => console.log(err))
@@ -210,8 +214,25 @@ export default function AdminUserManagement(){
             .catch(err => console.log(err))
     }
 
+    console.log(loaderData)
+
     return (
         <div className={'user-management-container'}>
+            {loaderData === null &&
+                <Modal open={true}>
+                    <ModalDialog>
+                        <Stack rowGap={2}>
+                            <Typography textAlign={'center'} variant={'h4'} color={'red'}>WARNING: UNAUTHORIZED ACCESS</Typography>
+                            <Typography variant={'h6'}>
+                                You are not authorized to view this page. Please log in or switch to an authorized account.
+                            </Typography>
+                        </Stack>
+                        <Button variant={'contained'} color={'primary'} onClick={() => {
+                            navigate('/staff/login')
+                        }}>LOG IN / SWITCH ACCOUNT</Button>
+                    </ModalDialog>
+                </Modal>
+            }
             <Modal aria-labelledby="modal-title" aria-describedby="modal-desc"
                    open={openModal}
                    onClose={() => setOpenModal(false)}
@@ -395,12 +416,15 @@ export default function AdminUserManagement(){
                     </Stack>
                 }
                 <section className={'user-table-wrapper'}>
-                    <TableTemplate data={sortedStaffData !== null ? sortedStaffData : staffData} header={tableHeader} isPagination={true}
-                                   currentValues={searchData} setCurrentValues={setSearchData} allowCheckbox={true}
-                                   handleDelete={deleteStaff} isMutable={true} allowDelete={true} allowModify={true}
-                                   handleModify={handleModify} ModifyTemplate={StaffModifyTemplate} currentModifyData={currentModifyData}
-                                   setCurrentModifyData={setCurrentModifyData}
-                    />
+                    {loaderData &&
+                        <TableTemplate data={sortedStaffData !== null ? sortedStaffData : staffData} header={tableHeader} isPagination={true}
+                                       currentValues={searchData} setCurrentValues={setSearchData} allowCheckbox={true}
+                                       handleDelete={deleteStaff} isMutable={true} allowDelete={true} allowModify={true}
+                                       handleModify={handleModify} ModifyTemplate={StaffModifyTemplate} currentModifyData={currentModifyData}
+                                       setCurrentModifyData={setCurrentModifyData} deleteReason={deleteReason} setDeleteReason={setDeleteReason}
+                                       totalPage={totalPage}
+                        />
+                    }
                 </section>
             </section>
         </div>

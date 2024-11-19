@@ -82,3 +82,12 @@
     flex-direction: column;
     row-gap: 0.5rem;
 }
+.otp-input{
+    text-align: center;
+    width: 5.5rem;
+    font-size: 4.5rem;
+    border-radius: 5px;
+    color: blue;
+    font-weight: 500;
+    font-family: system-ui;
+}

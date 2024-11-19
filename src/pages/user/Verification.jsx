@@ -1,11 +1,11 @@
 import {Button, CircularProgress, Stack} from "@mui/material";
-import '../styles/verification-styles.css'
+import '../../styles/verification-styles.css'
 import {useLocation} from "react-router";
-import baseAxios from "../config/axiosConfig.jsx";
+import baseAxios from "../../config/axiosConfig.jsx";
 import {useState} from "react";
 import Typography from "@mui/joy/Typography";
 import {initializeApp} from "firebase/app";
-import {firebaseConfig} from "../config/FirebaseConfig.jsx";
+import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import { getStorage, ref, getDownloadURL, uploadBytes} from "firebase/storage";
 import {useTranslation} from "react-i18next";
 

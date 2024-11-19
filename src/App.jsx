@@ -1,7 +1,7 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import FindDoctor from "./pages/FindDoctor.jsx";
+import FindDoctor from "./pages/user/FindDoctor.jsx";
 import Homepage from "./pages/Homepage.jsx";
 import RootTemplate from "./template/RootTemplate.jsx";
 import AppointmentScheduling from "./pages/physician/AppointmentScheduling.jsx";
@@ -9,10 +9,10 @@ import LoginSignUp from "./pages/LoginSignup.jsx";
 import StaffTemplate from "./template/StaffTemplate.jsx";
 import PhysicianDashboard from "./pages/physician/PhysicianDashboard.jsx";
 import PhysicianStatistic from "./pages/physician/PhysicianStatistic.jsx";
-import Verification from "./pages/Verification.jsx";
+import Verification from "./pages/user/Verification.jsx";
 import i18next from './config/i18nConfig.jsx'
 import {useEffect, useState} from "react";
-import RequestAppointment from "./pages/RequestAppointment.jsx";
+import RequestAppointment from "./pages/user/RequestAppointment.jsx";
 import NeedToKnowInfo from "./components/request-appointment/NeedToKnowInfo.jsx"
 import RequestAppointmentFor from "./components/request-appointment/AppointmentFor.jsx";
 import AppointmentConfirmation from "./components/request-appointment/AppointmentConfirmation.jsx";
@@ -21,7 +21,7 @@ import Detail from "./components/request-appointment/Detail.jsx";
 import React from "react";
 import AppointmentFindDoctor from "./components/request-appointment/AppointmentFindDoctor.jsx";
 import PaymentSuccess from "./components/PaymentSuccess.jsx";
-import UserProfile from "./components/UserProfile.jsx";
+import UserProfile from "./components/user-profile/UserProfile.jsx";
 import PersonalInfo from "./components/user-profile/PersonalInfo.jsx";
 import BillingPayment from "./components/user-profile/BillingPayment.jsx";
 import AppointmentHistory from "./components/user-profile/AppointmentHistory.jsx";
@@ -30,17 +30,19 @@ import AdminAudit from "./pages/admin/AdminAudit.jsx";
 import AdminReport from "./pages/admin/AdminReport.jsx";
 import AdminSetting from "./pages/admin/AdminSetting.jsx";
 import AdminUserManagement from "./pages/admin/AdminUserManagement.jsx";
-import ContextMenu from "./components/context-menu/ContextMenu.jsx";
 import UserFeedback from "./components/UserFeedback.jsx";
 import StaffLogin from "./pages/StaffLogin.jsx";
 import {getCookie} from "./components/Utilities.jsx";
+import PharmacistDashboard from "./pages/pharmacist/PharmacistDashboard.jsx";
+import PharmacistPrescription from "./pages/pharmacist/PharmacistPrescription.jsx";
+import ChatPanel from "./pages/user/ChatPanel.jsx";
 
 export const UserContext  = React.createContext({})
 
 function App() {
-    const [language, setLanguage] = useState(localStorage.getItem('language') || 'vi');
+    const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
     useEffect(() => {
-        if(localStorage.getItem('language') === null) localStorage.setItem('language', 'vi');
+        if(localStorage.getItem('language') === null) localStorage.setItem('language', 'en');
         i18next.changeLanguage(language)
     }, []);
 
@@ -94,7 +96,7 @@ function App() {
                     element: <UserProfile logout={logout} currentUser={currentUser}/>,
                     children: [
                         {
-                            path: 'personal-info', element: <PersonalInfo />,
+                            path: 'personal-info', element: <PersonalInfo logout={logout}/>,
                             loader: async () => {
                                 return baseAxios.get('/profile?email=' + currentUser.email)
                             },
@@ -118,7 +120,7 @@ function App() {
         },
         {
             path: 'staff',
-            element: <StaffTemplate />,
+            element: <StaffTemplate language={language} changeLanguage={changeLanguage}/>,
             children: [
                 {path: 'login', element: <StaffLogin />},
             ]
@@ -134,7 +136,12 @@ function App() {
                     }
                 },
                 {path: 'appointment-scheduling', element: <AppointmentScheduling />},
-                {path: 'statistic', element: <PhysicianStatistic />},
+                {path: 'statistic', element: <PhysicianStatistic />,
+                    loader: () => {
+                        if(getCookie('STAFF-ID') == null) return null
+                        return staffAxios.get('/fetch/statistic?view=w')
+                    }
+                },
             ]
         },
         {
@@ -154,8 +161,13 @@ function App() {
                                 "page-size": 10,
                                 "page-number": 1,
                                 "staff-type": "",
-                                "staff-status": "default"
+                                "staff-status": "default",
+                                "staff-id": getCookie('STAFF-ID')
                             }
+                        }).then(res => {
+                            return res
+                        }).catch(err => {
+                            return null
                         })
                     }
                 },
@@ -164,10 +176,24 @@ function App() {
                 {path: 'report', element: <AdminReport />},
             ]
         },
+        {
+            path: 'pharmacist',
+            element: <StaffTemplate />,
+            children: [
+                {path: 'dashboard', element: <PharmacistDashboard /> },
+                {path: 'medication', element: <PharmacistPrescription />,
+                    loader: () => {
+                        if(getCookie('STAFF-ID') == null) return null
+                        return staffAxios.get('/get/prescription/all')
+                    }
+                }
+
+            ]
+        },
         {path: '/verify/success', element: <Verification />},
         {path: '/verify/fail', element: <Verification />},
         {path: '/payment/success', element: <PaymentSuccess />},
-        {path: '/dev', element: <ContextMenu />}
+        {path: '/dev', element: <ChatPanel />}
     ])
 
     return (

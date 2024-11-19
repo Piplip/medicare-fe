@@ -1,6 +1,6 @@
 import '../styles/homepage-style.css'
+import '../styles/effect.scss'
 import {Button, Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography} from "@mui/material";
-import MapLocation from "../assets/location.png";
 import Cardiology from "../assets/cardiology.png";
 import Emergency from "../assets/emergency.png";
 import Neurology from "../assets/neurology.png";
@@ -14,23 +14,26 @@ import VisitingHour from "../assets/visiting-hours.png";
 import CloseIcon from "@mui/icons-material/Close";
 import Input from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import {Link} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
-import {UserContext} from "../App.jsx";
 import FirstTimeImg from '../assets/first-time-image.jpg'
+import {useJsApiLoader} from "@react-google-maps/api";
+import MapLocation from '../assets/location.png'
+import LazyLoad from 'react-lazyload'
+import {Map} from "@mui/icons-material";
 
 export default function Homepage(){
     const [open, setOpen] = useState(true)
     const [showDialogAfter, setShowDialogAfter] = useState(false);
-
-    const currentUser = useContext(UserContext).currentUser
-
-    console.log(currentUser)
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: 'AIzaSyCKd_cDO-O94AfJTUcIjTzGBwoZe7xLEeg',
+    })
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -93,6 +96,9 @@ export default function Homepage(){
                 </Dialog>
             }
             <section className={'homepage-hero'}>
+                {Array.from({ length: 30 }).map((_, index) => (
+                    <div key={index} className="bubble"></div>
+                ))}
                 <div className={'hero-main-wrapper'}>
                     <div className={'hero-main-intro-text'}>
                         <div>
@@ -105,7 +111,7 @@ export default function Homepage(){
                     </div>
                     <div className={'call-to-action-container'}>
                         {callToActionsData.map((item, index) => {
-                            if(index === 0 && localStorage.getItem('SESSION-ID')) return
+                            if (index === 0 && localStorage.getItem('SESSION-ID')) return
                             return (
                                 <div className={'call-to-action-item'} key={index}>
                                     <div className={'call-to-action-icon-wrapper'}>
@@ -113,11 +119,14 @@ export default function Homepage(){
                                     </div>
                                     <div className={'call-to-action-main'}>
                                         <Stack>
-                                            <Typography variant={'h5'}>{t(`call-to-action.item${index+1}.title`)}</Typography>
-                                            <Typography variant={'body2'}>{t(`call-to-action.item${index+1}.description`)}</Typography>
+                                            <Typography
+                                                variant={'h5'}>{t(`call-to-action.item${index + 1}.title`)}</Typography>
+                                            <Typography
+                                                variant={'body2'}>{t(`call-to-action.item${index + 1}.description`)}</Typography>
                                         </Stack>
                                         <Link to={item.btnLink}>
-                                            <button className={'call-to-action-btn'}>{t(`call-to-action.item${index+1}.button`)}</button>
+                                            <button
+                                                className={'call-to-action-btn'}>{t(`call-to-action.item${index + 1}.button`)}</button>
                                         </Link>
                                     </div>
                                 </div>
@@ -133,27 +142,31 @@ export default function Homepage(){
                 <div className={'homepage-service'}>
                     {servicesData.map((item, index) => {
                         return (
+                            <LazyLoad key={index} placeholder={<p>Loading...</p>}>
                             <div key={index} className={'service-item-container'}>
-                                <div className={'service-item'}>
-                                    <img src={item} alt={'service'}/>
-                                    <Typography variant={'h6'} fontWeight={'bold'}>{t(`service.service${index+1}.name`)}</Typography>
-                                    <Typography variant={'body2'}>{t(`service.service${index+1}.description`)}</Typography>
-                                    <Button size={'small'} className={'service-item-btn'}
-                                            sx={{
-                                                width: '100%',
-                                                backgroundColor: '#3a6e6e',
-                                                color: 'white',
-                                                paddingBlock: 1,
-                                                '&:hover': {
-                                                    backgroundColor: '#254646',
-                                                },
-                                            }}
-                                            variant={'outlined'}
-                                    >
-                                        {t('service.button')}
-                                    </Button>
+                                    <div className={'service-item'}>
+                                        <img src={item} alt={'service'}/>
+                                        <Typography variant={'h6'}
+                                                    fontWeight={'bold'}>{t(`service.service${index + 1}.name`)}</Typography>
+                                        <Typography
+                                            variant={'body2'}>{t(`service.service${index + 1}.description`)}</Typography>
+                                        <Button size={'small'} className={'service-item-btn'}
+                                                sx={{
+                                                    width: '100%',
+                                                    backgroundColor: '#3a6e6e',
+                                                    color: 'white',
+                                                    paddingBlock: 1,
+                                                    '&:hover': {
+                                                        backgroundColor: '#254646',
+                                                    },
+                                                }}
+                                                variant={'outlined'}
+                                        >
+                                            {t('service.button')}
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
+                            </LazyLoad>
                         )
                     })}
                 </div>
@@ -162,27 +175,33 @@ export default function Homepage(){
                 <div className={'homepage-about'}>
                     <Stack borderBottom={'2px solid white'} rowGap={2} paddingBottom={'1rem'}>
                         <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.title')}</Typography>
-                        <p>{t('contact.address-title')}<span className={'about-info'}>{import.meta.env.VITE_ADDRESS}</span></p>
+                        <p>{t('contact.address-title')}<span
+                            className={'about-info'}>{import.meta.env.VITE_ADDRESS}</span></p>
                         <p>{t('contact.phone')}<span className={'about-info'}>{import.meta.env.VITE_PHONE}</span></p>
                         <p>Email<span className={'about-info'}>{import.meta.env.VITE_EMAIL}</span></p>
-                        <p>{t('contact.regular-hours')}<span className={'about-info'}>{t('contact.working-hours')}</span></p>
+                        <p>{t('contact.regular-hours')}<span
+                            className={'about-info'}>{t('contact.working-hours')}</span></p>
                     </Stack>
                     <Stack rowGap={3}>
                         <Typography variant={'h4'} fontWeight={'bold'}>{t('contact.emergency-contact')}</Typography>
                         <p>{t('contact.emergency-hours')}<span className={'about-info'}>24/7</span></p>
-                        <p>{t('contact.emergency-phone')}<span className={'about-info'}>{import.meta.env.VITE_EMERGENCY_PHONE}</span></p>
+                        <p>{t('contact.emergency-phone')}<span
+                            className={'about-info'}>{import.meta.env.VITE_EMERGENCY_PHONE}</span></p>
                         <p>{t('contact.emergency-address')}<span className={'about-info'}>{t('emergency_address', {ns: 'common'})}</span></p>
                     </Stack>
                 </div>
-                <img src={MapLocation} alt={'map-location'}/>
+                <img className={'map-location'}
+                     src={MapLocation}
+                     alt={'map-location'}/>
             </section>
             <section className={'patient-visitor-information'}>
-                <Typography textAlign={'center'} fontWeight={'bold'} variant={'h4'}>{t('visitor-info.title')}</Typography>
+                <Typography textAlign={'center'} fontWeight={'bold'}
+                            variant={'h4'}>{t('visitor-info.title')}</Typography>
                 <div className={'patient-visitor'}>
                     {patientVisitorData.map((item, index) => {
                         return (
                             <div key={index} className={'patient-visitor-item'}>
-                                <Stack style={{maxWidth: '50%'}} rowGap={1}>
+                                <Stack style={{maxWidth: '100%'}} rowGap={1}>
                                     <Typography color={'yellow'} variant={'h5'}>{t(`visitor-info.item${index+1}.title`)}</Typography>
                                     <Typography variant={'body2'}>{t(`visitor-info.item${index+1}.description`)}</Typography>
                                     <Button
@@ -197,7 +216,7 @@ export default function Homepage(){
                                         }}
                                         variant={'outlined'} size={'small'} style={{width: 'fit-content'}}>{t('visitor-info.button')}</Button>
                                 </Stack>
-                                <img src={item} alt={'visitor information'}/>
+                                <img className={'patient-visitor-img'} src={item} alt={'visitor information'}/>
                             </div>
                         )
                     })}

@@ -13,17 +13,17 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Checkbox from '@mui/joy/Checkbox';
 import {useState} from "react";
-import {useContextMenu} from "../custom hooks/useContextMenu.jsx";
+import {useContextMenu} from "../../custom hooks/useContextMenu.jsx";
 import {DialogActions, Divider, Modal, ModalDialog} from "@mui/joy";
 import Button from '@mui/joy/Button';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
-import AdminUserContextMenu from "./context-menu/ContextMenu.jsx";
+import AdminUserContextMenu from "../context-menu/ContextMenu.jsx";
 import {useTranslation} from "react-i18next";
 
 export default function TableTemplate({header, data, isPagination, handleClick, currentValues, setCurrentValues, allowCheckbox, handleDelete,
-    handleModify, allowModify, allowDelete, isMutable, ModifyTemplate, currentModifyData, clickable
+    handleModify, allowModify, allowDelete, isMutable, ModifyTemplate, currentModifyData, clickable, deleteReason, setDeleteReason, totalPage
 }){
     const {t} = useTranslation()
     const [selectAll, setSelectAll] = useState(false)
@@ -37,11 +37,11 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
         setSelectAll(false)
         setCheckboxes(new Array(size).fill(false))
         setCurrentValues(prev => {
-            return {...prev, pageSize: size}
+            return {...prev, pageSize: size, pageNumber: 1}
         })
     }
 
-    function  _handleDelete(index){
+    function  _handleDelete(){
         handleDelete(index)
         setShowDeleteModal(false)
     }
@@ -175,10 +175,27 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                         </DialogTitle>
                         <Divider />
                         <DialogContent sx={{color: 'white'}}>
-                            {t('user-management.modal.delete-staff.description', {ns: 'admin'})}
+                            <Stack rowGap={1}>
+                                {t('user-management.modal.delete-staff.description', {ns: 'admin'})}
+                                <textarea name={'reason'} style={{
+                                    padding: '0.25rem 0.5rem',
+                                    fontSize: '1rem',
+                                    backgroundColor: 'rgb(246,246,246)',
+                                    fontFamily: 'Tahoma, sans-serif',
+                                    minHeight: '10rem',
+                                    maxHeight: '20rem',
+                                    minWidth: '30rem',
+                                    width: '100%',
+                                    maxWidth: '50rem'
+                                }}
+                                          placeholder={"Enter reason for deleting this staff"}
+                                          value={deleteReason}
+                                          onChange={(e) => setDeleteReason(e.target.value)}
+                                />
+                            </Stack>
                         </DialogContent>
                         <DialogActions>
-                            <Button variant="solid" color="danger" onClick={() => _handleDelete(index)}>
+                            <Button variant="solid" color="danger" onClick={_handleDelete}>
                                 {t('user-management.modal.delete-staff.button.delete', {ns: 'admin'})}
                             </Button>
                             <Button variant="plain" color="primary" onClick={() => setShowDeleteModal(false)}>
@@ -196,7 +213,7 @@ export default function TableTemplate({header, data, isPagination, handleClick, 
                     justifyContent: 'center',
                     position: 'relative'
                 }}>
-                    <Pagination page={currentValues.pageNumber} showFirstButton showLastButton size={'large'} count={100} color="primary"
+                    <Pagination page={currentValues.pageNumber} showFirstButton showLastButton size={'large'} count={totalPage} color="primary"
                         onChange={(_, page) => setCurrentValues(prev => {
                             return {...prev, pageNumber: page}
                         })}

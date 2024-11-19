@@ -2,7 +2,7 @@ import {Stack} from "@mui/material";
 import Me from '../../assets/me.png'
 import Other from '../../assets/other.png'
 import {useContext} from "react";
-import {AppointmentContext} from "../../pages/RequestAppointment.jsx";
+import {AppointmentContext} from "../../pages/user/RequestAppointment.jsx";
 import Typography from "@mui/joy/Typography";
 import {useOutletContext} from "react-router-dom";
 import {UserContext} from "../../App.jsx";

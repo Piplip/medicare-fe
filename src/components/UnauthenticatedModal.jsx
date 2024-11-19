@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import {getCookie} from "./Utilities.jsx";
 
-export default function UnauthenticatedModal(){
+export default function UnauthenticatedModal(props){
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
 
@@ -18,15 +18,15 @@ export default function UnauthenticatedModal(){
     return (
         <Modal open={open}>
             <ModalDialog>
-                <Typography variant={'h4'} color={'red'}>WARNING: ACCESS DENIED</Typography>
+                <Typography variant={'h4'} color={'red'}>{props.warn}</Typography>
                 <Typography variant={'h6'}>
-                    You haven't logged in!<br/>Please log in with your staff account
+                    {props.message}
                 </Typography>
                 <Stack>
                     <Button variant={'contained'} color={'primary'} onClick={() => {
                         setOpen(false)
                         navigate('/staff/login')
-                    }}>LOG IN</Button>
+                    }}>LOG IN / SWITCH ACCOUNT</Button>
                 </Stack>
             </ModalDialog>
         </Modal>
