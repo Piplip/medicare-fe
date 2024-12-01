@@ -50,7 +50,7 @@ export default function StaffLogin(){
                     redirectURL = '/admin/users'
                     break
                 case 'PHARMACIST':
-                    redirectURL = '/pharmacist/dashboard'
+                    redirectURL = '/pharmacist/medication'
                     break
             }
 
@@ -145,7 +145,7 @@ export default function StaffLogin(){
                 </Link>
                 {showSuccessLogin &&
                     <div className={'success-login'}>
-                        Login successfully! Redirecting to homepage....
+                        {t('login.success')}
                     </div>
                 }
             </div>

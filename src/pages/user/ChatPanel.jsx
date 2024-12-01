@@ -12,28 +12,26 @@ import baseAxios from "../../config/axiosConfig.jsx";
 import LinearProgress from '@mui/material/LinearProgress';
 import {getCookie} from "../../components/Utilities.jsx";
 import Cookies from 'js-cookie'
+import {useTranslation} from "react-i18next";
+import parse from 'html-react-parser';
 
 ChatPanel.propTypes = {
     onClose: PropTypes.func
 }
 
 function ChatPanel(props){
-    const [chatData, setChatData] = useState(['Hello there! How can we help you ?'])
+    const {t} = useTranslation('common')
+    const [chatData, setChatData] = useState([t('chatbot.first-message')])
     const [inp, setInp] = useState('')
     const [blockSend, setBlockSend] = useState(false)
     const [isInit, setIsInit] = useState(true)
     const conversationRef = useRef()
-    const sampleQuestions = [
-        'What is the status of my order?',
-        'How many departments this hospital have ?',
-        'I want to know more about the booking appointment process'
-    ]
+    const sampleQuestions = [t('chatbot.sample-1'), t('chatbot.sample-2'), t('chatbot.sample-3')]
 
     useEffect(() => {
         if(!getCookie("USER-CHAT-THREAD-ID")){
             baseAxios.post('/chatbot')
                 .then(r => {
-                    console.log(r)
                     setIsInit(false)
                 })
                 .catch(err => console.log(err))
@@ -62,7 +60,7 @@ function ChatPanel(props){
     return (
         <Stack className={'chat-panel'}>
             <Stack className={'chat-header'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                <Typography variant={'h6'}>Customer Support</Typography>
+                <Typography variant={'h6'}>{t('chatbot.title')}</Typography>
                 <CloseIcon onClick={() => {
                     props.onClose()
                     Cookies.remove('USER-CHAT-THREAD-ID')
@@ -81,8 +79,8 @@ function ChatPanel(props){
                                 <div>
                                     {item ?
                                         <>
-                                            <p className={'chat-bubble-owner'}>{index % 2 == 0 ? 'Support Bot' : 'You'}</p>
-                                            <p className={'chat-content'}>{item}</p>
+                                            <p className={'chat-bubble-owner'}>{index % 2 == 0 ? t('chatbot.bot-name') : t('chatbot.username')}</p>
+                                            <div className={'chat-content'}>{parse(item)}</div>
                                         </>
                                         :
                                         <>
@@ -94,7 +92,7 @@ function ChatPanel(props){
                                 </div>
                                 {index === 0 &&
                                     <Stack rowGap={.5} fontSize={'.8rem'}>
-                                        <p>Sample Question</p>
+                                        <p>{t('chatbot.sample-question')}</p>
                                         {sampleQuestions.map((q, i) =>
                                             <p key={i} className={'sample-question'}
                                                onClick={() => setInp(q)}
@@ -108,7 +106,7 @@ function ChatPanel(props){
                 </div>
                 :
                 <div className={'init-panel'} style={{flexGrow: 1}}>
-                    <p>Initializing chatbot...</p>
+                    <p>{t('chatbot.loading-label')}</p>
                     <LinearProgress sx={{width: '100%', height: '0.5rem'}}/>
                 </div>
             }
@@ -121,7 +119,7 @@ function ChatPanel(props){
                                    e.preventDefault()
                                }
                            }}
-                           placeholder="Enter a message"
+                           placeholder={t('chatbot.input-placeholder')}
                            multiline
                            maxRows={4} autoFocus
                 />

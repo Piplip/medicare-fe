@@ -9,12 +9,14 @@ import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import {getDownloadURL, getStorage, ref} from "firebase/storage";
 import DefaultImage from '../../assets/default.jpg'
 import {staffAxios} from "../../config/axiosConfig.jsx";
+import {useTranslation} from "react-i18next";
 
 export default function SideNav(props){
     initializeApp(firebaseConfig);
     const storage = getStorage()
     const [isCollapsed, setIsCollapsed] = useState(true)
     const [ppImage, setPPImage] = useState(localStorage.getItem('imageURL') || null)
+    const {t} = useTranslation('common')
 
     useEffect(() => {
         if(localStorage.getItem('email') !== null){
@@ -56,7 +58,7 @@ export default function SideNav(props){
                 </section>
             }
             <section className={'side-nav-main-wrapper'}>
-                {!isCollapsed && <p>{props.data.title} Menu</p>}
+                {!isCollapsed && <p>{t(`staff-template.${props.data.title.toLowerCase()}.title`)}</p>}
                 <div id={'side-nav-main'}>
                     {props.data.pages.map((page, index) => {
                         return (
@@ -68,7 +70,7 @@ export default function SideNav(props){
                             }}
                                      to={page.path} key={index} className={`side-nav-item ${isCollapsed ? 'side-nav-item-collapsed' : ''}`}>
                                 {page.icon}
-                                {!isCollapsed && <p className={'side-nav-item-des'}>{page.name}</p>}
+                                {!isCollapsed && <p className={'side-nav-item-des'}>{t(`staff-template.${props.data.title.toLowerCase()}.pages.${page.name}`)}</p>}
                             </NavLink>
                         )})}
                 </div>

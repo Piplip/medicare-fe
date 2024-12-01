@@ -32,7 +32,7 @@ export default function PaymentSuccess() {
             {
                 category: 'scheduling',
                 content: feedbackData.content,
-                level: ratings[feedbackData.rating]['text'].toLowerCase()
+                level: ratings[feedbackData.rating - 1].text.toLowerCase()
             })
             .then(r => console.log(r))
             .catch(err => console.log(err))
@@ -119,7 +119,7 @@ export default function PaymentSuccess() {
                     <Typography level={'h4'}>{t('feedback.appointment.cta.title')}</Typography>
                     <Typography level={'body-md'}>{t('feedback.appointment.cta.title-2')}</Typography>
                 </Stack>
-                <Stack direction={'row'} columnGap={'1rem'}>
+                <Stack direction={'row'} columnGap={'1rem'} alignSelf={'center'}>
                     <img onClick={() => showFeedbackDialog(1)} className={'rating-icon'} src={terribleIcon}
                          alt={'terrible'}/>
                     <img onClick={() => showFeedbackDialog(2)} className={'rating-icon'} src={badIcon} alt={'bad'}/>

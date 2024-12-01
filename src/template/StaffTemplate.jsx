@@ -18,27 +18,25 @@ export default function StaffTemplate(props){
     const {t} = useTranslation('common')
 
     const physicianNavData = {
-        "title": "Physician",
+        "title": "Doctor",
         "pages": [
-            {"name": "Dashboard", "path": "dashboard", "icon": <DashboardIcon />},
-            {"name": "Statistics", "path": "statistic", "icon": <AnalyticsIcon />},
-            {"name": "Appointment Scheduling", "path": "appointment-scheduling", "icon": <MeetingRoomIcon />},
+            {"name": "dashboard", "path": "dashboard", "icon": <DashboardIcon />},
+            {"name": "statistic", "path": "statistic", "icon": <AnalyticsIcon />},
         ]
     }
     const adminNavData = {
         "title": "Admin",
         "pages": [
-            {"name": "User Management", "path": "users", "icon": <ManageAccountsIcon />},
-            {"name": "Reporting & Analytics", "path": "report", "icon": <AnalyticsIcon />},
-            {"name": "System Settings", "path": "settings", "icon": <SettingsIcon />},
-            {"name": "Audit Logs", "path": "audit", "icon": <ReceiptIcon />},
+            {"name": "user-management", "path": "users", "icon": <ManageAccountsIcon />},
+            {"name": "report-analytic", "path": "report", "icon": <AnalyticsIcon />},
+            {"name": "setting", "path": "settings", "icon": <SettingsIcon />},
         ]
     }
     const pharmacistNavData = {
         "title": "Pharmacist",
         "pages": [
-            {"name": "Dashboard", "path": "dashboard", "icon": <DashboardIcon />},
-            {"name": "Appointment's Medication", "path": "medication", "icon": <MeetingRoomIcon />},
+            {"name": "dashboard", "path": "dashboard", "icon": <DashboardIcon />},
+            {"name": "prescription", "path": "medication", "icon": <MeetingRoomIcon />},
         ]
     }
 
@@ -69,7 +67,7 @@ export default function StaffTemplate(props){
                     <Outlet context={[props.language, props.setLanguage]}/>
                 </div>
             </section>
-            <UnauthenticatedModal warn={"ACCESS DENIED"} message={"You haven't logged in! Please log in with your staff account"}/>
+            <UnauthenticatedModal warn={t('authorized.warn').toUpperCase()} message={t('authorized.msg-1')}/>
         </div>
     )
 }

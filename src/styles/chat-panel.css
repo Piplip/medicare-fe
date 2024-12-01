@@ -1,6 +1,6 @@
 .chat-panel{
-    width: 400px;
-    height: 500px;
+    width: 500px;
+    height: 600px;
     border: 1px solid;
 }
 .chat-header{
@@ -59,7 +59,7 @@
     border-radius: .5rem;
     background-color: white;
     color: black;
-    max-width: 75%;
+    max-width: 80%;
     align-self: flex-start;
     box-shadow: 2px 2px .25rem black;
     text-wrap: pretty;
@@ -91,4 +91,10 @@
     color: black;
     font-size: 1.25rem;
     padding: 1rem;
+}
+.chat-content li{
+    list-style-type: none;
+}
+.chat-content ul {
+    /*padding-left: 1rem;*/
 }

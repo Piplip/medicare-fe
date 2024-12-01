@@ -16,6 +16,12 @@ import {useSearchParams} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useLocation, useNavigate} from "react-router";
 import DepartmentSpecializationFilter from "../../components/DepartmentSpecializationFilter.jsx";
+import InfoIcon from '@mui/icons-material/Info';
+import {Modal, ModalClose, ModalDialog} from "@mui/joy";
+import ChangeCircleOutlinedIcon from "@mui/icons-material/ChangeCircleOutlined.js";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload.js";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import {deparment, specialties} from "../../App.jsx";
 
 export default function FindDoctor(props){
     initializeApp(firebaseConfig);
@@ -30,6 +36,9 @@ export default function FindDoctor(props){
 
     const availableLanguage = ['en', 'es', 'fr', 'zh', 'ko', 'de', 'it', 'ja', 'vi']
 
+    const [openDetail, setOpenDetail] = useState(false)
+    const [selectedDoctor, setSelectedDoctor] = useState(null)
+    const [selectDoctorStatistic, setSelectDoctorStatistic] = useState(null)
     const [doctorData, setDoctorData] = useState([])
     const [queryName, setQueryName] = useState(searchParams.get('name') || '')
     const [searchData, setSearchData] = useState({
@@ -41,6 +50,7 @@ export default function FindDoctor(props){
         pageNumber: parseInt(searchParams.get('pageNumber')) || 1
     })
     const [totalPage, setTotalPage] = useState(null)
+    const location = useLocation()
 
     useEffect(() => {
         if(showMain || searchParams.get('name') || searchParams.get('department') || searchParams.get('language')
@@ -125,8 +135,6 @@ export default function FindDoctor(props){
             pageNumber: 1
         })
     }
-
-    const location = useLocation()
 
     function schedule(doctor){
         if(location.pathname.includes("none")){
@@ -298,14 +306,30 @@ export default function FindDoctor(props){
                                                 </Stack>
                                             </div>
                                         </Stack>
-                                        <Button variant={'contained'} sx={{width: 'fit-content'}}
-                                                onClick={() => schedule(doctor)}
-                                        >{location.pathname.includes('/none/find-a-doctor') ? t('schedule-2') : t('schedule')}</Button>
+                                        <Stack direction={'row'} columnGap={1}>
+                                            <Button variant={'contained'} sx={{width: 'fit-content'}}
+                                                    onClick={() => schedule(doctor)}
+                                            >
+                                                {location.pathname.includes('/none/find-a-doctor') ? t('schedule-2') : t('schedule')}
+                                            </Button>
+                                            <Button variant={'contained'} startIcon={<InfoIcon />}
+                                                    onClick={() => {
+                                                        baseAxios.get(`/doctor/${doctor[0]}/statistic`)
+                                                            .then(r => {
+                                                                setSelectDoctorStatistic(r.data)
+                                                            }).catch(err => console.log(err))
+                                                        setSelectedDoctor(index)
+                                                        setOpenDetail(true)
+                                                    }}
+                                            >
+                                                {t('doctor-more-info')}
+                                            </Button>
+                                        </Stack>
                                     </div>
                                 ))
                                 :
                                 <div className={'empty-table'}>
-                                    No doctor
+                                    {t('no-doctor')}
                                 </div>
                             }
                             {(doctorData && doctorData.length !== 0 && totalPage) ?
@@ -331,6 +355,92 @@ export default function FindDoctor(props){
             <Typography variant={'body2'} color={'black'}>
                 {t('note')}
             </Typography>
+            {selectedDoctor !== null &&
+                <Modal open={openDetail} onClose={() => {
+                    setOpenDetail(false)
+                }}>
+                    <ModalDialog sx={{paddingBlock: 1, width: 'fit-content'}}>
+                        <Stack borderBottom={'1px solid'}>
+                            <Typography
+                                variant={'h5'}>{doctorData[selectedDoctor][4]} {doctorData[selectedDoctor][5]}</Typography>
+                            <ModalClose/>
+                        </Stack>
+                        <Stack direction={'row'} columnGap={3} sx={{overflowY: 'auto'}}>
+                            <Stack >
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.pp.title', {ns: 'admin'})}
+                                </p>
+                                <img src={doctorData[selectedDoctor][2]} alt={'doctor profile'} width={'250px'}/>
+                            </Stack>
+                            <Stack sx={{overflowY: 'auto'}}>
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.personal-info.title', {ns: 'admin'})}
+                                </p>
+                                <Stack rowGap={1}>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.lname', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{doctorData[selectedDoctor][4]}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.fname', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{doctorData[selectedDoctor][5]}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.phone', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{doctorData[selectedDoctor][6]}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.gender', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{t(`gender.${doctorData[selectedDoctor][7]}`, {ns: 'common'})}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.primary-lang', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{t(`${doctorData[selectedDoctor][8]}`, {ns: 'common'})}</p>
+                                    </div>
+                                </Stack>
+                            </Stack>
+                            <Stack>
+                                <p className={'staff-detail-section-title'}>
+                                    {t('user-management.modal.staff-detail.staff-info.title', {ns: 'admin'})}
+                                </p>
+                                <Stack rowGap={1}>
+                                    {selectDoctorStatistic &&
+                                        <>
+                                            <div className={'personal-details-item'}>
+                                                <p className={'personal-details-item-title'}>{t('table.work-years', {ns: 'common'})}</p>
+                                                <p className={'personal-details-item-content'}>
+                                                    {t('work-year', {year: selectDoctorStatistic['workYears'].split('-')[0],
+                                                        month: selectDoctorStatistic['workYears'].split('-')[1], ns: 'findDoctor'})}
+                                                </p>
+                                            </div>
+                                            <div className={'personal-details-item'}>
+                                                <p className={'personal-details-item-title'}>{t('table.total-appointment', {ns: 'common'})}</p>
+                                                <p className={'personal-details-item-content'}>{selectDoctorStatistic['totalAppointment']}</p>
+                                            </div>
+                                            <div className={'personal-details-item'}>
+                                                <p className={'personal-details-item-title'}>{t('table.total-patient', {ns: 'common'})}</p>
+                                                <p className={'personal-details-item-content'}>{selectDoctorStatistic['totalPatient']}</p>
+                                            </div>
+                                        </>
+                                    }
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.staff-type-2', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{t(`staff-type.${doctorData[selectedDoctor][13]}`, {ns: 'common'})}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}>{t('table.department', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{t(`department.${doctorData[selectedDoctor][9]}`, {ns: 'common'})}</p>
+                                    </div>
+                                    <div className={'personal-details-item'}>
+                                        <p className={'personal-details-item-title'}> {t('table.specialization', {ns: 'common'})}</p>
+                                        <p className={'personal-details-item-content'}>{t(`speciality.${doctorData[selectedDoctor][11]}`, {ns: 'common'})}</p>
+                                    </div>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </ModalDialog>
+                </Modal>
+            }
         </div>
     )
 }

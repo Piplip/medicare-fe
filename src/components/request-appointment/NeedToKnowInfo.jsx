@@ -16,7 +16,7 @@ export default function NeedToKnowInfo(){
                 </ul>
                 <p>{t('component.info.processing_time')}</p>
                 <p>{t('component.info.emergency_1')}
-                    <span style={{color: 'yellow', fontWeight: 'bold'}}>{t('emergency_number', {ns: 'common'})}</span>
+                    <span style={{color: 'yellow', fontWeight: 'bold'}}>{import.meta.env.VITE_EMERGENCY_PHONE}</span>
                     {t('component.info.emergency_2')}
                 </p>
             </Stack>

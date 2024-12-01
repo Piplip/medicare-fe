@@ -4,7 +4,9 @@
     "button": {
       "find": "Tìm Kiếm",
       "sort-filter": "Bộ lọc thông tin",
-      "clear": "Xóa bộ lọc hiện tại"
+      "clear": "Xóa bộ lọc hiện tại",
+      "delete": "XÓA",
+      "modify": "SỬA"
     },
     "filter": {
       "search-placeholder": "Tìm kiếm theo tên",
@@ -49,6 +51,7 @@
       "delete-staff": {
         "title": "Xác nhận",
         "description": "Bác có chắc muốn xóa nhân viên này không ?",
+        "placeholder": "Nêu lí do cho việc xóa nhân viên (bắt buộc)",
         "button": {
           "cancel": "Hủy",
           "delete": "Xóa"
@@ -67,15 +70,25 @@
         },
         "pp": {
           "title": "ẢNH ĐẠI DIỆN",
-          "description": "Drag and drop image here<br/>or click to select image"
+          "description": "Kéo và thả ảnh vào đây<br/>hoặc ấn để chọn ảnh"
         },
         "personal-info": {
           "title": "THÔNG TIN CÁ NHÂN"
         },
         "staff-info": {
           "title": "THÔNG TIN NHÂN VIÊN"
+        },
+        "alert": {
+          "success": "Cập nhật thông tin thành công"
         }
       }
+    }
+  },
+  "access": {
+    "unauthorized": {
+      "title": "CẢNH BÁO: TRUY CẬP TRÁI PHÉP",
+      "warn": "Bạn không được ủy quyền để truy cập trang này. Vui lòng đăng nhập hoặc đổi sang tài khoản hợp lệ.",
+      "action": "Đăng nhập/Đổi tài khoản"
     }
   }
 }

@@ -11,7 +11,7 @@ import {
     TableRow, Toolbar,
     Tooltip
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useLoaderData} from "react-router";
 import Input from "@mui/joy/Input";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -24,6 +24,7 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import baseAxios from "../../config/axiosConfig.jsx";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+import {useReactToPrint} from "react-to-print";
 
 export default function AppointmentHistory() {
     const loaderData = useLoaderData()
@@ -47,12 +48,17 @@ export default function AppointmentHistory() {
         orderBy: 'id',
         order: 'asc'
     })
-    const medicationHeader = ['Name', 'Dosage', 'Frequency', 'Quantity', 'Start Date', 'End Date', "Doctor's Note"]
+    const medicationHeader = ['m-name', 'dosage', 'frequency', 'quantity', 'm-start-date', 'm-end-date', "m-doctor-note"]
     const [currentDetail, setCurrentDetail] = useState(null)
     const [totalPage, setTotalPage] = useState(parseInt(loaderData.data[0], 10) + 1)
 
-    console.log(appointmentData)
-
+    const statusStyle = {
+        'not_showed_up': 'black', 'cancelled': 'darkred', 'done': 'green', 'scheduled': 'blue', 'confirmed': "#44106e"
+    }
+    const printRef = useRef(null)
+    const handlePrint = useReactToPrint({
+        contentRef: printRef
+    })
     useEffect(() => {
         setAppointmentData(JSON.parse(loaderData.data[1])['records'])
 
@@ -63,7 +69,7 @@ export default function AppointmentHistory() {
             const sortedData = [...appointmentData]
             if (sortOption.orderBy === 'dname') {
                 sortedData.sort((a, b) => {
-                    return (a[7] + a[8]) > (b[7] + b[8]) ? 1 : -1
+                    return (a[6] + a[7]) > (b[6] + b[7]) ? 1 : -1
                 })
             } else {
                 let sortIndex = sortOption.orderBy === 'id' ? 0 : 1
@@ -143,39 +149,39 @@ export default function AppointmentHistory() {
                             <CloseIcon/>
                         </IconButton>
                         <Typography sx={{ml: 2, flex: 1, fontSize: '20px', fontWeight: 'bold', color: 'white'}}>
-                            Detailed Prescription View
+                            {t('prescription.detail.title', {ns: 'common'})}
                         </Typography>
                         <Stack direction={'row'} columnGap={1}>
-                            <Button variant="contained" color={'primary'} startIcon={<LocalPrintshopIcon/>}>
-                                Print
+                            <Button variant="contained" color={'primary'} startIcon={<LocalPrintshopIcon/>} onClick={handlePrint}>
+                                {t('prescription.btn.print', {ns: 'common'})}
                             </Button>
                         </Stack>
                     </Toolbar>
                 </AppBar>
                 {currentDetail &&
-                    <Stack sx={{paddingBlock: '20px'}} rowGap={1}>
+                    <Stack sx={{paddingBlock: '20px'}} rowGap={1} ref={printRef}>
                         <Stack className={'prescription-detail-section'}>
-                            <p className={'prescription-detail-main-title'}>Prescription Details</p>
+                            <p className={'prescription-detail-main-title'}>{t('prescription.detail.common', {ns: 'common'})}</p>
                             <Stack>
                                 <div className={'prescription-detail-doctor-info'}>
-                                    <p>Prescribing Doctor: <b>{currentDetail['doctorName']}</b></p>
-                                    <p>Prescription Time: <b>{currentDetail['prescribedTime']}</b></p>
-                                    <p>Specialization: <b>Cardiology</b></p>
-                                    <p>Phone: <b>{currentDetail['phoneNumber'] || "------"}</b></p>
-                                    <p>Total Medications: <b>{currentDetail['medicationList'].length}</b></p>
+                                    <p>{t('prescription.detail.doctor', {ns: 'common'})}: <b>{currentDetail['doctorName']}</b></p>
+                                    <p>{t('prescription.detail.time', {ns: 'common'})}: <b>{currentDetail['prescribedTime']}</b></p>
+                                    <p>{t('prescription.detail.phone', {ns: 'common'})}: <b>{currentDetail['phoneNumber'] || "------"}</b></p>
                                 </div>
-                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>Doctor Diagnosis
+                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>{t('prescription.detail.diagnosis', {ns: 'common'})}
                                     <p className={'doctor-diagnosis'}>{currentDetail['diagnosis']}</p>
                                 </div>
                             </Stack>
                             <Stack>
-                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>Prescribed Medications</p>
+                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>
+                                    {t('prescription.detail.p-medications', {ns: 'common', total: currentDetail['medicationList'].length})}
+                                </p>
                                 <TableContainer>
                                     <Table>
                                         <TableHead>
                                             <TableRow sx={{backgroundColor: '#36007B'}}>
                                                 {medicationHeader.map((item, index) =>
-                                                    <TableCell sx={{color: 'white'}} key={index}>{item}</TableCell>)}
+                                                    <TableCell sx={{color: 'white'}} key={index}>{t(`table.${item}`, {ns: 'common'})}</TableCell>)}
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -377,7 +383,7 @@ export default function AppointmentHistory() {
                         <TableBody>
                             {appointmentData &&
                                 appointmentData.map((item, index) => (
-                                    <Tooltip title={"Click to view detail"} key={index} followCursor>
+                                    <Tooltip title={t('table.view-detail', {ns: 'common'})} key={index} followCursor>
                                         <TableRow sx={{
                                             '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
                                             '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
@@ -385,22 +391,34 @@ export default function AppointmentHistory() {
                                                   onClick={() => {
                                                       baseAxios.get('/appointment/detail?appointmentID=' + item[0])
                                                           .then(r => {
-                                                              console.log(r)
                                                               setCurrentDetail(r.data)
                                                               setShowAppointmentDetail(true)
                                                           })
-                                                          .catch(err => {
-                                                              alert("This appointment doesn't have detail because you are not showing up!")
+                                                          .catch((err) => {
+                                                              console.log(err)
+                                                              let alertMsg
+                                                              if(item[4].toLowerCase() === 'cancelled')
+                                                                  alertMsg = t('user_profile.msg.cancelled', {ns: 'common'})
+                                                              else if (item[4].toLowerCase() === 'scheduled')
+                                                                  alertMsg = t('user_profile.msg.scheduled', {ns: 'common'})
+                                                              else if(item[4].toLowerCase() === 'not_showed_up')
+                                                                  alertMsg = t('user_profile.msg.not-show-up', {ns: 'common'})
+                                                              else alertMsg = t('user_profile.msg.default', {ns: 'common'})
+                                                              alert(alertMsg)
                                                           })
                                                   }}
                                         >
                                             <TableCell>{item[0]}</TableCell>
                                             <TableCell>{item[2] + " " + dayjs(item[1]).format("DD/MM/YYYY")}</TableCell>
                                             <TableCell>
-                                                {t(`department.${item[6]}`, {ns: 'common'})}
+                                                {t(`department.${item[5]}`, {ns: 'common'})}
                                             </TableCell>
-                                            <TableCell>{item[7] + " " + item[8]}</TableCell>
-                                            <TableCell>{t(`${item[4]}`, {ns: 'common'})}</TableCell>
+                                            <TableCell>{item[6] + " " + item[7]}</TableCell>
+                                            <TableCell>
+                                                <p className={'appointment-status'} style={{backgroundColor: statusStyle[item[4].toLowerCase()]}}>
+                                                    {t(`user_profile.appointment-history.filter.status.${item[4].toLowerCase()}`, {ns: 'common'}).toUpperCase()}
+                                                </p>
+                                            </TableCell>
                                         </TableRow>
                                     </Tooltip>
                                 ))

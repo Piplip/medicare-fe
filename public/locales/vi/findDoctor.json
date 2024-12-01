@@ -1,5 +1,6 @@
 {
   "name-placeholder": "Tìm kiếm tên bác sĩ.",
+  "no-doctor": "Không tìm thấy bác sĩ nào",
   "find-button": "Tìm kiếm",
   "more-filter": "HIỆN BỘ LỌC +",
   "less-filter": "ẨN BỘ LỌC -",
@@ -18,5 +19,7 @@
   "specialization": "CHUYÊN KHOA",
   "language-spoken": "NGÔN NGỮ",
   "schedule": "ĐẶT LỊCH KHÁM",
-  "schedule-2": "ĐẶT LỊCH VỚI BÁC SĨ NÀY"
+  "schedule-2": "ĐẶT LỊCH VỚI BÁC SĨ NÀY",
+  "doctor-more-info": "CHI TIẾT",
+  "work-year": "{{year}} năm {{month}} tháng"
 }

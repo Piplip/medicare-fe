@@ -123,7 +123,7 @@ export default function RootTemplate(props){
                         <p>{import.meta.env.VITE_ADDRESS}</p>
                         <p>{import.meta.env.VITE_PHONE}</p>
                         <p>{import.meta.env.VITE_EMAIL}</p>
-                        <p>Share your thoughts</p>
+                        <p>{t('footer.contact.link1')}</p>
                     </div>
                     <div>
                         <Typography variant={'h5'}>{t('footer.career.title')}</Typography>
@@ -136,7 +136,7 @@ export default function RootTemplate(props){
                         <Option value={"vi"} onClick={() => props.changeLanguage('vi')}>Tiếng Việt</Option>
                         <Option value={"en"} onClick={() => props.changeLanguage('en')}>English</Option>
                     </Select>
-                    <p className={'footer-copyright'}>&copy; 2023 MedicarePlus, Inc</p>
+                    <p className={'footer-copyright'}>&copy; 2024 MedicarePlus, Inc</p>
                     <Stack direction={'row'} columnGap={1}>
                         <FacebookIcon/>
                         <LinkedInIcon/>

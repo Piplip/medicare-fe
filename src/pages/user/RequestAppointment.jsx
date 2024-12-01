@@ -61,7 +61,6 @@ export default function RequestAppointment(props){
     async function goNextStep(){
         if(currentStep === steps.length - 1) return
         if(location.pathname.includes("/confirmation")){
-            console.log("Sending make appointment request")
             setIsLoading(true)
             await baseAxios.post('/appointment', {
                 patientEmail: props.currentUser.email,
@@ -74,7 +73,6 @@ export default function RequestAppointment(props){
                 isReminder: appointmentData.reminder
             })
             .then(r => {
-                console.log(r)
                 setIsLoading(false)
                 setAppointmentData(prev =>({
                     ...prev,
@@ -85,11 +83,11 @@ export default function RequestAppointment(props){
         }
         else if(location.pathname.includes('/appointment-detail')){
             if(appointmentData.date === null || appointmentData.time === null){
-                alert("Please select a date and time for an appointment")
+                alert(t('component.feedback.error.not-select-time'))
                 return
             }
             if(appointmentData.invalidDate){
-                alert("The selected time is not available or invalid")
+                alert(t('component.feedback.error.invalid-time'))
                 return
             }
         }

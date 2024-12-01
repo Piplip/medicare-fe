@@ -22,18 +22,22 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import {Link} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
 import FirstTimeImg from '../assets/first-time-image.jpg'
-import {useJsApiLoader} from "@react-google-maps/api";
 import MapLocation from '../assets/location.png'
 import LazyLoad from 'react-lazyload'
-import {Map} from "@mui/icons-material";
+
+const servicesData = [Cardiology, Emergency, Neurology, Orthopedics, Pediatrics, Oncology]
+const patientVisitorData = [Insurance, ParkingInfo, PatientRight, VisitingHour]
+const callToActionsData = [
+    {icon: <PersonAddAlt1Icon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'login'},
+    {icon: <EditCalendarIcon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'schedule/none/info'},
+    {icon: <PersonSearchIcon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'find-a-doctor'},
+    {icon: <NewspaperIcon sx={{ fontSize: '2.5rem', color: 'white' }} />, btnLink: "news"}
+]
 
 export default function Homepage(){
     const [open, setOpen] = useState(true)
     const [showDialogAfter, setShowDialogAfter] = useState(false);
-    const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: 'AIzaSyCKd_cDO-O94AfJTUcIjTzGBwoZe7xLEeg',
-    })
+    const {t} = useTranslation("homepage")
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -46,16 +50,6 @@ export default function Homepage(){
         localStorage.setItem('isVisited', 'true')
     }
 
-    const servicesData = [Cardiology, Emergency, Neurology, Orthopedics, Pediatrics, Oncology]
-    const patientVisitorData = [Insurance, ParkingInfo, PatientRight, VisitingHour]
-    const callToActionsData = [
-        {icon: <PersonAddAlt1Icon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'login'},
-        {icon: <EditCalendarIcon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'schedule/none/info'},
-        {icon: <PersonSearchIcon sx={{fontSize: '2.5rem', color: 'white'}}/>, btnLink: 'find-a-doctor'},
-        {icon: <NewspaperIcon sx={{ fontSize: '2.5rem', color: 'white' }} />, btnLink: "news"}
-    ]
-
-    const {t} = useTranslation("homepage")
 
     return (
         <>
@@ -187,7 +181,7 @@ export default function Homepage(){
                         <p>{t('contact.emergency-hours')}<span className={'about-info'}>24/7</span></p>
                         <p>{t('contact.emergency-phone')}<span
                             className={'about-info'}>{import.meta.env.VITE_EMERGENCY_PHONE}</span></p>
-                        <p>{t('contact.emergency-address')}<span className={'about-info'}>{t('emergency_address', {ns: 'common'})}</span></p>
+                        <p>{t('contact.emergency-address', {ns: 'homepage'})}<span className={'about-info'}>{t('emergency_address', {ns: 'common'})}</span></p>
                     </Stack>
                 </div>
                 <img className={'map-location'}

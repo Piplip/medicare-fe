@@ -66,8 +66,6 @@ export default function UserFeedback(){
        }
     }, [filter.sort, filter.order]);
 
-    console.log(feedbackData)
-
     useEffect(() => {
         const data = [...feedbackData]
         const filterData = data.filter(item => {
@@ -109,7 +107,7 @@ export default function UserFeedback(){
                             sort: 'id',
                             order: 'asc'
                         })
-                    }}>CLEAR ALL FILTERS</p>
+                    }}>{t('button.clear-filters').toUpperCase()}</p>
                     <Stack direction={'row'} columnGap={3}>
                         <Stack direction={'row'} alignItems={'center'} columnGap={1}>
                             <Typography variant={'plain'} color={'white'}>
@@ -209,7 +207,7 @@ export default function UserFeedback(){
                     </TableContainer>
                     :
                     <div className={'empty-table'}>
-                        You haven't make any feedback
+                        {t('user_profile.feedback.no-feedback')}
                     </div>
                 }
             </div>

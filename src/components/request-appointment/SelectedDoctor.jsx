@@ -35,7 +35,7 @@ export default function SelectedDoctor(props) {
                         </Stack>
                         <Stack>
                             <Typography variant={'body1'}>{t('lang.title').toUpperCase()}</Typography>
-                            <p>{t(`${props.appointmentData.doctor.language}`)}</p>
+                            <p>{t(`lang.${props.appointmentData.doctor.language}`)}</p>
                         </Stack>
                     </Stack>
                 </div>

@@ -15,6 +15,8 @@ import UnauthenticatedModal from "../../components/UnauthenticatedModal.jsx";
 import {staffAxios} from "../../config/axiosConfig.jsx";
 import useHover from "../../custom hooks/useHovered.jsx";
 import weekday from 'dayjs/plugin/weekday'
+import {useTranslation} from "react-i18next";
+import {StyledEngineProvider} from "@mui/system";
 
 export default function PhysicianStatistic(){
     const data = useLoaderData()
@@ -32,6 +34,8 @@ export default function PhysicianStatistic(){
     const [appointmentOverTime, setAppointmentOverTime] = useState([])
     const percentRef = useRef()
     const hovered = useHover(percentRef)
+    const {t} = useTranslation('common')
+
     dayjs().locale('vi').format()
     dayjs.extend(weekday)
 
@@ -39,7 +43,7 @@ export default function PhysicianStatistic(){
         if(statisticData){
             const dateOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
-            const labels = ['Total Appointment', 'Done', 'Not Show Up']
+            const labels = [t('doctor.statistic.appointment.total'), t('doctor.statistic.appointment.done'), t('doctor.statistic.appointment.not-showed-up')]
             let chartData = Array(3).fill(null).map((_, index) => ({ data: [], label: labels[index]}));
             const temp = overTimeView === 'w' ?
                 ((filter.startDate && filter.endDate) ? Array(filter.endDate.get("D") - filter.startDate.get("D") + 1).fill(0) :
@@ -78,7 +82,6 @@ export default function PhysicianStatistic(){
                     chartData[2].data.push(statisticData[overTimeView === 'w' ? `${dateOfWeek[i]}NotShowUp` : `${months[i].toUpperCase()}NotShowUp`] || 0)
                 }
             }
-            console.log("chart data", chartData)
             setAppointmentOverTime(chartData)
         }
     }, [statisticData, overTimeView]);
@@ -103,8 +106,6 @@ export default function PhysicianStatistic(){
             .catch(err => console.log(err))
     }, [filter, overTimeView]);
 
-    console.log(dayjs("09/11/2024", "DD/MM/YYYY").day())
-
     const currentWeekDays = () => {
         const date = filter.date ? dayjs(filter.date, 'DD-MM-YYYY') : dayjs()
         const startOfWeek = date.weekday(date.day() === 0 ? -6 : 1).toDate()
@@ -114,7 +115,7 @@ export default function PhysicianStatistic(){
             for (let i = 0; i < filter.endDate.diff(filter.startDate, 'day') + 1; i++) {
                 const day = new Date(filter.startDate);
                 day.setDate(day.getDate() + i);
-                days.push(day.toLocaleDateString("en-US",  {weekday: filter.endDate.diff(filter.startDate, 'day') + 1 >= 9 ? undefined : "long"
+                days.push(day.toLocaleDateString("vi-US",  {weekday: filter.endDate.diff(filter.startDate, 'day') + 1 >= 9 ? undefined : "long"
                     , day: "2-digit", month: "2-digit"}));
             }
             return days;
@@ -145,13 +146,15 @@ export default function PhysicianStatistic(){
     }
 
     function buildTitle(){
-        if(filter.date) return `Statistics for ${dayjs(filter.date).format("DD-MM-YYYY")}`
+        if(filter.date) return t('doctor.statistic.title.1-date', {date: dayjs(filter.date).format("DD-MM-YYYY")})
         if(filter.startDate || filter.endDate){
-            if(filter.startDate && !filter.endDate) return `Statistics from ${dayjs(filter.startDate).format("DD-MM-YYYY")} to now`
-            if(!filter.startDate && filter.endDate) return `Statistics from the beginning to ${dayjs(filter.endDate).format("DD-MM-YYYY")}`
-            return `Statistics from ${dayjs(filter.startDate).format("DD-MM-YYYY")} to ${dayjs(filter.endDate).format("DD-MM-YYYY")}`
+            if(filter.startDate && !filter.endDate)
+                return t('doctor.statistic.title.only-start', {start: dayjs(filter.startDate).format("DD-MM-YYYY")})
+            if(!filter.startDate && filter.endDate)
+                return t('doctor.statistic.title.only-end', {end: dayjs(filter.endDate).format("DD-MM-YYYY")})
+            return t('doctor.statistic.title.date-range', {start: dayjs(filter.startDate).format("DD-MM-YYYY"), end: dayjs(filter.endDate).format("DD-MM-YYYY")})
         }
-        return 'Statistics for all time'
+        return t('doctor.statistic.title.all-time')
     }
 
     return (
@@ -170,7 +173,7 @@ export default function PhysicianStatistic(){
                     <Stack direction={'row'} columnGap={2} className={'statistic-filter-expand'}>
                         <Stack>
                             <DatePicker sx={{width: '200px'}} format={'DD-MM-YYYY'}
-                                        label={"Specific Date"}
+                                        label={t('doctor.statistic.filter.1-date')}
                                         value={filter.date}
                                         onChange={(date) => {
                                             setOverTimeView('w')
@@ -181,10 +184,10 @@ export default function PhysicianStatistic(){
                                         }}
                             />
                         </Stack>
-                        <p>or</p>
+                        <p>{t('doctor.statistic.or')}</p>
                         <Stack>
                             <DatePicker sx={{width: '200px'}} format={'DD-MM-YYYY'}
-                                    label={"Start Date"}
+                                    label={t('doctor.statistic.filter.start-date')}
                                 value={filter.startDate}
                                 onChange={(date) => {
                                     setOverTimeView('w')
@@ -197,7 +200,7 @@ export default function PhysicianStatistic(){
                         </Stack>
                         <p>-</p>
                         <Stack>
-                            <DatePicker sx={{width: '200px'}} format={'DD-MM-YYYY'} label={"End Date"}
+                            <DatePicker sx={{width: '200px'}} format={'DD-MM-YYYY'} label={t('doctor.statistic.filter.end-date')}
                                     value={filter.endDate}
                                     onChange={(date) => {
                                         setOverTimeView('w')
@@ -215,29 +218,29 @@ export default function PhysicianStatistic(){
                 <Stack className={'statistic-info-container'} rowGap={'1rem'}>
                     <Stack direction={'row'} columnGap={'1rem'}>
                         <Stack className={'statistic-panel'}>
-                            <Typography variant={'h5'}>Appointment Statistics</Typography>
+                            <Typography variant={'h5'}>{t('doctor.statistic.appointment.title')}</Typography>
                             <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 5, flexGrow: '1rem'}}>
-                                <div>Total appointments<br/><b>{statisticData['totalAppointment']}</b></div>
-                                <div ref={percentRef}>Total complete - cancel<br/>
+                                <div>{t('doctor.statistic.appointment.total')}<br/><b>{statisticData['totalAppointment']}</b></div>
+                                <div ref={percentRef}>{t('doctor.statistic.appointment.complete-cancel')}<br/>
                                     <b>
                                         <span style={{}}>{hovered ? Math.round((statisticData['done'] / statisticData['totalAppointment']) * 100) + "%" : statisticData['done']}</span>
                                         <span style={{color: 'white'}}> - </span>
                                         <span style={{}}>{hovered ? Math.round(statisticData['cancelAppointments'] / statisticData['totalAppointment']) * 100 + "%" : statisticData['cancelAppointments']}</span>
                                     </b>
                                 </div>
-                                <div>Total patient<br/><b>{statisticData['allPatient']}</b></div>
-                                <div>No-show patient<br/><b>{statisticData['notShowedUp']}</b></div>
+                                <div>{t('doctor.statistic.appointment.total-patient')}<br/><b>{statisticData['allPatient']}</b></div>
+                                <div>{t('doctor.statistic.appointment.not-showed-up')}<br/><b>{statisticData['notShowedUp']}</b></div>
                             </div>
                         </Stack>
                         <Stack textAlign={'center'} className={'statistic-panel'}>
-                            <Typography variant={'h5'}>Gender distribution</Typography>
+                            <Typography variant={'h5'}>{t('doctor.statistic.appointment.gender-dis')}</Typography>
                             <PieChart colors={['deeppink', 'lightgreen', 'lightblue']}
                                       series={[
                                           {
                                               data: [
-                                                  { id: 0, value: statisticData['male'], label: 'Male' },
-                                                  { id: 1, value: statisticData['female'], label: 'Female' },
-                                                  { id: 2, value: statisticData['other'], label: 'Other' },
+                                                  { id: 0, value: statisticData['male'], label: t('gender.male') },
+                                                  { id: 1, value: statisticData['female'], label: t('gender.female') },
+                                                  { id: 2, value: statisticData['other'], label: t('gender.other') },
                                               ],
                                               innerRadius: 20,
                                               cornerRadius: 5,
@@ -250,7 +253,7 @@ export default function PhysicianStatistic(){
                             />
                         </Stack>
                         <Stack textAlign={'center'} className={'statistic-panel'}>
-                            <Typography variant={'h5'}>Age distribution</Typography>
+                            <Typography variant={'h5'}>{t('doctor.statistic.appointment.age-dis')}</Typography>
                             <PieChart colors={['deeppink', 'lightgreen', 'lightblue', 'wheat']}
                                       series={[
                                           {
@@ -274,25 +277,27 @@ export default function PhysicianStatistic(){
                     </Stack>
                     <Stack className={'statistic-panel'} alignItems={'center'}>
                         <Stack direction={'row'} justifyContent={'space-between'} sx={{width: '100%'}}>
-                            <Typography variant={'h5'}>Appointment over time</Typography>
+                            <Typography variant={'h5'}>{t('doctor.statistic.appointment.over-time')}</Typography>
                             <Select value={overTimeView} onChange={(_, val) => {
                                 setOverTimeView(val)
                                 if(val === 'm') {
                                     setFilter(prev => ({...prev, startDate: null, endDate: null}))
                                 }
                             }}>
-                                <Option value={'w'}>Week</Option>
-                                <Option value={'m'}>Month</Option>
+                                <Option value={'w'}>{t('doctor.statistic.appointment.week')}</Option>
+                                <Option value={'m'}>{t('doctor.statistic.appointment.month')}</Option>
                             </Select>
                         </Stack>
-                        <BarChart colors={["darkblue", "green", "red"]}
+                        <BarChart colors={["lightblue", "lightgreen", "deeppink"]}
                                   xAxis={[{ scaleType: 'band', data: overTimeView === 'w' ? currentWeekDays() : months}]}
                                   yAxis={[
-                                      {label: 'Appointment'}
+                                      {label: t('doctor.statistic.appointment.unit')}
                                   ]}
+                                  className={'custom-bar-chart'}
                                   series={appointmentOverTime}
                                   width={1100}
                                   height={300}
+                                  barLabel="value"
                         />
                     </Stack>
                 </Stack>

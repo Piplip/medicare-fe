@@ -91,3 +91,28 @@
     font-weight: 500;
     font-family: system-ui;
 }
+.payment-status, .appointment-status{
+    color: white;
+    width: fit-content;
+    font-size: .6rem;
+    padding: 0.25rem 0.5rem;
+}
+.pending-pay-btn{
+    display: none;
+    padding: .25rem .5rem;
+    position: absolute;
+}
+.payment-status:hover, .appointment-status:hover{
+    cursor: pointer;
+    filter: brightness(1.2);
+    box-shadow: 0 0 0.5rem 0.1rem #000000;
+}
+.pending-pay-btn:hover{
+    display: initial;
+    cursor: pointer;
+    background-color: #4a00d9;
+    color: white;
+}
+.payment-status:hover + .pending-pay-btn{
+    display: initial;
+}

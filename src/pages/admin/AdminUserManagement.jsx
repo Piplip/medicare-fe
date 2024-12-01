@@ -1,7 +1,8 @@
 import "../../styles/admin-user-management-style.css"
 import AddIcon from '@mui/icons-material/Add';
 import {
-    Button,
+    Button as MuiButton,
+    Pagination,
     Stack,
     Tab,
     Table,
@@ -13,13 +14,12 @@ import {
     Typography,
 } from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import TableTemplate from "../../components/root/TableTemplate.jsx";
 import {useLoaderData, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {adminAxios} from "../../config/axiosConfig.jsx";
 import {Tabs} from "@mui/material";
-import {Modal, ModalDialog} from "@mui/joy";
+import {DialogActions, Divider, Modal, ModalDialog} from "@mui/joy";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "../../config/FirebaseConfig.jsx";
 import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
@@ -31,7 +31,13 @@ import StaffModifyTemplate from "../../components/StaffModifyTemplate.jsx";
 import SimpleTableTemplate from "../../components/SimpleTableTemplate.jsx";
 import {useTranslation} from "react-i18next";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import UnauthenticatedModal from "../../components/UnauthenticatedModal.jsx";
+import Checkbox from "@mui/joy/Checkbox";
+import DialogTitle from "@mui/joy/DialogTitle";
+import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
+import DialogContent from "@mui/joy/DialogContent";
+import AdminUserContextMenu from "../../components/context-menu/ContextMenu.jsx";
+import {useContextMenu} from "../../custom hooks/useContextMenu.jsx";
+import Button from '@mui/joy/Button';
 
 export default function AdminUserManagement(){
     initializeApp(firebaseConfig);
@@ -78,9 +84,17 @@ export default function AdminUserManagement(){
     const failedStaffHeader = ['fname', 'lname', 'dob', 'id-number', 'phone', 'email', 'password', 'result-type']
     const failedDataKey = ['firstname', 'lastname', 'dateOfBirth', 'cccd', 'phoneNumber', 'email', 'password', 'resultType']
 
+    const [selectAll, setSelectAll] = useState(false)
+    const [checkboxes, setCheckboxes] = useState(new Array(staffData ? staffData?.length : sortedStaffData?.length).fill(false))
+    const {clicked, setClicked, coords, setCoords } = useContextMenu()
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showModifyPanel, setShowModifyPanel] = useState(false)
+    const [index, setIndex] = useState(null)
+
     useEffect(() => {
         fetchStaffData()
     }, [searchData]);
+
     useEffect(() => {
         if(staffData){
             const sortedData = [...staffData]
@@ -196,6 +210,7 @@ export default function AdminUserManagement(){
             order: 'asc'
         })
     }
+
     function deleteStaff(index){
         setDeleteReason("")
         adminAxios.delete('/staff/delete?id=' + staffData[index][0] + "&note=" + deleteReason)
@@ -207,6 +222,7 @@ export default function AdminUserManagement(){
     }
 
     function handleModify(id){
+        setShowModifyPanel(true)
         adminAxios.get('/staff/get?id=' + id)
             .then(r => {
                 setCurrentModifyData(r.data.records[0])
@@ -214,7 +230,32 @@ export default function AdminUserManagement(){
             .catch(err => console.log(err))
     }
 
-    console.log(loaderData)
+    function handleSelectAll(){
+        setSelectAll(prev => !prev)
+        setCheckboxes(prev => prev.map(() => !selectAll))
+    }
+
+    function handleCheckboxChange(index){
+        if(selectAll){
+            if(checkboxes[index])
+                setSelectAll(false)
+        }
+        else{
+            const allChecked = () => {
+                for (let i = 0; i < checkboxes.length; i++) {
+                    if(index !== i && !checkboxes[i])
+                        return false
+                }
+                return true
+            }
+            setSelectAll(allChecked)
+        }
+        setCheckboxes(prev => {
+            const newCheckboxes = [...prev]
+            newCheckboxes[index] = !newCheckboxes[index]
+            return newCheckboxes
+        })
+    }
 
     return (
         <div className={'user-management-container'}>
@@ -222,14 +263,14 @@ export default function AdminUserManagement(){
                 <Modal open={true}>
                     <ModalDialog>
                         <Stack rowGap={2}>
-                            <Typography textAlign={'center'} variant={'h4'} color={'red'}>WARNING: UNAUTHORIZED ACCESS</Typography>
+                            <Typography textAlign={'center'} variant={'h4'} color={'red'}>{t('access.unauthorized.title')}</Typography>
                             <Typography variant={'h6'}>
-                                You are not authorized to view this page. Please log in or switch to an authorized account.
+                                {t('access.unauthorized.warn')}
                             </Typography>
                         </Stack>
-                        <Button variant={'contained'} color={'primary'} onClick={() => {
+                        <MuiButton variant={'contained'} color={'primary'} onClick={() => {
                             navigate('/staff/login')
-                        }}>LOG IN / SWITCH ACCOUNT</Button>
+                        }}>{t('access.unauthorized.action')}</MuiButton>
                     </ModalDialog>
                 </Modal>
             }
@@ -334,24 +375,23 @@ export default function AdminUserManagement(){
                         <Input autoFocus placeholder={t('user-management.filter.search-placeholder')}
                                sx={{minWidth: '25rem'}} value={queryName} onChange={handleQueryChange}
                             onKeyDown={(e) => {
-                                if(e.key === 'Enter'){
+                                if(e.key === 'Enter')
                                     fetchStaffData()
-                                }
                             }}
                         />
-                        <Button variant={'contained'} onClick={fetchStaffData}>
+                        <MuiButton variant={'contained'} onClick={fetchStaffData}>
                             {t('user-management.button.find')}
-                        </Button>
+                        </MuiButton>
                     </Stack>
-                    <Button variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>
+                    <MuiButton variant="contained" startIcon={<FilterAltIcon />} onClick={() => setShowFilters(prev => !prev)}>
                         {t('user-management.button.sort-filter')}
-                    </Button>
+                    </MuiButton>
                 </Stack>
                 {showFilters &&
                     <Stack>
                         <Stack rowGap={2} className={'sort-filter-panel'}>
                             <p className={'clear-filter-btn'} onClick={clearFilters}>
-                                {t('user-management.button.clear')}
+                                {t('user-management.button.clear').toUpperCase()}
                             </p>
                             <Stack direction={'row'} columnGap={3}>
                                 <DepartmentSpecializationFilter isLoading={isLoading} searchData={searchData}
@@ -417,13 +457,157 @@ export default function AdminUserManagement(){
                 }
                 <section className={'user-table-wrapper'}>
                     {loaderData &&
-                        <TableTemplate data={sortedStaffData !== null ? sortedStaffData : staffData} header={tableHeader} isPagination={true}
-                                       currentValues={searchData} setCurrentValues={setSearchData} allowCheckbox={true}
-                                       handleDelete={deleteStaff} isMutable={true} allowDelete={true} allowModify={true}
-                                       handleModify={handleModify} ModifyTemplate={StaffModifyTemplate} currentModifyData={currentModifyData}
-                                       setCurrentModifyData={setCurrentModifyData} deleteReason={deleteReason} setDeleteReason={setDeleteReason}
-                                       totalPage={totalPage}
-                        />
+                        <>
+                            <TableContainer onContextMenu={(event) => {
+                                event.preventDefault()
+                                setCoords({ x: event.pageX, y: event.pageY })
+                                setClicked(true)
+                            }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow sx={{backgroundColor: '#36007B'}}>
+                                            <TableCell sx={{color: 'white', userSelect: 'none'}}>
+                                                <Checkbox onClick={handleSelectAll} checked={selectAll}/>
+                                            </TableCell>
+                                            {tableHeader.map((item, index) =>
+                                                <TableCell sx={{color: 'white', userSelect: 'none'}} key={index}>
+                                                    {t(`table.${item}`, {ns: 'common'})}
+                                                </TableCell>)}
+                                            <TableCell sx={{color: 'white', userSelect: 'none'}}>
+                                                {t('table.options', {ns: 'common'})}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {sortedStaffData &&
+                                            sortedStaffData.map((item, index) => (
+                                                <TableRow key={index} sx={{
+                                                    '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
+                                                    '&:nth-of-type(even)': {backgroundColor: '#E2EFFF',},
+                                                }}>
+                                                    <TableCell onClick={(event) => {
+                                                        event.stopPropagation()
+                                                    }}>
+                                                        <Checkbox onClick={() => handleCheckboxChange(index)} checked={checkboxes[index]}/>
+                                                    </TableCell>
+                                                    {item &&
+                                                        <>
+                                                            <TableCell >{item[0]}</TableCell>
+                                                            <TableCell >{item[1]}</TableCell>
+                                                            <TableCell >{item[2]}</TableCell>
+                                                            <TableCell >{item[3]}</TableCell>
+                                                            <TableCell >{t(`gender.${item[4]}`, {ns: 'common'})}</TableCell>
+                                                            <TableCell >{t(`department.${item[5]}`, {ns: 'common'})}</TableCell>
+                                                            <TableCell >{t(`speciality.${item[6]}`, {ns: 'common'})}</TableCell>
+                                                            <TableCell >{t(`staff-type.${item[7]}`, {ns: 'common'})}</TableCell>
+                                                            <TableCell >{item[8]}</TableCell>
+                                                            <TableCell >{t(`status.${item[9]}`, {ns: 'common'})}</TableCell>
+                                                        </>
+                                                    }
+                                                    <TableCell sx={{display: 'flex'}} onClick={(event) => {
+                                                        event.stopPropagation()
+                                                    }}>
+                                                        <Stack rowGap={0.5}>
+                                                            <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'info'}
+                                                                       onClick={() => {
+                                                                           handleModify(item[0])
+                                                                       }}
+                                                            >
+                                                                {t('button.modify', {ns: 'common'})}
+                                                            </MuiButton>
+                                                            <MuiButton sx={{fontSize: '0.75rem', padding: 0}} variant={'contained'} color={'error'}
+                                                                       onClick={() => {
+                                                                           if(sortedStaffData[index][9] === 'Inactive'){
+                                                                               alert('This staff already inactive')
+                                                                           }
+                                                                           else{
+                                                                               setShowDeleteModal(true)
+                                                                               setIndex(index)
+                                                                           }
+                                                                       }}
+                                                            >
+                                                                {t('button.delete', {ns: 'common'})}
+                                                            </MuiButton>
+                                                        </Stack>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                                <ModalDialog variant="outlined" role="alertdialog" sx={{backgroundColor: 'black', color: 'white'}}>
+                                    <DialogTitle>
+                                        <WarningRoundedIcon />
+                                        {t('user-management.modal.delete-staff.title', {ns: 'admin'})}
+                                    </DialogTitle>
+                                    <Divider />
+                                    <DialogContent sx={{color: 'white'}}>
+                                        <Stack rowGap={1}>
+                                            {t('user-management.modal.delete-staff.description', {ns: 'admin'})}
+                                            <textarea name={'reason'} style={{
+                                                padding: '0.25rem 0.5rem',
+                                                fontSize: '1rem',
+                                                backgroundColor: 'rgb(246,246,246)',
+                                                fontFamily: 'Tahoma, sans-serif',
+                                                minHeight: '10rem',
+                                                maxHeight: '20rem',
+                                                minWidth: '30rem',
+                                                width: '100%',
+                                                maxWidth: '50rem'
+                                            }}
+                                                      placeholder={t('user-management.modal.delete-staff.placeholder')}
+                                                      value={deleteReason}
+                                                      onChange={(e) => setDeleteReason(e.target.value)}
+                                            />
+                                        </Stack>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button variant="solid" color="danger" onClick={() => {
+                                            deleteStaff(index)
+                                            setShowDeleteModal(false)
+                                        }}>
+                                            {t('user-management.modal.delete-staff.button.delete')}
+                                        </Button>
+                                        <Button variant="plain" color="primary" onClick={() => setShowDeleteModal(false)}>
+                                            {t('user-management.modal.delete-staff.button.cancel')}
+                                        </Button>
+                                    </DialogActions>
+                                </ModalDialog>
+                            </Modal>
+                            <div style={{
+                                alignSelf: 'center',
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'center',
+                                position: 'relative'
+                            }}>
+                                <Pagination page={searchData.pageNumber} showFirstButton showLastButton size={'large'} count={totalPage} color="primary"
+                                            onChange={(_, page) => setSearchData(prev => {
+                                                return {...prev, pageNumber: page}
+                                            })}
+                                />
+                                <Stack direction={'row'} spacing={1} alignItems={'center'} style={{position: 'absolute', right: 0}}>
+                                    <p>{t('table.row-per-page', {ns: 'common'})}</p>
+                                    <Select defaultValue={10} value={searchData.pageSize} onChange={(_, val) =>
+                                        setSearchData(prev => ({...prev, pageSize: val}))}>
+                                        <Option value={10}>10</Option>
+                                        <Option value={20}>20</Option>
+                                        <Option value={30}>30</Option>
+                                    </Select>
+                                </Stack>
+                            </div>
+                            {clicked && (
+                                <AdminUserContextMenu x={coords.x} y={coords.y} totalSelectCell={checkboxes.reduce((prev, curr) => {
+                                    return prev + (curr ? 1 : 0)
+                                })}/>
+                            )}
+                            {currentModifyData &&
+                                <StaffModifyTemplate data={currentModifyData} setShowModify={setShowModifyPanel}
+                                                     showModifyPanel={showModifyPanel}/>
+                            }
+                        </>
                     }
                 </section>
             </section>

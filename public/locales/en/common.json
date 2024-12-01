@@ -28,7 +28,8 @@
       "link2": "Our Story"
     },
     "contact": {
-      "title": "Contact Us"
+      "title": "Contact Us",
+      "link1": "Share your thoughts"
     },
     "career": {
       "title": "Career",
@@ -39,10 +40,14 @@
   "login": {
     "login-title": "Login",
     "signup-title": "Sign Up",
+    "success": "Login successfully. Redirecting to homepage...",
     "placeholder": {
       "email": "Enter your email",
       "password": "Enter your password",
-      "confirm": "Confirm password"
+      "confirm": "Confirm password",
+      "current-pass": "Enter your current password",
+      "new-pass": "Enter your new password",
+      "confirm-new-pass": "Confirm your new password"
     },
     "error": {
       "email": {
@@ -68,7 +73,10 @@
     "CONFIRMED": "Confirmed",
     "CANCELLED": "Cancelled",
     "Active": "Active",
-    "Inactive": "Inactive"
+    "Inactive": "Inactive",
+    "COMPLETED": "Completed",
+    "PENDING": "Pending",
+    "FAILED": "Failed"
   },
   "department": {
     "title": "Institutes & Departments",
@@ -131,7 +139,8 @@
     "Sports Medicine": "Sports Medicine",
     "Surgery": "Surgery",
     "Urology": "Urology",
-    "Vascular Surgery": "Vascular Surgery"
+    "Vascular Surgery": "Vascular Surgery",
+    "Obstetrics & Gynecology": "Obstetrics & Gynecology"
   },
   "lang": {
     "title": "Language",
@@ -168,12 +177,40 @@
     }
   },
   "user_profile": {
+    "payment": {
+      "title": "Payment History",
+      "no-payment": "No payment history"
+    },
+    "msg": {
+      "not-show-up": "This appointment doesn't have prescription because you are not showing up!",
+      "scheduled": "This appointment is scheduled. Prescription will be available after the appointment time!",
+      "cancelled": "This appointment is cancelled. Prescription is not available!",
+      "default": "No prescription available for this appointment!"
+    },
+    "change-password": {
+      "title": "Change Password",
+      "placeholder": {
+        "current": "Enter your current password",
+        "new": "Enter your new password",
+        "confirm": "Confirm your new password"
+      },
+      "btn": {
+        "change": "Change Password",
+        "confirm": "Confirm"
+      },
+      "otp-guide": "We have sent you an OTP code to your email. Please enter the 6-digit OTP code to confirm your change password request.",
+      "invalid-otp": "Invalid OTP code",
+      "success": "Password changed successfully"
+    },
     "nav": {
       "nav1": "Personal Info",
-      "nav2": "Billing & Payment",
+      "nav2": "Payment History",
       "nav3": "Appointment History"
     },
+    "pay-now": "Pay Now",
     "edit-btn": "Edit Profile",
+    "save-btn": "Save Changes",
+    "cancel-btn": "Cancel",
     "logout-btn": "Log Out",
     "sort-filter": "Sort & Filter",
     "change-pass": "Change password",
@@ -184,6 +221,7 @@
       "birthday": "Date of Birth",
       "address": "Address",
       "phone": "Phone",
+      "phone-error": "Invalid phone number",
       "email": "Email",
       "sec_phone": "Secondary Phone",
       "empty": "empty"
@@ -198,61 +236,65 @@
       "filter": {
         "search-placeholder": "Find by doctor name...",
         "date": {
-            "title": "DATE",
-            "title-2": "SELECT DATE",
-            "title-3": "SELECT DATE RANGE",
-            "date": "Specific Date",
-            "range": "Date Range"
+          "title": "DATE",
+          "title-2": "SELECT DATE",
+          "title-3": "SELECT DATE RANGE",
+          "date": "Specific Date",
+          "range": "Date Range"
         },
         "status": {
-            "title": "STATUS",
-            "all": "All",
-            "scheduled": "Scheduled",
-            "confirmed": "Confirmed",
-            "cancelled": "Cancelled"
-        },
-        "order": {
-            "title": "ORDER BY",
-            "title-2": "ORDER",
-            "id": "ID",
-            "name": "Doctor Name",
-            "datetime": "Date & Time"
-        }
-      }
-    },
-    "feedback": {
-      "title": "Feedback",
-      "type": {
-        "scheduling": "Scheduling"
-      },
-      "rating": {
-        "amazing": "Amazing",
-        "good": "Good",
-        "ok": "Okay",
-        "bad": "Bad",
-        "terrible": "Terrible"
-      },
-      "filter": {
-        "include-content": "Include Content",
-        "type": {
-          "title": "Feedback Type",
+          "title": "STATUS",
           "all": "All",
-          "scheduling": "Scheduling"
-        },
-        "rating": {
-          "title": "Rating",
-          "all": "All"
+          "scheduled": "Scheduled",
+          "confirmed": "Confirmed",
+          "cancelled": "Cancelled",
+          "done": "Done",
+          "not_showed_up": "Not Showed Up"
         },
         "order": {
-          "title": "Sort by",
-          "title-2": "Order",
+          "title": "ORDER BY",
+          "title-2": "ORDER",
           "id": "ID",
-          "rating": "Rating",
+          "name": "Doctor Name",
           "datetime": "Date & Time"
         }
       }
-    }
-  },
+    },
+      "feedback": {
+        "view-detail": "View Detail",
+        "no-feedback": "You haven't make any feedback",
+        "title": "Feedback",
+        "type": {
+          "scheduling": "Scheduling"
+        },
+        "rating": {
+          "amazing": "Amazing",
+          "good": "Good",
+          "ok": "Okay",
+          "bad": "Bad",
+          "terrible": "Terrible"
+        },
+        "filter": {
+          "include-content": "Include Content",
+          "type": {
+            "title": "Feedback Type",
+            "all": "All",
+            "scheduling": "Scheduling"
+          },
+          "rating": {
+            "title": "Rating",
+            "all": "All"
+          },
+          "order": {
+            "title": "Sort by",
+            "title-2": "Order",
+            "id": "ID",
+            "rating": "Rating",
+            "datetime": "Date & Time"
+          }
+        }
+      }
+    },
   "table": {
     "id": "ID",
     "datetime": "Date & Time",
@@ -283,7 +325,30 @@
     "primary-lang": "Primary Language",
     "certification": "Certification",
     "start-contract": "Start Contract",
-    "end-contract": "End Contract"
+    "end-contract": "End Contract",
+    "appointment-id": "Appointment ID",
+    "patient-name": "Patient Name",
+    "appointment-time": "Appointment Time",
+    "reason": "Reason",
+    "view-detail": "View Detail",
+    "m-name": "Medicine Name",
+    "dosage": "Dosage",
+    "quantity": "Quantity",
+    "frequency": "Frequency",
+    "m-start-date": "Start Date",
+    "m-end-date": "End Date",
+    "m-doctor-note": "Doctor Note",
+    "row-per-page": "Rows per page",
+    "transaction_id": "Transaction ID",
+    "payment_date": "Payment Date",
+    "payment_amount": "Amount",
+    "payment_method": "Payment Method",
+    "transaction_status": "Transaction Status",
+    "work-years": "Work Years",
+    "total-appointment": "Total Appointment",
+    "total-patient": "Total Patient",
+    "route": "Route",
+    "appointment-description": "Appointment Description"
   },
   "order": {
     "asc": "Ascending",
@@ -315,7 +380,12 @@
   "payment": {
     "title": "Payment Success",
     "description": "Thank you for your payment. Your transaction has been completed and a receipt for your purchase has been sent to your email",
-    "button": "Back to Homepage"
+    "button": "Back to Homepage",
+    "cancel": {
+      "title": "Payment Cancelled",
+      "description": "Your payment has been cancelled successfully! Please note that if you repeatedly cancel your payment, your account may be suspended",
+      "button": "Back to Homepage"
+    }
   },
   "button": {
     "clear-filters": "CLEAR ALL FILTERS",
@@ -340,6 +410,197 @@
     "male": "Male",
     "Male": "Male",
     "female": "Female",
-    "Female": "Female"
+    "Female": "Female",
+    "other": "Other"
+  },
+  "chatbot": {
+    "title": "Customer Support",
+    "loading-label": "Initializing chatbot...",
+    "bot-name": "Support Bot",
+    "username": "You",
+    "input-placeholder": "Enter a message",
+    "sample-question": "Sample Question",
+    "first-message": "Hello there! How can we help you ?",
+    "sample-1": "What are your working hours?",
+    "sample-2": "How can I book an appointment?",
+    "sample-3": "How many departments this hospital have ?"
+  },
+  "doctor": {
+    "dashboard": {
+      "title": "Appointments",
+      "upcoming": "Upcoming Appointments",
+      "view-medicine": "View Medicine",
+      "add-medicine": "Add Medicine",
+      "no-appointment": "No appointment",
+      "no-prescription": "No such prescription for this appointment",
+      "snackbar": {
+        "success": "Prescribed Successfully",
+        "failed": "Prescription Failed"
+      },
+      "quick-detail": {
+        "title": "Detail",
+        "close": "Close"
+      },
+      "filter": {
+        "search-placeholder": "Find by patient name...",
+        "status": {
+          "title": "Status",
+          "all": "ALL",
+          "scheduled": "SCHEDULED",
+          "confirmed": "CONFIRMED",
+          "cancelled": "CANCELLED",
+          "done": "DONE",
+          "not-showed-up": "NOT SHOWED UP",
+          "not_showed_up": "NOT SHOWED UP",
+          "warning": "At least 1 must be selected"
+        },
+        "start-date": "Start Date",
+        "end-date": "End Date"
+      },
+      "medicine-modal": {
+        "title": "Prescription",
+        "diagnosis": "Diagnosis",
+        "btn": {
+          "add": "Add",
+          "change": "Change",
+          "edit": "Edit",
+          "add-new": "+ Add new medicine",
+          "submit": "Submit",
+          "close": "Close",
+          "cancel": "Cancel"
+        },
+        "alert": {
+          "no-medicine": "No medicine found. Please add some medicine to the prescription",
+          "no-diagnosis": "Please enter diagnosis",
+          "no-field-data": "Please fill in this field",
+          "no-start-date": "Select start date",
+          "no-end-date": "Select end date",
+          "in-view-mode": "Please switch to edit mode to add new medicine"
+        },
+        "placeholder": {
+          "search": "Search by medicine name, type, contraindications,...",
+          "diagnosis": "Enter diagnosis",
+          "field": "Enter {{field}}",
+          "start-date": "Start date",
+          "end-date": "End date",
+          "note": "Enter note"
+        },
+        "route": {
+          "default": "Select a route",
+          "oral": "Oral",
+          "injection": "Injection",
+          "topical": "Topical",
+          "inhalation": "Inhalation"
+        }
+      }
+    },
+    "statistic": {
+      "title": {
+        "all-time": "Statistics for all time",
+        "1-date": "Statistic for {{date}}",
+        "date-range": "Statistics from {{start}} to {{end}}",
+        "only-start": "Statistics from {{start}} to now",
+        "only-end": "Statistics from the beginning to {{end}}"
+      },
+      "or": "or",
+      "filter": {
+        "1-date": "Specific Date",
+        "start-date": "Start Date",
+        "end-date": "End Date"
+      },
+      "appointment": {
+        "unit": "appointment",
+        "title": "Appointment Statistics",
+        "total": "Total appointments",
+        "complete-cancel": "Total completed/cancelled",
+        "total-patient": "Total patients",
+        "no-show": "No-show patients",
+        "gender-dis": "Gender distribution",
+        "age-dis": "Age distribution",
+        "over-time": "Appointments over time",
+        "week": "Week",
+        "month": "Month",
+        "done": "Done",
+        "not-showed-up": "Not Showed Up"
+      }
+    }
+  },
+  "pharmacist": {
+    "prescription": {
+      "title": "PRESCRIPTIONS({{count}})",
+      "newer": "Newer",
+      "older": "Older",
+      "select-by-other": "{{name}} is prescribing this! Please select another prescription",
+      "card": {
+        "wait-for": "Waiting for",
+        "min": "minute(s)",
+        "name": "Patient Name",
+        "p-doctor": "Prescribing Doctor",
+        "p-time": "Prescription Time",
+        "total": "Total Medications",
+        "view": "View Detail"
+      }
+    }
+  },
+  "prescription": {
+    "title": "Prescription Detail",
+    "btn": {
+      "print": "Print",
+      "complete": "Complete"
+    },
+    "patient-info": {
+      "title": "Patient Info",
+      "name": "Name",
+      "dob": "Date of Birth",
+      "gender": "Gender",
+      "address": "Address",
+      "phone": "Phone"
+    },
+    "detail": {
+      "common": "Detail",
+      "title": "Prescription Detail",
+      "doctor": "Doctor Name",
+      "time": "Prescription Time",
+      "phone": "Phone",
+      "total": "Total Medications",
+      "diagnosis": "Doctor Diagnosis",
+      "p-medications": "Prescribed Medications ({{total}})"
+    }
+  },
+  "staff-template": {
+    "doctor": {
+      "title": "Doctor",
+      "pages": {
+        "dashboard": "Dashboard",
+        "statistic": "Statistic",
+        "scheduling": "Appointment Scheduling"
+      }
+    },
+    "admin": {
+        "title": "Admin",
+        "pages": {
+          "user-management": "User Management",
+          "report-analytic": "Report & Analytic",
+          "setting": "System Setting",
+          "audit": "Audit Log"
+        }
+    },
+    "pharmacist": {
+        "title": "Pharmacist",
+        "pages": {
+            "prescription": "Prescription Management",
+            "dashboard": "Dashboard"
+        }
+    }
+  },
+  "404": {
+    "d-1": "Sorry, we couldn’t find the page you were looking for.",
+    "d-2": "It seems like you’re lost. Let us help you get back on track!",
+    "back-home": "Go to Homepage",
+    "booking": "Book an Appointment"
+  },
+  "authorized": {
+    "warn": "Access denied",
+    "msg-1": "You haven't logged in! Please log in with your staff account"
   }
 }

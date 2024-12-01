@@ -16,6 +16,7 @@ import {adminAxios} from "../config/axiosConfig.jsx";
 import {useDropzone} from "react-dropzone";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
+import {specialties, deparment} from "../App.jsx";
 
 export default function StaffModifyTemplate(props) {
     initializeApp(firebaseConfig);
@@ -23,20 +24,12 @@ export default function StaffModifyTemplate(props) {
     const {t} = useTranslation(['common', 'admin'])
     const [isConfirm, setIsConfirm] = useState(false)
     const [isModify, setIsModify] = useState(false)
-    const [isDeleted, setIsDeleted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isPPChange, setIsPPChange] = useState(false)
     const [previewImage, setPreviewImage] = useState(null)
     const [selectedFile, setSelectedFile] = useState(null)
-    const specialties = [
-        "Allergy and Immunology", "Anesthesiology", "Cardio thoracic Surgery", "Cardiology", "Cardiovascular Disease",
-        "Colon and Rectal Surgery", "Dermatology", "Emergency Medicine", "Endocrinology", "ENT (Ear, Nose, and Throat)", "Gastroenterology", "Geriatrics",
-        "Hematology/Oncology", "Infectious Diseases", "Internal Medicine", "Nephrology", "Neurology", "Neurosurgery", "Obstetrics and Gynecology", "Oncology",
-        "Orthopedic Surgery", "Orthopedics", "Pathology", "Pediatrics", "Physical Medicine and Rehabilitation",
-        "Plastic Surgery", "Psychiatry", "Pulmonology", "Radiology", "Rheumatology", "Sports Medicine", "Surgery", "Urology", "Vascular Surgery"
-    ]
-    const department = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery", "Main Hospital Building"]
     const [currentStaffData, setCurrentStaffData] = useState({})
+
     useEffect(() => {
         setCurrentStaffData({
             firstName: props.data[14],
@@ -51,7 +44,7 @@ export default function StaffModifyTemplate(props) {
             email: props.data[39],
             type: props.data[3],
             startContract: dayjs(props.data[8]),
-            endContract: dayjs(props.data[7]),
+            endContract: props.data[7] ? dayjs(props.data[7]) : "",
             department: props.data[30],
             specialty: props.data[29],
             status: props.data[10],
@@ -96,17 +89,17 @@ export default function StaffModifyTemplate(props) {
             staffID: props.data[0],
             staffType: currentStaffData.type,
             endDate: currentStaffData.endContract.format('YYYY-MM-DD'),
-            accountID: props.data[35],
+            accountID: props.data[36],
             idNumber: currentStaffData.idCardNumber,
             email: currentStaffData.email,
-            personID: props.data[12],
+            personID: props.data[13],
             firstName: currentStaffData.firstName,
             lastName: currentStaffData.lastName,
             dateOfBirth: currentStaffData.birthday,
             phoneNumber: currentStaffData.phoneNumber,
             secPhoneNumber: currentStaffData.secPhoneNumber,
             primaryLanguage: currentStaffData.primaryLanguage,
-            addressID: props.data[20],
+            addressID: props.data[21],
             houseNumber: currentStaffData.address.split(',')[0],
             street: currentStaffData.address.split(',')[1],
             district: currentStaffData.address.split(',')[2],
@@ -114,10 +107,10 @@ export default function StaffModifyTemplate(props) {
             province: currentStaffData.address.split(',')[4],
         })
             .then(r => {
+                alert(t('user-management.modal.staff-detail.alert.success', {ns: 'admin'}))
                 setIsLoading(false)
                 setIsModify(false)
                 setIsConfirm(false)
-                console.log(r)
             })
             .catch(err => console.log(err))
     }
@@ -160,7 +153,6 @@ export default function StaffModifyTemplate(props) {
         setIsModify(false)
         setIsConfirm(false)
         setIsPPChange(false)
-        setIsDeleted(false)
         setIsLoading(false)
         setPreviewImage(null)
         setSelectedFile(null)
@@ -176,7 +168,7 @@ export default function StaffModifyTemplate(props) {
                     <ModalDialog sx={{paddingBlock: 1}}>
                         <Stack borderBottom={'1px solid'}>
                             <Typography
-                                variant={'h5'}>{props.data[13]} {props.data[14]} - {props.data[6]}</Typography>
+                                variant={'h5'}>{props.data[14]} {props.data[15]} - {props.data[6]}</Typography>
                             <ModalClose/>
                         </Stack>
                         <Stack direction={'row'} columnGap={4} sx={{overflowY: 'auto'}}>
@@ -252,26 +244,10 @@ export default function StaffModifyTemplate(props) {
                                 </div>
                                 <Stack rowGap={1}>
                                     <Button variant={'soft'} onClick={() => {
-                                        setIsDeleted(false)
                                         setIsModify(true)
                                     }}>
                                         {t('user-management.modal.staff-detail.button.update-pp', {ns: 'admin'})}
                                     </Button>
-                                    {/*<Button variant={'soft'} color={"danger"} onClick={() => {*/}
-                                    {/*    setIsModify(false)*/}
-                                    {/*    if (currentStaffData.status === 'Inactive') {*/}
-                                    {/*        alert('This staff is already deleted')*/}
-                                    {/*    } else {*/}
-                                    {/*        setIsDeleted(prev => !prev)*/}
-                                    {/*        if (isDeleted) {*/}
-                                    {/*            props.handleDelete()*/}
-                                    {/*        }*/}
-                                    {/*    }*/}
-                                    {/*}}>*/}
-                                    {/*    {isDeleted ? 'Click to confirm changes' :*/}
-                                    {/*        t('user-management.modal.staff-detail.button.delete-pp', {ns: 'admin'})*/}
-                                    {/*    }*/}
-                                    {/*</Button>*/}
                                     {isModify && (
                                         isConfirm ? (
                                             <Button variant="solid" onClick={saveChanges}>
@@ -430,24 +406,28 @@ export default function StaffModifyTemplate(props) {
                                     <div className={'personal-details-item'}>
                                         <p className={'personal-details-item-title'}>{t('table.start-contract')}</p>
                                         {isModify ?
-                                            <DatePicker value={currentStaffData.startContract.subtract(1, "D")}
+                                            <DatePicker value={currentStaffData.startContract ? currentStaffData.startContract : dayjs()}
                                                         format={"DD - MM - YYYY"}
                                                         onChange={(date) => handleSelectChange('startContract', date)}
                                                         sx={{backgroundColor: 'white'}}
                                             />
                                             :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.startContract.toString().slice(0, 16)}</p>
+                                            <p className={'personal-details-item-content'}>
+                                                {currentStaffData.startContract ? currentStaffData.startContract.format("DD/MM/YYYY") : "-------------"}
+                                            </p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
                                         <p className={'personal-details-item-title'}>{t('table.end-contract')}</p>
                                         {isModify ?
-                                            <DatePicker value={currentStaffData.endContract.subtract(1, "D")}
+                                            <DatePicker value={currentStaffData.endContract ? currentStaffData.endContract : dayjs()}
                                                         format={"DD - MM - YYYY"}
                                                         onChange={(date) => handleSelectChange('endContract', date)}
                                                         sx={{backgroundColor: 'white'}}
                                             /> :
-                                            <p className={'personal-details-item-content'}>{currentStaffData.endContract.toString().slice(0, 16) || "Unknown"}</p>
+                                            <p className={'personal-details-item-content'}>
+                                                {currentStaffData.endContract ? currentStaffData.endContract.format("DD/MM/YYYY") : "-------------"}
+                                            </p>
                                         }
                                     </div>
                                     <div className={'personal-details-item'}>
@@ -458,7 +438,7 @@ export default function StaffModifyTemplate(props) {
                                                 <Option select-type={'department'} value="default"
                                                         onClick={() => handleSelectChange('department', 'default')}
                                                 >{t('department.default', {ns: 'common'})}</Option>
-                                                {department.map((department, index) => (
+                                                {deparment.map((department, index) => (
                                                     <Option select-type={'department'} value={department}
                                                             key={index}
                                                             onClick={() => handleSelectChange('department', department)}

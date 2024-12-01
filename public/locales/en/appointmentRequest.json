@@ -13,6 +13,13 @@
     "next": "Continue"
   },
   "component": {
+    "feedback": {
+      "error": {
+        "not-select-time": "Please select a date and time for an appointment",
+        "invalid-time": "The selected time is not available or invalid",
+        "not-show-up": ""
+      }
+    },
     "info": {
       "title": "Request an Appointment",
       "condition": {
@@ -39,7 +46,13 @@
     "detail": {
       "title": "Appointment Detail",
       "selected_doctor": "Current Selected Doctor",
+      "default-title": "SELECT A WISHED DATE AND TIME BELOW",
+      "warning-invalid": "Please select an available time",
+      "time": "Time",
       "date_time": "Date & Time",
+      "current-time": "Current {{time}}",
+      "available": "Available",
+      "unavailable": "Unavailable",
       "reason": {
         "title": "Reason for appointment",
         "placeholder": "Please provide a brief description of your reason for appointment"

@@ -13,6 +13,12 @@
     "next": "Tiếp tục"
   },
   "component": {
+    "feedback": {
+      "error": {
+        "not-select-time": "Hãy chọn thời gian hẹn khám",
+        "invalid-time": "Thời gian hẹn khám không hợp lệ hoặc không còn chỗ"
+      }
+    },
     "info": {      
       "title": "Yêu cầu một buổi hẹn khám bệnh",
       "condition": {
@@ -39,7 +45,13 @@
     "detail": {
       "title": "Chi tiết buổi hẹn",
       "selected_doctor": "Bác sĩ đã chọn",
+      "default-title": "CHỌN NGÀY VÀ GIỜ CHO BUỔI HẸN",
       "date_time": "Ngày & Giờ",
+      "time": "Giờ",
+      "current-time": "Thời gian hiện tại {{time}}",
+      "warning-invalid": "Hãy chọn ngày/giờ còn trống",
+      "available": "Trống",
+      "unavailable": "Đã được đặt",
       "reason": {
         "title": "Lí do cần hẹn khám",
         "placeholder": "Vui lòng mô tả ngắn gọn lý do bạn muốn hẹn gặp"

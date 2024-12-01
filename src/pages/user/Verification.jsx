@@ -118,7 +118,9 @@ export default function Verification(){
                         <div className={'image-receiver'}>
                             <div>
                                 <input className={'image-file-select'} type={"file"} onChange={handleFileSelect}/>
-                                <p>{t('verification.success.title')}</p>
+                                {response.type === 'success' &&
+                                    <p>{t('verification.success.title')}</p>
+                                }
                             </div>
                             <div className={'image-shower'}>
                                 {isScanning &&

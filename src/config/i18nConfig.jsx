@@ -6,7 +6,7 @@ i18next
     .use(HttpBackend)
     .use(initReactI18next)
     .init({
-        lng: 'en',
+        lng: 'vi',
         fallbackLng: 'en',
         ns: ['common', 'homepage', 'findDoctor', 'appointmentRequest', 'admin'],
         defaultNS: 'common',
@@ -17,6 +17,8 @@ i18next
         backend: {
             loadPath: '/locales/{{lng}}/{{ns}}.json',
         },
+        addPath: '/locales/add/{{lng}}/{{ns}}',
+        saveMissing: true,
     })
 
 export default i18next;

@@ -4,7 +4,6 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import FindDoctor from "./pages/user/FindDoctor.jsx";
 import Homepage from "./pages/Homepage.jsx";
 import RootTemplate from "./template/RootTemplate.jsx";
-import AppointmentScheduling from "./pages/physician/AppointmentScheduling.jsx";
 import LoginSignUp from "./pages/LoginSignup.jsx";
 import StaffTemplate from "./template/StaffTemplate.jsx";
 import PhysicianDashboard from "./pages/physician/PhysicianDashboard.jsx";
@@ -23,26 +22,37 @@ import AppointmentFindDoctor from "./components/request-appointment/AppointmentF
 import PaymentSuccess from "./components/PaymentSuccess.jsx";
 import UserProfile from "./components/user-profile/UserProfile.jsx";
 import PersonalInfo from "./components/user-profile/PersonalInfo.jsx";
-import BillingPayment from "./components/user-profile/BillingPayment.jsx";
 import AppointmentHistory from "./components/user-profile/AppointmentHistory.jsx";
 import baseAxios, {adminAxios, staffAxios} from "./config/axiosConfig.jsx";
-import AdminAudit from "./pages/admin/AdminAudit.jsx";
 import AdminReport from "./pages/admin/AdminReport.jsx";
 import AdminSetting from "./pages/admin/AdminSetting.jsx";
 import AdminUserManagement from "./pages/admin/AdminUserManagement.jsx";
-import UserFeedback from "./components/UserFeedback.jsx";
+import UserFeedback from "./components/root/UserFeedback.jsx";
 import StaffLogin from "./pages/StaffLogin.jsx";
 import {getCookie} from "./components/Utilities.jsx";
 import PharmacistDashboard from "./pages/pharmacist/PharmacistDashboard.jsx";
 import PharmacistPrescription from "./pages/pharmacist/PharmacistPrescription.jsx";
-import ChatPanel from "./pages/user/ChatPanel.jsx";
+import ErrorPage from "./components/ErrorPage.jsx";
+import PaymentHistory from "./components/user-profile/PaymentHistory.jsx";
+import PaymentFailed from "./components/PaymentFailed.jsx";
+import AddMedicineModal from "./components/AddMedicineModal.jsx";
 
 export const UserContext  = React.createContext({})
+export const UserProfileContext  = React.createContext({})
+
+export const deparment = ["Anesthesia", "Cardiology", "Dermatology", "ENT", "Emergency", "Gastroenterology", "Lab", "Nephrology", "Neurology", "Occupational Therapy", "Oncology", "Orthopedics", "Pharmacy", "Physical Therapy", "Pediatrics", "Psychiatry", "Pulmonology", "Radiology", "Speech Therapy", "Surgery", "Main Hospital Building"]
+export const specialties = [
+    "Allergy and Immunology", "Anesthesiology", "Cardio thoracic Surgery", "Cardiology", "Cardiovascular Disease",
+    "Colon and Rectal Surgery", "Dermatology", "Emergency Medicine", "Endocrinology", "ENT (Ear, Nose, and Throat)", "Gastroenterology", "Geriatrics",
+    "Hematology/Oncology", "Infectious Diseases", "Internal Medicine", "Nephrology", "Neurology", "Neurosurgery", "Obstetrics and Gynecology", "Oncology",
+    "Orthopedic Surgery", "Orthopedics", "Pathology", "Pediatrics", "Physical Medicine and Rehabilitation",
+    "Plastic Surgery", "Psychiatry", "Pulmonology", "Radiology", "Rheumatology", "Sports Medicine", "Surgery", "Urology", "Vascular Surgery"
+]
 
 function App() {
-    const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
+    const [language, setLanguage] = useState(localStorage.getItem('language') || 'vi');
     useEffect(() => {
-        if(localStorage.getItem('language') === null) localStorage.setItem('language', 'en');
+        if(localStorage.getItem('language') === null) localStorage.setItem('language', 'vi');
         i18next.changeLanguage(language)
     }, []);
 
@@ -71,6 +81,7 @@ function App() {
         {
             path: '/',
             element: <RootTemplate language={language} changeLanguage={changeLanguage} logout={logout}/>,
+            errorElement: <ErrorPage />,
             children: [
                 {index: true, element: <Homepage />},
                 {
@@ -101,7 +112,12 @@ function App() {
                                 return baseAxios.get('/profile?email=' + currentUser.email)
                             },
                         },
-                        {path: 'billing-payment', element: <BillingPayment />},
+                        {
+                            path: 'payment', element: <PaymentHistory />,
+                            loader: async () => {
+                                return baseAxios.get('/payment/payment-history?email=' + currentUser.email)
+                            }
+                        },
                         {
                             path: 'appointment-history', element: <AppointmentHistory />,
                             loader: async () => {
@@ -120,6 +136,7 @@ function App() {
         },
         {
             path: 'staff',
+            errorElement: <ErrorPage />,
             element: <StaffTemplate language={language} changeLanguage={changeLanguage}/>,
             children: [
                 {path: 'login', element: <StaffLogin />},
@@ -127,6 +144,7 @@ function App() {
         },
         {
             path: 'physician',
+            errorElement: <ErrorPage />,
             element: <StaffTemplate />,
             children: [
                 {path: 'dashboard', element: <PhysicianDashboard />,
@@ -135,7 +153,6 @@ function App() {
                         return staffAxios.get('/fetch/appointments')
                     }
                 },
-                {path: 'appointment-scheduling', element: <AppointmentScheduling />},
                 {path: 'statistic', element: <PhysicianStatistic />,
                     loader: () => {
                         if(getCookie('STAFF-ID') == null) return null
@@ -146,6 +163,7 @@ function App() {
         },
         {
             path: 'admin',
+            errorElement: <ErrorPage />,
             element: <StaffTemplate language={language} setLanguage={setLanguage}/>,
             children: [
                 {
@@ -166,13 +184,12 @@ function App() {
                             }
                         }).then(res => {
                             return res
-                        }).catch(err => {
+                        }).catch(() => {
                             return null
                         })
                     }
                 },
                 {path: 'settings', element: <AdminSetting />},
-                {path: 'audit', element: <AdminAudit />},
                 {path: 'report', element: <AdminReport />},
             ]
         },
@@ -193,7 +210,8 @@ function App() {
         {path: '/verify/success', element: <Verification />},
         {path: '/verify/fail', element: <Verification />},
         {path: '/payment/success', element: <PaymentSuccess />},
-        {path: '/dev', element: <ChatPanel />}
+        {path: '/payment/failed', element: <PaymentFailed />},
+        {path: '/dev', element: <AddMedicineModal />}
     ])
 
     return (

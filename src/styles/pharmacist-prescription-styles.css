@@ -44,7 +44,7 @@
 }
 .prescription-detail-patient-info, .prescription-detail-doctor-info{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: .25rem;
     font-size: 1.15rem;
 }

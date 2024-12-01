@@ -18,17 +18,15 @@ export default function Detail() {
     const {t} = useTranslation('appointmentRequest')
     const [showError, setShowError] = useState(false)
     const [currentWeekDate, setCurrentWeekDate] = useState(dayjs())
+    const [scheduleData, setScheduleData] = useState()
 
     function handleDataChange(e) {
         setAppointmentData(prev => ({...prev, [e.target.name]: e.target.value}))
     }
-    console.log(currentWeekDate.format("DD-MM-YYYY"))
-    const [scheduleData, setScheduleData] = useState()
 
     useEffect(() => {
         baseAxios.get('/appointment/doctor/schedule?date=' + currentWeekDate.format("DD-MM-YYYY") + "&staffID=" + appointmentData.doctor.doctorID)
             .then(r => {
-                console.log(r)
                 setScheduleData(r.data)
             }).catch(err => console.log(err))
     }, [currentWeekDate]);
@@ -65,13 +63,14 @@ export default function Detail() {
                             <Stack direction={'row'} columnGap={1} alignItems={'end'}>
                                 <div className={'detail-datetime'} style={{borderColor: appointmentData.date && appointmentData.time && !showError ? 'greenyellow' : "white"}}>
                                     {appointmentData.date && appointmentData.time
-                                        ? <Stack direction={'row'} alignItems={'center'} columnGap={1}>{`Current: ${appointmentData.date} ${appointmentData.time}`}
+                                        ? <Stack direction={'row'} alignItems={'center'} columnGap={1}>
+                                            {t('component.detail.current-time', {time: appointmentData.date + " " + appointmentData.time})}
                                             {!showError && <CheckCircleOutlineIcon sx={{color: 'lightgreen', fontSize: '2rem'}}/>}</Stack>
-                                        : 'SELECT A WISHES DATE AND TIME BELOW'}
+                                        : t('component.detail.default-title')}
                                 </div>
                                 {showError &&
                                     <Alert color={'danger'} variant={'solid'} startDecorator={<Warning />}>
-                                        Please select an available time
+                                        {t('component.detail.warning-invalid')}
                                     </Alert>
                                 }
                             </Stack>
@@ -89,7 +88,7 @@ export default function Detail() {
                                 />
                                 <div className={'schedule-header'}>
                                     <Typography className={'schedule-body-item-time'} level={'body1'} sx={{color: 'white'}}>
-                                        Time
+                                        {t('component.detail.time')}
                                     </Typography>
                                     {scheduleData.map((_, index) => {
                                         return (
@@ -117,7 +116,7 @@ export default function Detail() {
                                                          onClick={() => handleSelectTime(index, _index)}
                                                     >
                                                         {time === null ? <span style={{color: 'yellow'}}>--------</span>
-                                                            : !time ? 'Available' : 'Unavailable now'}
+                                                            : !time ? t('component.detail.available') : t('component.detail.unavailable')}
                                                     </div>
                                                 </Tooltip>
                                             ))}

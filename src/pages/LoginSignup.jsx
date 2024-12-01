@@ -157,7 +157,7 @@ export default function LoginSignUp(props){
                 </Link>
                 {showSuccessLogin &&
                     <div className={'success-login'}>
-                        Login successfully! Redirecting to homepage....
+                        {t('login.success')}
                     </div>
                 }
             </div>

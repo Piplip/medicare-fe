@@ -19,6 +19,7 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import dayjs from "dayjs";
+import {useTranslation} from "react-i18next";
 
 AddMedicineModal.propTypes = {
     open: PropTypes.bool,
@@ -47,6 +48,7 @@ function AddMedicineModal(props){
         pos: null, open: false
     })
     const [editable, setEditable] = useState(null)
+    const {t} = useTranslation('common')
 
     useEffect(() => {
         if(props.appointment[14] === 'DONE')
@@ -130,6 +132,11 @@ function AddMedicineModal(props){
             return
         }
 
+        if(medicine.length === 0){
+            alert(t('doctor.dashboard.medicine-modal.alert.no-medicine'))
+            return
+        }
+
         if(medicine.some(item => item.name === "" || item.dosage === "" || item.frequency === ""
             || item.route === "" || item.startDate === null || item.endDate === null)){
             setIsNull(true)
@@ -143,10 +150,10 @@ function AddMedicineModal(props){
             medicationList: medicine
         })
             .then(async r => {
-                console.log(r.data)
                 await resetState()
                 props.appointment[14] = 'DONE'
-                const content = r.data === "" ? "Prescribed Failed" : "Prescribed Successfully"
+                const content = r.data === "" ? t('doctor.dashboard.snackbar.success')
+                    : t('doctor.dashboard.snackbar.failed')
                 props.setSnackBar({
                     content: content, show: true
                 })
@@ -176,9 +183,9 @@ function AddMedicineModal(props){
                 <Stack sx={{minWidth: '50rem', width: '100%', borderBottom: '1px solid'}}>
                     <ModalClose />
                     <Stack justifyContent={'space-between'} direction={'row'} paddingBottom={1}>
-                        <Typography variant={'h5'}>PRESCRIBE</Typography>
+                        <Typography variant={'h5'}>{t('doctor.dashboard.medicine-modal.title')}</Typography>
                         <Stack sx={{position: 'relative'}}>
-                            <Input autoFocus placeholder={'Search by medicine name, type, contraindications,...'}
+                            <Input autoFocus placeholder={t('doctor.dashboard.medicine-modal.placeholder.search')}
                                    sx={{minWidth: '25rem', transform: 'translateX(-1.25rem)'}} value={query}
                                    onChange={(e) => {
                                        setSubQuery({
@@ -215,7 +222,7 @@ function AddMedicineModal(props){
                         <Accordion defaultExpanded>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}
                                 sx={{backgroundColor: 'black', padding: '0 1rem', margin: 0, color: 'white'}}
-                            >DIAGNOSIS</AccordionSummary>
+                            >{t('doctor.dashboard.medicine-modal.diagnosis').toUpperCase()}</AccordionSummary>
                             <AccordionDetails sx={{padding: 0}}>
                                  <textarea value={diagnosis.value} className={diagnosis.alert ? 'diagnosis-alert' : ''} name={'reason'} style={{
                                      padding: '0.25rem 0.5rem',
@@ -226,7 +233,8 @@ function AddMedicineModal(props){
                                      maxHeight: '10rem',
                                      minWidth: '100%',
                                      maxWidth: '75rem'
-                                 }} placeholder={diagnosis.alert ? 'Please enter diagnosis' : 'Enter diagnosis'} onChange={(e) => {
+                                 }} placeholder={diagnosis.alert ? t('doctor.dashboard.medicine-modal.alert.no-diagnosis')
+                                     : t('doctor.dashboard.medicine-modal.placeholder.diagnosis')} onChange={(e) => {
                                      setDiagnosis({
                                          value: e.target.value, alert: false
                                      })
@@ -247,10 +255,11 @@ function AddMedicineModal(props){
                                     <p style={{width: '1rem'}}>{index + 1}.</p>
                                     <div>
                                         <Stack>
-                                            <p className={'new-medicine-title'}>NAME</p>
+                                            <p className={'new-medicine-title'}>{t('table.m-name')}</p>
                                             <Stack sx={{position: 'relative'}}>
                                                 <Input autoFocus value={item.name} disabled={editable}
-                                                       placeholder={item.name === "" && isNull ? 'Please fill in this field' : 'Enter medicine name'}
+                                                       placeholder={item.name === "" && isNull ? t('doctor.dashboard.medicine-modal.alert.no-field-data')
+                                                           : t('doctor.dashboard.medicine-modal.placeholder.field', {field: t('table.m-name')})}
                                                        color={item.name === "" && isNull ? 'danger' : 'neutral'}
                                                        onChange={(e) => {
                                                            setIsNull(false)
@@ -289,7 +298,7 @@ function AddMedicineModal(props){
                                                                         })
                                                                         setSuggestedList([])
                                                                     }}
-                                                                    >CHANGE</Button>
+                                                                    >{t('doctor.dashboard.medicine-modal.btn-change')}</Button>
                                                                 </Stack>
                                                             )
                                                         })
@@ -300,9 +309,10 @@ function AddMedicineModal(props){
                                     </div>
                                     <div>
                                         <Stack>
-                                            <p className={'new-medicine-title'}>DOSAGE</p>
+                                            <p className={'new-medicine-title'}>{t('table.dosage')}</p>
                                             <Input value={item.dosage} disabled={editable}
-                                                   placeholder={item.dosage === "" && isNull ? 'Please fill in this field' : 'Enter dosage'}
+                                                   placeholder={item.dosage === "" && isNull ? t('doctor.dashboard.medicine-modal.alert.no-field-data')
+                                                       : t('doctor.dashboard.medicine-modal.placeholder.field', {field: t('table.dosage')})}
                                                    color={item.dosage === "" && isNull ? 'danger' : 'neutral'}
                                                    onChange={(e) => {
                                                        setIsNull(false)
@@ -317,9 +327,10 @@ function AddMedicineModal(props){
                                     </div>
                                     <div>
                                         <Stack>
-                                            <p className={'new-medicine-title'}>FREQUENCY</p>
+                                            <p className={'new-medicine-title'}>{t('table.frequency')}</p>
                                             <Input value={item.frequency} disabled={editable}
-                                                   placeholder={item.frequency == "" && isNull ? 'Please fill in this field' : 'Enter frequency'}
+                                                   placeholder={item.frequency == "" && isNull ? t('doctor.dashboard.medicine-modal.alert.no-field-data')
+                                                       : t('doctor.dashboard.medicine-modal.placeholder.field', {field: t('table.frequency')})}
                                                    color={item.frequency == "" && isNull ? 'danger' : 'neutral'}
                                                    onChange={(e) => {
                                                        setIsNull(false)
@@ -334,7 +345,7 @@ function AddMedicineModal(props){
                                     </div>
                                     <div>
                                         <Stack>
-                                            <p className={'new-medicine-title'}>ROUTE</p>
+                                            <p className={'new-medicine-title'}>{t('table.route')}</p>
                                             <Select value={item.route} sx={{minWidth: '8rem'}} disabled={editable}
                                                     color={item.route === "" && isNull ? 'danger' : 'neutral'}
                                             onChange={(_, val) => {
@@ -344,16 +355,18 @@ function AddMedicineModal(props){
                                                     return newMedicine
                                                 })
                                             }}>
-                                                <Option value={''}>Select route</Option>
-                                                <Option value={'oral'}>Oral</Option>
-                                                <Option value={'injection'}>Injection</Option>
-                                                <Option value={'topical'}>Topical</Option>
-                                                <Option value={'inhalation'}>Inhalation</Option>
+                                                <Option value={''}>{t('doctor.dashboard.medicine-modal.route.default')}</Option>
+                                                <Option value={'oral'}>{t('doctor.dashboard.medicine-modal.route.oral')}</Option>
+                                                <Option value={'injection'}>{t('doctor.dashboard.medicine-modal.route.injection')}</Option>
+                                                <Option value={'topical'}>{t('doctor.dashboard.medicine-modal.route.topical')}</Option>
+                                                <Option value={'inhalation'}>{t('doctor.dashboard.medicine-modal.route.inhalation')}</Option>
                                             </Select>
                                         </Stack>
                                     </div>
                                     <div>
-                                        <DatePicker format={"DD-MM-YYYY"} label={item.startDate === null && isNull ? "Select a date" : "START DATE"}
+                                        <DatePicker format={"DD-MM-YYYY"} label={item.startDate === null && isNull ?
+                                            t('doctor.dashboard.medicine-modal.alert.no-start-date')
+                                            : t('doctor.dashboard.medicine-modal.placeholder.start-date')}
                                                     sx={{width: '200px'}} disabled={editable}
                                                     slotProps={{
                                                         textField: {
@@ -375,7 +388,9 @@ function AddMedicineModal(props){
                                         />
                                     </div>
                                     <div>
-                                        <DatePicker format={"DD-MM-YYYY"} label={item.endDate === null && isNull ? 'Select a date' : 'END DATE'}
+                                        <DatePicker format={"DD-MM-YYYY"} label={item.endDate === null && isNull ?
+                                            t('doctor.dashboard.medicine-modal.alert.no-end-date')
+                                            : t('doctor.dashboard.medicine-modal.placeholder.end-date')}
                                                     sx={{width: '200px'}} disabled={editable}
                                                     value={item.endDate}
                                                     slotProps={{
@@ -409,7 +424,8 @@ function AddMedicineModal(props){
                                         />
                                         {noteModal.pos === index && noteModal.open &&
                                             <Stack className={'note-panel'}>
-                                                <Textarea autoFocus placeholder={'Enter note'} value={item.note} disabled={editable}
+                                                <Textarea autoFocus placeholder={t('doctor.dashboard.medicine-modal.placeholder.note')}
+                                                          value={item.note} disabled={editable}
                                                           onBlur={() => {
                                                               setNoteModal({
                                                                   pos: null, open: false
@@ -442,8 +458,14 @@ function AddMedicineModal(props){
                         })}
                     </Stack>
                     <p className={'add-new-medicine-btn'}
-                       onClick={() => addMedicine("")}
-                    >+ Add new medicine</p>
+                       onClick={() => {
+                           if(editable) {
+                               alert(t('doctor.dashboard.medicine-modal.alert.in-view-mode'))
+                               return
+                           }
+                           addMedicine("")
+                       }}
+                    >{t('doctor.dashboard.medicine-modal.btn.add-new')}</p>
                 </Stack>
                 </Stack>
                 <Stack direction={'row'} columnGap={'.5rem'} alignSelf={'end'}>
@@ -454,10 +476,11 @@ function AddMedicineModal(props){
                             }
                             else submit()
                         }}
-                    >{editable ? 'EDIT' : 'SUBMIT'}</Button>
+                    >{editable ? t('doctor.dashboard.medicine-modal.btn.edit') : t('doctor.dashboard.medicine-modal.btn.submit')}</Button>
                     <Button variant={'contained'} color={'error'}
                             onClick={resetState}
-                    >{props.appointment[14] === 'DONE' ? 'CLOSE' : 'CANCEL'}</Button>
+                    >{props.appointment[14] === 'DONE' ? t('doctor.dashboard.medicine-modal.btn.close')
+                        : t('doctor.dashboard.medicine-modal.btn.cancel')}</Button>
                 </Stack>
             </ModalDialog>
         </Modal>

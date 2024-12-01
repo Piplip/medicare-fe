@@ -28,7 +28,8 @@
       "link2": "Lịch sử hình thành"
     },
     "contact": {
-      "title": "Liên hệ với chúng tôi"
+      "title": "Liên hệ với chúng tôi",
+      "link1": "Chia sẻ suy nghĩ của bạn"
     },
     "career": {
       "title": "Việc làm",
@@ -39,10 +40,14 @@
   "login": {
     "login-title": "Đăng nhập",
     "signup-title": "Đăng ký",
+    "success": "Đăng nhập thành công. Đang chuyển hướng về trang chủ...",
     "placeholder": {
       "email": "Email",
       "password": "Mật khẩu",
-      "confirm": "Xác nhận mật khẩu"
+      "confirm": "Xác nhận mật khẩu",
+      "current-pass": "Nhập mật khẩu hiện tại",
+      "new-pass": "Nhập mật khẩu mới",
+      "confirm-new-pass": "Xác nhận mật khẩu mới"
     },
     "error": {
       "email": {
@@ -67,8 +72,11 @@
     "SCHEDULED": "Đã đặt lịch",
     "CONFIRMED": "Đã xác nhận",
     "CANCELLED": "Đã hủy",
-    "active": "Đang hoạt động",
-    "inactive": "Dừng hoạt động"
+    "Active": "Đang hoạt động",
+    "Inactive": "Dừng hoạt động",
+    "COMPLETED": "Đã thanh toán",
+    "PENDING": "Đang chờ thanh toán",
+    "FAILED": "Đã hủy thanh toán"
   },
   "department": {
     "title": "Khoa và Viện nghiên Cứu",
@@ -132,7 +140,8 @@
     "Sports Medicine": "Chuyên khoa y học thể thao",
     "Surgery": "Chuyên khoa phẫu thuật tổng hợp",
     "Urology": "Chuyên khoa tiết niệu",
-    "Vascular Surgery": "Chuyên khoa phẫu thuật mạch máu"
+    "Vascular Surgery": "Chuyên khoa phẫu thuật mạch máu",
+    "Obstetrics & Gynecology": "Chuyên khoa phụ sản"
   },
   "lang": {
     "title": "Ngôn ngữ",
@@ -159,7 +168,7 @@
   "verification": {
     "success": {
       "title": "XÁC THỰC EMAIL THÀNH CÔNG",
-      "message": "Nhằm mục đích đem lại trải nghiệm người dùng tốt nhất, chúng tôi cần xác minh danh tính bằng căn cước công dân của bạn",   
+      "message": "Nhằm mục đích đem lại trải nghiệm người dùng tốt nhất, chúng tôi cần xác minh danh tính bằng căn cước công dân của bạn",
       "guarantee": "Chúng tôi đảm bảo thông tin của bạn sẽ được bảo mật và an toàn",
       "max-size": "Dung lượng ảnh tối đa: 1MB",
       "scanning": "Đang xác minh! Vui lòng đợi",
@@ -169,15 +178,43 @@
     }
   },
   "user_profile": {
+    "payment": {
+      "title": "Lịch sử thanh toán",
+      "no-payment": "No payment history"
+    },
+    "msg": {
+      "not-show-up": "Không có đơn thuốc cho buổi hẹn này do bạn không đến.",
+      "scheduled": "Cuộc hẹn này đã được lên lịch. Đơn thuốc sẽ có sau thời gian hẹn!",
+      "cancelled": "Cuộc hẹn này đã bị hủy bỏ. Đơn thuốc không có sẵn!",
+      "default": "Không có toa thuốc nào cho cuộc hẹn này!"
+    },
     "nav": {
       "nav1": "Thông tin cá nhân",
       "nav2": "Hóa đơn thanh toán",
       "nav3": "Lịch sử khám bệnh"
     },
+    "change-password": {
+      "title": "Đổi mật khẩu",
+      "placeholder": {
+        "current": "Nhập mật khẩu hiện tại",
+        "new": "Nhập mật khẩu mới",
+        "confirm": "Xác nhận mật khẩu mới"
+      },
+      "btn": {
+        "change": "Thay đổi",
+        "confirm": "Xác nhận"
+      },
+      "otp-guide": "Một mã OTP đã được gửi tới email của bạn. Vui lòng mã gồm 6 chữ số để xác nhận đổi mật khẩu.",
+      "invalid-otp": "Mã OTP không hợp lệ",
+      "success": "Đổi mật khẩu thành công"
+    },
+    "pay-now": "Thành toán ngay",
     "edit-btn": "Chỉnh sửa thông tin",
+    "save-btn": "Lưu thay đổi",
+    "cancel-btn": "Hủy bỏ",
     "logout-btn": "Đăng xuất",
     "change-pass": "Đổi mật khẩu",
-    "sort-filter": "Bộ lọc thông tin",
+    "sort-filter": "Lọc & Sắp xếp",
     "personal-info": {
       "title": "Thông tin cá nhân",
       "description": "Quản lý thông tin cá nhân của bạn",
@@ -193,7 +230,7 @@
       "title": "Lịch sử khám bệnh",
       "button": {
         "search": "Tìm kiếm",
-        "sort-filter": "Bộ lọc thông tin",
+        "sort-filter": "Lọc & Sắp xếp",
         "clear": "Xóa bộ lọc hiện tại"
       },
       "filter": {
@@ -208,9 +245,11 @@
         "status": {
           "title": "Trạng thái",
           "all": "Tất cả",
-          "scheduled": "Chờ xác nhận thanh toán",
+          "scheduled": "Chờ thanh toán",
           "confirmed": "Đặt lịch thành công",
-          "cancelled": "Đã hủy lịch khám"
+          "cancelled": "Đã hủy lịch khám",
+          "done": "Hoàn thành",
+          "not_showed_up": "Không đến"
         },
         "order": {
           "title": "Bác sĩ",
@@ -222,9 +261,11 @@
       }
     },
     "feedback": {
+      "no-feedback": "Bạn chưa đưa ra phản hồi nào",
+      "view-detail": "Xem chi tiết",
       "title": "Phản hồi về dịch vụ",
       "type": {
-        "scheduling": "Đã lưu lại"
+        "scheduling": "Đặt lịch khám"
       },
       "rating": {
         "amazing": "Rất tốt",
@@ -255,7 +296,7 @@
     }
   },
   "table": {
-    "id": "ID",
+    "id": "Mã",
     "datetime": "Ngày & Giờ",
     "department": "Khoa",
     "doctor": "Bác sĩ",
@@ -263,8 +304,8 @@
     "feedback-type": "Loại Feedback",
     "content": "Nội dung",
     "rating": "Đánh giá",
-    "account-id": "ID tài khoản",
-    "staff-id": "ID nhân viên",
+    "account-id": "Mã tài khoản",
+    "staff-id": "Mã nhân viên",
     "fname": "Tên",
     "lname": "Họ",
     "dob": "Ngày sinh",
@@ -284,7 +325,30 @@
     "primary-lang": "Ngôn ngữ chính",
     "certification": "Chứng chỉ",
     "start-contract": "Ngày bắt đầu hợp đồng",
-    "end-contract": "Ngày kết thúc hợp đồng"
+    "end-contract": "Ngày kết thúc hợp đồng",
+    "appointment-id": "Mã cuộc hẹn",
+    "patient-name": "Tên bệnh nhân",
+    "appointment-time": "Thời gian",
+    "reason": "Lí do",
+    "view-detail": "Xem chi tiết",
+    "m-name": "Tên thuốc",
+    "dosage": "Liều lượng",
+    "quantity": "Số lượng",
+    "frequency": "Liều dùng",
+    "m-start-date": "Ngày bắt đầu",
+    "m-end-date": "Ngày kết thúc",
+    "m-doctor-note": "Ghi chú",
+    "row-per-page": "Số dòng mỗi trang",
+    "transaction_id": "Mã thanh toán",
+    "payment_date": "Ngày thanh toán",
+    "payment_amount": "Tổng số tiền",
+    "payment_method": "Phương thức thanh toán",
+    "transaction_status": "Trạng thái",
+    "work-years": "Kinh nghiệm làm việc",
+    "total-appointment": "Tổng số cuộc hẹn khám",
+    "total-patient": "Tổng số bệnh nhân",
+    "route": "Đường sử dụng",
+    "appointment-description": "Chẩn đoán"
   },
   "order": {
     "asc": "Tăng dần",
@@ -316,12 +380,17 @@
   "payment": {
     "title": "Thanh toán thành công",
     "description": "Chân thành cảm ơn bạn đã thanh toán. Thông tin thanh toán và hóa đơn cho việc sử dụng dịch vụ của chúng tôi đã được gửi đến email của bạn",
-    "button": "Trờ về trang chủ"
+    "button": "Trờ về trang chủ",
+    "cancel": {
+      "title": "Hủy thanh toán",
+      "description": "Thanh toán của bạn đã được hủy thành công! Xin lưu ý rằng nếu bạn liên tục hủy thanh toán, tài khoản của bạn có thể bị treo",
+      "button": "Trở về trang chủ"
+    }
   },
-   "button": {
+  "button": {
     "clear-filters": "Xóa bộ lọc hiện tại",
-     "modify": "Tùy chỉnh",
-     "delete": "Xóa"
+    "modify": "Tùy chỉnh",
+    "delete": "Xóa"
   },
   "staff-type": {
     "doctor": "Bác sĩ",
@@ -341,6 +410,197 @@
     "male": "Nam",
     "Male": "Nam",
     "female": "Nữ",
-    "Female": "Nữ"
+    "Female": "Nữ",
+    "other": "Khác"
+  },
+  "chatbot": {
+    "title": "Hỗ trợ khách hàng",
+    "loading-label": "Đang khởi tạo...",
+    "bot-name": "Medicare Bot",
+    "username": "Bạn",
+    "input-placeholder": "Nhập tin nhắn",
+    "sample-question": "Câu hỏi mẫu",
+    "first-message": "Chào bạn! Tôi có thể giúp gì cho bạn ?",
+    "sample-1": "Thời gian hoạt động của bệnh viện này ?",
+    "sample-2": "Làm thế nào để đặt lịch hẹn khám bệnh ?",
+    "sample-3": "Có bao nhiêu khoa trong bệnh viện ?"
+  },
+  "doctor": {
+    "dashboard": {
+      "title": "Danh sách hẹn khám",
+      "upcoming": "Các cuộc hẹn sắp đến",
+      "view-medicine": "Xem toa thuốc",
+      "add-medicine": "Thêm toa thuốc",
+      "no-appointment": "Không có cuộc hẹn",
+      "no-prescription": "Không có đơn thuốc cho cuộc hẹn này",
+      "snackbar": {
+        "success": "Kê đơn thành công",
+        "failed": "Kê đơn thất bại! Vui lòng kiểm tra và thử lại"
+      },
+      "quick-detail": {
+        "title": "Chi tiết",
+        "close": "Đóng"
+      },
+      "filter": {
+        "search-placeholder": "Tìm kiếm bằng tên bệnh nhân...",
+        "status": {
+          "title": "Trạng thái",
+          "all": "TẤT CẢ",
+          "scheduled": "ĐÃ ĐẶT LỊCH",
+          "confirmed": "ĐÃ XÁC NHẬN",
+          "cancelled": "ĐÃ HỦY",
+          "done": "ĐÃ XONG",
+          "not-showed-up": "KHÔNG ĐẾN",
+          "not_showed_up": "KHÔNG ĐẾN",
+          "warning": "Ít nhất 1 loại cần được chọn"
+        },
+        "start-date": "Ngày bắt đầu",
+        "end-date": "Ngày kết thúc"
+      },
+      "medicine-modal": {
+        "title": "Đơn thuốc",
+        "diagnosis": "Chẩn đoán",
+        "btn": {
+          "add": "Thêm",
+          "change": "Thay đổi",
+          "edit": "Chỉnh sửa",
+          "add-new": "+ Thêm thuốc mới",
+          "submit": "Hoàn tất",
+          "close": "Đóng",
+          "cancel": "Hủy bỏ"
+        },
+        "alert": {
+          "no-medicine": "Đơn thuốc trống. Hãy thêm thuốc vào đơn",
+          "no-diagnosis": "Vui lòng nhập chẩn đoán",
+          "no-field-data": "Vui lòng điền vào trường này",
+          "no-start-date": "Hãy chọn ngày bắt đầu",
+          "no-end-date": "Hãy chọn ngày kết thúc",
+          "in-view-mode": "Bạn đang ở chế độ xem! Vui lòng chuyển sang chế độ chỉnh sửa để thêm thuốc mới"
+        },
+        "placeholder": {
+          "search": "Tìm kiếm theo tên thuốc, loại thuốc, chống chỉ định,...",
+          "diagnosis": "Nhập chẩn đoán",
+          "field": "Nhập {{field}}",
+          "start-date": "Chọn ngày bắt đầu",
+          "end-date": "Chọn ngày kết thúc",
+          "note": "Nhập ghi chú"
+        },
+        "route": {
+          "default": "Chọn đường sử dụng",
+          "oral": "Uống",
+          "injection": "Tiêm",
+          "topical": "Thoa",
+          "inhalation": "Đường mũi"
+        }
+      }
+    },
+    "statistic": {
+      "title": {
+        "all-time": "Thống kê toàn bộ",
+        "1-date": "Thống kê ngày {{date}}",
+        "date-range": "Thống kế từ ngày {{start}} dến ngày {{end}}",
+        "only-start": "Thống kê từ ngày {{start}} dến hiện tại",
+        "only-end": "Thống kê đến ngày {{end}}"
+      },
+      "or": "hoặc",
+      "filter": {
+        "1-date": "Ngày",
+        "start-date": "Ngày bắt đầu",
+        "end-date": "Ngày kết thúc"
+      },
+      "appointment": {
+        "unit": "cuộc hẹn",
+        "title": "Thống kê cuộc hẹn",
+        "total": "Tổng số cuộc hẹn",
+        "complete-cancel": "Số cuộc hoàn thành/hủy",
+        "total-patient": "Tổng số bệnh nhân",
+        "no-show": "Bệnh nhân không đến",
+        "gender-dis": "Biểu đồ phân phối theo giới tính",
+        "age-dis": "Biều đồ phân phối theo độ tuổi",
+        "over-time": "Thống kê cuộc hẹn theo thời gian",
+        "week": "Tuần",
+        "month": "Tháng",
+        "done": "Hoàn thành",
+        "not-showed-up": "Không đến"
+      }
+    }
+  },
+  "pharmacist": {
+    "prescription": {
+      "title": "DANH SÁCH ĐƠN THUỐC({{count}})",
+      "newer": "Đơn mới",
+      "older": "Đơn cũ",
+      "select-by-other": "{{name}} đang kê đơn này! Hãy chọn một đơn thuốc khác",
+      "card": {
+        "wait-for": "Đã chờ",
+        "min": "phút",
+        "name": "Tên bệnh nhân",
+        "p-doctor": "Bác sĩ kê đơn",
+        "p-time": "Thời gian kê đơn",
+        "total": "Tổng số thuốc",
+        "view": "Xem chi tiết"
+      }
+    }
+  },
+  "prescription": {
+    "title": "Chi tiết đơn thuốc",
+    "btn": {
+      "print": "In",
+      "complete": "Hoàn thành"
+    },
+    "patient-info": {
+      "title": "Thông tin bệnh nhân",
+      "name": "Tên",
+      "dob": "Ngày sinh",
+      "gender": "Giới tính",
+      "address": "Địa chỉ",
+      "phone": "Số điện thoại"
+    },
+    "detail": {
+      "common": "Detail",
+      "title": "Thông tin đơn thuốc",
+      "doctor": "Bác sĩ kê đơn",
+      "time": "Thời gian kê đơn",
+      "phone": "Số điện thoại",
+      "total": "Tổng số thuốc",
+      "diagnosis": "Chấn đoán của bác sĩ",
+      "p-medications": "Thuốc được kê ({{total}})"
+    }
+  },
+  "staff-template": {
+    "doctor": {
+      "title": "Menu bác sĩ",
+      "pages": {
+        "dashboard": "Trang chủ",
+        "statistic": "Thống kê",
+        "scheduling": "Lịch hẹn"
+      }
+    },
+    "admin": {
+      "title": "Menu Admin",
+      "pages": {
+        "user-management": "Quản lý nhân viên",
+        "report-analytic": "Báo cáo & Phân tích",
+        "setting": "Cài đặt hệ thống",
+        "audit": "Nhật ký hệ thống"
+      }
+    },
+    "pharmacist": {
+      "title": "Menu dược sĩ",
+      "pages": {
+        "prescription": "Quản lý đơn thuốc",
+        "dashboard": "Trang chủ"
+      }
+    }
+  },
+  "404": {
+    "d-1": "Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm.",
+    "d-2": "Có vẻ như bạn đang bị lạc. Hãy để chúng tôi giúp bạn trở lại đúng hướng!",
+    "back-home": "Trang chủ",
+    "booking": "Đặt lịch khám"
+  },
+  "authorized": {
+    "warn": "TRUY CẬP BỊ TỪ CHỐI",
+    "msg-1": "Bạn chưa đăng nhập! Vui lòng đăng nhập bằng tài khoản nhân viên được cấp của bạn"
   }
 }

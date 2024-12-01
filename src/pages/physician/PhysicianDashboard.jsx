@@ -1,5 +1,5 @@
 import '../../styles/physician-dashboard-style.css'
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     Alert, AppBar,
     Button, Dialog,
@@ -19,13 +19,14 @@ import AddMedicineModal from "../../components/AddMedicineModal.jsx";
 import {Snackbar} from "@mui/joy";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import {staffAxios, webSocketAxios} from "../../config/axiosConfig.jsx";
-import {getCookie} from "../../components/Utilities.jsx";
+import {staffAxios} from "../../config/axiosConfig.jsx";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import {useTranslation} from "react-i18next";
+import {useReactToPrint} from "react-to-print";
 
 export default function PhysicianDashboard(){
+    const {t} = useTranslation('common')
     const loaderData = useLoaderData()
     const appointments = JSON.parse(loaderData?.data[1])['records'] ?? null
     const [snackBar, setSnackBar] = useState({
@@ -44,7 +45,7 @@ export default function PhysicianDashboard(){
         status: [1,1,1,1,1]
     })
     const [openDetail, setOpenDetail] = useState(false)
-    const header = ['Appointment ID', 'Patient Name', 'Address', 'Appointment Time', 'Reason', 'Status']
+    const header = ['appointment-id', 'patient-name', 'address', 'appointment-time', 'reason', 'status']
     const refStatus = {"DONE": 0, "CANCELLED": 1, "SCHEDULED": 2, "CONFIRMED": 3, "NOT_SHOWED_UP": 4}
     const statusBadgeBgColor = {"SCHEDULED": "#3d3d3d", "CONFIRMED": "blue", "CANCELLED": "#ff0000", "DONE": "green", "NOT_SHOWED_UP": "gray"}
     const statusBadgeTextColor = {"SCHEDULED": "white", "CONFIRMED": "white", "CANCELLED": "white", "DONE": "white", "NOT_SHOWED_UP": "white"}
@@ -55,8 +56,12 @@ export default function PhysicianDashboard(){
     const [pagination, setPagination] = useState({
         page: 1, size: 10, totalRecord: parseInt(loaderData.data[0], 10)
     })
-    const medicationHeader = ['Name', 'Dosage', 'Frequency', 'Quantity', 'Start Date', 'End Date', "Doctor's Note"]
+    const medicationHeader = ['m-name', 'dosage', 'frequency', 'm-start-date', 'm-end-date', "m-doctor-note"]
     const [currentDetail, setCurrentDetail] = useState(null)
+    const printRef = useRef(null)
+    const handlePrint = useReactToPrint({
+        contentRef: printRef
+    })
 
     useEffect(() => {
         setFilterAppointments(appointments)
@@ -68,7 +73,6 @@ export default function PhysicianDashboard(){
             "endDate": filter.endDate !== null ? dayjs(filter.endDate).format("YYYY-MM-DD") : null,
             "page": pagination.page, "size": pagination.size}))
             .then(r => {
-                console.log(JSON.parse(r?.data[1])['records'])
                 setFilterAppointments(JSON.parse(r?.data[1])['records'])
                 setPagination(prev => ({...prev, totalRecord: parseInt(r?.data[0], 10)}))
             }).catch(err => console.log(err))
@@ -128,13 +132,13 @@ export default function PhysicianDashboard(){
     return (
         <div className={'physician-dashboard'}>
             <Snackbar variant="soft"
-                color={snackBar.content === "Prescribed Successfully" ? "success" : "danger"}
+                color={snackBar.content === t('doctor.dashboard.snackbar.success') ? "success" : "danger"}
                 open={snackBar.show}
                 onClose={() => setSnackBar({
                     show: false, content: null
                 })}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                endDecorator={snackBar.content === "Prescribed Successfully" ? <CheckCircleOutlineIcon /> : <WarningAmberIcon />}
+                endDecorator={snackBar.content === t('doctor.dashboard.snackbar.success') ? <CheckCircleOutlineIcon /> : <WarningAmberIcon />}
             >
                 {snackBar.content}
             </Snackbar>
@@ -142,18 +146,18 @@ export default function PhysicianDashboard(){
                 <AddMedicineModal open={medicineModal.open} setMedicineModal={setMedicineModal} appointment={appointments[currentAppointment]}
                                   snackBar={snackBar} setSnackBar={setSnackBar}/>
             }
-            <UnauthenticatedModal warn={"ACCESS DENIED"} message={"You haven't logged in! Please log in with your staff account"}/>
+            <UnauthenticatedModal warn={t('authorized.warn').toUpperCase()} message={t('authorized.msg-1')}/>
             <div style={{backgroundColor: 'white'}}>
-                <p className={'physician-panel-title'}>Appointments</p>
+                <p className={'physician-panel-title'}>{t('doctor.dashboard.title').toUpperCase()}</p>
                 <Stack columnGap={1} rowGap={.5} padding={'1rem'}>
                     <div style={{borderBottom: '2px solid', paddingBottom: '.5rem'}}>
-                       <Typography variant={'h6'}>Upcoming Appointments</Typography>
+                       <Typography variant={'h6'}>{t('doctor.dashboard.upcoming')}</Typography>
                         <Stack direction={'row'} gap={1} sx={{flexWrap: 'wrap'}}>
                             {appointments && appointments.map((item, index) => {
                                 return (
                                     compareDate(item[3], item[4]) &&
                                     <Stack key={index}
-                                           className={`simple-appointment-card ${new Date().getHours() +1== item[4].split(':')[0] ? 'current-appointment' : ''}`}>
+                                           className={`simple-appointment-card ${new Date().getHours() + 1 == item[4].split(':')[0] ? 'current-appointment' : ''}`}>
                                         <div onClick={() => setCurrentAppointment(index)}>
                                             <Stack direction={'row'} justifyContent={'space-between'}>
                                                 <p>{item[6] + " " + item[5]}</p>
@@ -162,13 +166,12 @@ export default function PhysicianDashboard(){
                                             <p style={{marginTop: '0.5rem'}}>{item[2]}</p>
                                         </div>
                                         <div className={'add-medicine-btn'} onClick={() => {
-                                            console.log("Trigger")
                                             setCurrentAppointment(index)
                                             setMedicineModal({
                                                 type: 'done', open: true
                                             })
                                         }}>
-                                            {item[14] === 'DONE' ? 'View ' : 'Add '} Medicine
+                                            {item[14] === 'DONE' ? t('doctor.dashboard.view-medicine') : t('doctor.dashboard.add-medicine')}
                                         </div>
                                     </Stack>
                                 )
@@ -177,24 +180,24 @@ export default function PhysicianDashboard(){
                     </div>
                     {appointments && appointments[currentAppointment] &&
                         <Stack sx={{border: '5px solid', padding: '0.5rem 1rem'}}>
-                            <Typography variant={'h5'} textAlign={'center'}>DETAIL</Typography>
+                            <Typography variant={'h5'} textAlign={'center'}>{t('doctor.dashboard.quick-detail.title').toUpperCase()}</Typography>
                             <div className={'detail-appointment-view'}>
-                                <p>Patient Name: {appointments[currentAppointment][6]} {appointments[currentAppointment][5]}</p>
-                                <p>Birthday: {appointments[currentAppointment][7]}</p>
-                                <p>Address: {appointments[currentAppointment][9]}, {appointments[currentAppointment][10]}, {appointments[currentAppointment][11]}, {appointments[currentAppointment][12]}</p>
-                                <p>Gender: {appointments[currentAppointment][8]}</p>
-                                <p>Appointment Time: {new Date(appointments[currentAppointment][4] + " " + appointments[currentAppointment][3])
+                                <p>{t('table.patient-name')}: {appointments[currentAppointment][6]} {appointments[currentAppointment][5]}</p>
+                                <p>{t('table.dob')}: {appointments[currentAppointment][7]}</p>
+                                <p>{t('table.address')}: {appointments[currentAppointment][9]}, {appointments[currentAppointment][10]}, {appointments[currentAppointment][11]}, {appointments[currentAppointment][12]}</p>
+                                <p>{t('table.gender')}: {t(`gender.${appointments[currentAppointment][8]}`)}</p>
+                                <p>{t('table.appointment-time')}: {new Date(appointments[currentAppointment][4] + " " + appointments[currentAppointment][3])
                                     .toLocaleDateString("vi-VN", {hour: "2-digit", minute: "2-digit"})}</p>
-                                <p>Appointment Description: {appointments[currentAppointment][2]}</p>
+                                <p>{t('table.appointment-description')}: {appointments[currentAppointment][2]}</p>
                             </div>
                             <Button sx={{alignSelf: 'end', width: 'fit-content'}} variant={'contained'}
                                 onClick={() => setCurrentAppointment(null)}
-                            >Close</Button>
+                            >{t('doctor.dashboard.quick-detail.close')}</Button>
                         </Stack>
                     }
                     <Stack>
                         <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} paddingBottom={1}>
-                            <Input autoFocus placeholder={'Search by name...'}
+                            <Input autoFocus placeholder={t('doctor.dashboard.filter.search-placeholder')}
                                    sx={{minWidth: '22rem'}} value={filter.query}
                                    onChange={(e) => {
                                         setFilter(prev => {
@@ -205,38 +208,40 @@ export default function PhysicianDashboard(){
                             <Stack direction={'row'} columnGap={'1rem'}>
                                 <Stack rowGap={1}>
                                     <Stack direction={'row'} alignItems={'center'} columnGap={1}>
-                                        <p>Status</p>
+                                        <p>{t('doctor.dashboard.filter.status.title')}</p>
                                         {showAlert &&
                                             <Alert severity="warning"
                                                    sx={{fontSize: '0.9rem', padding: '0rem 1rem', width: 'fit-content'}}
                                             >
-                                                At least 1 must be selected
+                                                {t('doctor.dashboard.filter.status.warning')}
                                             </Alert>
                                         }
                                     </Stack>
                                     <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem'}}>
                                         <FormControlLabel control={<Checkbox sx={{marginRight: 1}} onChange={() => setFilter(prev => ({...prev, status: [1,1,1,1,1]}))}
-                                                                             checked={filter.status.every(val => val === 1)}/>} label="ALL"
+                                                                             checked={filter.status.every(val => val === 1)}/>}
+                                                          label={t('doctor.dashboard.filter.status.all')}
                                             disabled={filter.status.every(val => val === 1)}
                                         />
-                                        {['DONE','CANCELLED','SCHEDULED','CONFIRMED','NOT SHOWED UP'].map((item, index) => {
+                                        {['done','cancelled','scheduled','confirmed','not-showed-up'].map((item, index) => {
                                             return (
                                                 <FormControlLabel key={index}
                                                     control={<Checkbox sx={{marginRight: 1}} onChange={() => handleChangeStatus(index)}
-                                                                       checked={filter.status.every(val => val === 1) || filter.status[index] === 1}/>} label={item} />
+                                                                       checked={filter.status.every(val => val === 1) || filter.status[index] === 1}/>}
+                                                                  label={t(`doctor.dashboard.filter.status.${item}`)} />
                                             )
                                         })}
                                     </div>
                                 </Stack>
                                 <Stack direction={'row'} alignItems={'center'} columnGap={'1rem'}>
-                                    <DatePicker format={"DD-MM-YYYY"} label={"Start Date"}
+                                    <DatePicker format={"DD-MM-YYYY"} label={t('doctor.dashboard.filter.start-date')}
                                                 onChange={(date) => setFilter(prev => ({...prev, startDate: date}))}
                                                 sx={{width: '200px'}}
                                                 slotProps={{
                                                     field: { clearable: true, onClear: () => setFilter(prev => ({...prev, startDate: null}))},
                                                 }}
                                     />
-                                    <DatePicker format={"DD-MM-YYYY"} label={"End Date"} sx={{width: '200px'}}
+                                    <DatePicker format={"DD-MM-YYYY"} label={t('doctor.dashboard.filter.end-date')} sx={{width: '200px'}}
                                                 onChange={(date) => setFilter(prev => ({...prev, endDate: date}))}
                                                 slotProps={{
                                                     field: { clearable: true, onClear: () => setFilter(prev => ({...prev, endDate: null}))},
@@ -264,7 +269,7 @@ export default function PhysicianDashboard(){
                                                         }
                                                     }}
                                                 >
-                                                    {item}
+                                                    {t(`table.${item}`)}
                                                     {(index === 0 || index === 1 || index === 3) &&
                                                         <ImportExportIcon className={'sortable'} sx={{color: 'yellow'}}/>
                                                     }
@@ -274,15 +279,14 @@ export default function PhysicianDashboard(){
                                 </TableHead>
                                 <TableBody>
                                     {filterAppointments && filterAppointments.map((item, index) => (
-                                        <Tooltip title={"Click to view detail"} key={index} followCursor
+                                        <Tooltip title={t('table.view-detail')} key={index} followCursor
                                                  onClick={() => {
                                                      staffAxios.get('/appointment/detail?appointmentID=' + item[0])
                                                          .then(r => {
-                                                             console.log(r)
                                                              setCurrentDetail(r.data)
                                                              setOpenDetail(true)
                                                          })
-                                                         .catch(err => alert(err.response.data))
+                                                         .catch(() => alert(t('doctor.dashboard.no-prescription')))
                                                  }}>
                                             <TableRow className={['0','1','3'].includes(index) ? 'sortable-column' : ''} sx={{
                                                 '&:nth-of-type(odd)': {backgroundColor: '#c0d6f3',},
@@ -301,7 +305,7 @@ export default function PhysicianDashboard(){
                                                         borderRadius: '0.3rem', fontSize: '0.6rem'
                                                     }}
                                                     >
-                                                        {item[14]}
+                                                        {t(`doctor.dashboard.filter.status.${item[14].toLowerCase()}`)}
                                                     </p>
                                                 </TableCell>
                                             </TableRow>
@@ -319,7 +323,7 @@ export default function PhysicianDashboard(){
                         </TableContainer>
                         {filterAppointments && filterAppointments.length === 0 &&
                             <Stack sx={{width: '100%', height: '15rem', justifyContent: 'center', alignItems: 'center', fontSize: '2rem'}}>
-                                <p>Not found appointment</p>
+                                <p>{t('doctor.dashboard.no-appointment')}</p>
                             </Stack>
                         }
                     </Stack>
@@ -338,43 +342,43 @@ export default function PhysicianDashboard(){
                             <CloseIcon/>
                         </IconButton>
                         <Typography sx={{ml: 2, flex: 1, fontSize: '20px', fontWeight: 'bold'}}>
-                            Detailed Prescription View
+                            {t('prescription.detail.title', {ns: 'common'})}
                         </Typography>
                         <Stack direction={'row'} columnGap={1}>
-                            <Button variant="contained" color={'secondary'} startIcon={<LocalPrintshopIcon/>}>
-                                Print
+                            <Button variant="contained" color={'secondary'} startIcon={<LocalPrintshopIcon/>} onClick={handlePrint}>
+                                {t('prescription.btn.print')}
                             </Button>
                         </Stack>
                     </Toolbar>
                 </AppBar>
                 {currentDetail &&
-                    <Stack sx={{paddingBlock: '20px'}} rowGap={1}>
+                    <Stack sx={{paddingBlock: '20px'}} rowGap={1} ref={printRef}>
                         <Stack className={'prescription-detail-section'}>
-                            <p className={'prescription-detail-main-title'}>Patient Information</p>
+                            <p className={'prescription-detail-main-title'}>{t('prescription.patient-info.title')}</p>
                             <div className={'prescription-detail-patient-info'}>
-                                <p>Name: <b>{currentDetail['name']}</b></p>
-                                <p>Date of birth: <b>{currentDetail['dateOfBirth']}</b></p>
-                                <p>Gender: <b>Male</b></p>
-                                <p>Phone: <b>{currentDetail['phoneNumber'] ? currentDetail['phoneNumber'] : '---'}</b></p>
-                                <p>Medical History: <b>Hypertension, Asthma</b></p>
-                                <p>Address: <b>{currentDetail['address']}</b></p>
+                                <p>{t('prescription.patient-info.name')}: <b>{currentDetail['name']}</b></p>
+                                <p>{t('prescription.patient-info.dob')}: <b>{dayjs(currentDetail['dateOfBirth']).format("DD-MM-YYYY")}</b></p>
+                                <p>{t('prescription.patient-info.phone')}: <b>{currentDetail['phoneNumber'] ? currentDetail['phoneNumber'] : '---'}</b></p>
+                                <p>{t('prescription.patient-info.address')}: <b>{currentDetail['address']}</b></p>
                             </div>
                         </Stack>
                         <Stack className={'prescription-detail-section'}>
-                            <p className={'prescription-detail-main-title'}>Prescription Details</p>
+                            <p className={'prescription-detail-main-title'}>{t('prescription.detail.title')}</p>
                             <Stack>
-                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>Doctor Diagnosis
+                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>{t('prescription.detail.diagnosis')}
                                     <p className={'doctor-diagnosis'}>{currentDetail['diagnosis']}</p>
                                 </div>
                             </Stack>
                             <Stack>
-                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>Prescribed Medications</p>
+                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>
+                                    {t('prescription.detail.p-medications', {total: currentDetail.medicationList.length})}
+                                </p>
                                 <TableContainer>
                                     <Table>
                                         <TableHead>
                                             <TableRow sx={{backgroundColor: '#36007B'}}>
                                                 {medicationHeader.map((item, index) =>
-                                                    <TableCell sx={{color: 'white'}} key={index}>{item}</TableCell>)}
+                                                    <TableCell sx={{color: 'white'}} key={index}>{t(`table.${item}`)}</TableCell>)}
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -386,7 +390,6 @@ export default function PhysicianDashboard(){
                                                     <TableCell>{item['name']}</TableCell>
                                                     <TableCell>{item['dosage']}</TableCell>
                                                     <TableCell>{item['frequency']}</TableCell>
-                                                    <TableCell>{item['quantity']}</TableCell>
                                                     <TableCell>{dayjs(item['startDate']).format('DD-MM-YYYY')}</TableCell>
                                                     <TableCell>{dayjs(item['endDate']).format('DD-MM-YYYY')}</TableCell>
                                                     <TableCell>{item['note']}</TableCell>

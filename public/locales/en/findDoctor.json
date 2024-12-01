@@ -1,5 +1,6 @@
 {
   "name-placeholder": "Search by name...",
+  "no-doctor": "No doctor found",
   "find-button": "Find",
   "more-filter": "MORE FILTER +",
   "less-filter": "LESS FILTER -",
@@ -18,5 +19,7 @@
   "specialization": "SPECIALIZATION",
   "language-spoken": "LANGUAGE SPOKEN",
   "schedule": "SCHEDULE APPOINTMENT",
-  "schedule-2": "CONTINUE WITH THIS DOCTOR"
+  "schedule-2": "CONTINUE WITH THIS DOCTOR",
+  "doctor-more-info": "MORE INFO",
+  "work-year": "{{year}} years {{month}} months"
 }

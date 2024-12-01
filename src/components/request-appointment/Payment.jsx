@@ -8,20 +8,25 @@ import PayLogo from "../../assets/9pay-logo.png"
 import {useTranslation} from "react-i18next";
 import baseAxios from "../../config/axiosConfig.jsx";
 import VNPay from "../../assets/VNPay.webp"
+import {useNavigate} from "react-router";
+import {useEffect, useRef, useState} from "react";
 
 export default function Payment(){
     const [appointmentData, _] = useOutletContext()
     const {t} = useTranslation('appointmentRequest')
+    const payURL = useRef(null);
+    const isApiCalled = useRef(false);
 
-    async function alertMsg(){
-        alert("You will be redirected to the payment page!")
-
-        baseAxios.get(`payment/vn-pay?appointmentID=${appointmentData.appointmentID}&amount=132000&bankCode=NCB`)
-            .then(r =>  {
-                window.location.href = r.data
-            })
-            .catch(err => console.log(err))
-    }
+    useEffect( () => {
+        if (!isApiCalled.current) {
+            isApiCalled.current = true;
+            baseAxios.get(`payment/vn-pay?appointmentID=${appointmentData.appointmentID}&amount=165000&bankCode=NCB&email=${localStorage.getItem('email')}`)
+                .then(r => {
+                    payURL.current = r.data;
+                })
+                .catch(err => console.log(err));
+        }
+    }, []);
 
     return (
         <>
@@ -42,19 +47,19 @@ export default function Payment(){
                            </Typography>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.doctor_fee')}</Typography>
-                               <p>100 000đ</p>
+                               <p>100.000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.service_fee')}</Typography>
-                               <p>20 000đ</p>
+                               <p>50.000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.tax')}</Typography>
-                               <p>+10% * tổng số tiền = 12 000đ</p>
+                               <p>+10% * tổng số tiền = 15.000đ</p>
                            </Stack>
                            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                <Typography level={'body-lg'} sx={{color: 'white'}}>{t('component.payment.fees.total')}</Typography>
-                               <p>132 000đ</p>
+                               <p>165.000đ</p>
                            </Stack>
                        </div>
                         <Stack rowGap={'2rem'}>
@@ -75,7 +80,13 @@ export default function Payment(){
                                     <img className={'payment-method-logo'} src={PayLogo} alt={'9pay-logo'}/>
                                     <p>9PAY</p>
                                 </Stack>
-                                <Stack className={'payment-method-wrapper'} textAlign={'center'} onClick={alertMsg}>
+                                <Stack className={'payment-method-wrapper'} textAlign={'center'}
+                                    onClick={() => {
+                                        if(payURL.current) {
+                                            window.location.href = payURL.current
+                                        }
+                                    }}
+                                >
                                     <img className={'payment-method-logo'} src={VNPay} alt={'vnpay-logo'}/>
                                     <p>VNPay</p>
                                 </Stack>

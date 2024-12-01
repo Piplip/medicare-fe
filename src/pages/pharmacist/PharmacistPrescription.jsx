@@ -22,6 +22,8 @@ import {webSocketAxios} from "../../config/axiosConfig.jsx";
 import {useLoaderData} from "react-router";
 import {getCookie} from "../../components/Utilities.jsx";
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
+import {useTranslation} from "react-i18next";
+import {useReactToPrint} from "react-to-print";
 
 function PharmacistPrescription(){
     const [open, setOpen] = useState(false);
@@ -31,8 +33,14 @@ function PharmacistPrescription(){
     const [currentPrescription, setCurrentPrescription] = useState(null)
     const [viewingPharmacistName, setViewingPharmacistName] = useState(Array(prescriptions.length).fill(''))
 
-    const medicationHeader = ['Name', 'Dosage', 'Frequency', 'Quantity', 'Start Date', 'End Date', "Doctor's Note"]
+    const medicationHeader = ['m-name', 'dosage', 'frequency', 'm-start-date', 'm-end-date', "m-doctor-note"]
     const [timeGap, setTimeGap] = useState(Array(prescriptions.length).fill(0))
+
+    const {t} = useTranslation('common')
+    const printRef = useRef(null)
+    const handlePrint = useReactToPrint({
+        contentRef: printRef
+    })
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -50,12 +58,10 @@ function PharmacistPrescription(){
     useEffect(() => {
         const stompClient = new Client({
             brokerURL: 'ws://localhost:8080/ws',
-            debug: (str) => console.log(str),
             onConnect: () => {
                 stompClient.subscribe('/prescriptions',  async (message) => {
                     if(message.body){
                         const body = JSON.parse(message.body)
-                        console.log(body)
                         if(body.signalID === 'CP-100'){
                             if(prescriptionRef.current.every(item => item.appointmentID.toString() !== body.data['prescription'].appointmentID.toString())) {
                                  setPrescriptions(prev => [...prev, body.data['prescription']])
@@ -169,13 +175,17 @@ function PharmacistPrescription(){
         return dayjs().diff(dayjs(time, "HH:mm DD:MM:YYYY"), 'minutes')
     }
 
+    console.log(prescriptions)
+
     return(
         <div className={'pharmacist-medication-container'}>
-            <Typography variant={'h4'} fontFamily={"monospace"} n textAlign={'center'} marginBottom={'.25rem'}>PRESCRIPTION({prescriptions && prescriptions.length})</Typography>
+            <Typography variant={'h4'} fontFamily={"monospace"} textAlign={'center'} marginBottom={'.25rem'}>
+                {t('pharmacist.prescription.title', {count: prescriptions?.length})}
+            </Typography>
             <div>
                 {prescriptions &&
                     <div className={'newest-indicator-wrapper'}>
-                        <p>Newer</p>
+                        <p>{t('pharmacist.prescription.older')}</p>
                         <Stack direction={'row'}>
                             <PlayArrowOutlinedIcon className={'slide-left-icon'}/>
                             <PlayArrowOutlinedIcon className={'slide-left-icon'}/>
@@ -193,7 +203,7 @@ function PharmacistPrescription(){
                             <PlayArrowOutlinedIcon className={'slide-left-icon'}/>
                             <PlayArrowOutlinedIcon className={'slide-left-icon'}/>
                         </Stack>
-                        <p>Older</p>
+                        <p>{t('pharmacist.prescription.newer')}</p>
                     </div>
                 }
                 <div className={'prescription-card-container'}>
@@ -205,20 +215,20 @@ function PharmacistPrescription(){
                                            sx={{backgroundColor: '#e0f7fa'}} padding={1}>
                                         <p>
                                             <span className={'prescription-order-indicator'}>{(index + 1).toString().padStart(2, '0')}</span>
-                                            &emsp;Waiting for
+                                            &emsp;{t('pharmacist.prescription.card.wait-for')}
                                             <span style={{color: parseInt(timeGap[index], 10) >= 30 ? '#e50d0d' : 'black', fontStyle: 'italic', fontWeight: 'bold'}}>
                                                 {` ${timeGap[index]} `}
-                                            </span>minutes
+                                            </span>{t('pharmacist.prescription.card.min')}
                                         </p>
                                         <Tooltip title={determineProgress(index)[0]} placement={'top'}>
                                         <CircleIcon sx={{color: determineProgress(index)[1]}}/>
                                         </Tooltip>
                                     </Stack>
                                     <Stack className={'prescription-card-main'} padding={'0.25rem .5rem'} rowGap={'5px'}>
-                                        <p>Patient Name: <b>{item.name}</b></p>
-                                        <p>Prescribing Doctor's: <b>{item['doctorName']}</b></p>
-                                        <p>Prescription Time: <b>{item['prescribedTime']}</b></p>
-                                        <p>Total Medications: <b>{item['medicationList'].length}</b></p>
+                                        <p>{t('pharmacist.prescription.card.name')}: <b>{item.name}</b></p>
+                                        <p>{t('pharmacist.prescription.card.p-doctor')}: <b>{item['doctorName']}</b></p>
+                                        <p>{t('pharmacist.prescription.card.p-time')}: <b>{item['prescribedTime']}</b></p>
+                                        <p>{t('pharmacist.prescription.card.total')}: <b>{item['medicationList'].length}</b></p>
                                     </Stack>
                                     <Stack alignContent={'center'}>
                                         <Button sx={{backgroundColor: '#2196f3', fontSize: '12px'}} variant={'contained'}
@@ -234,12 +244,11 @@ function PharmacistPrescription(){
                                                     setCurrentPrescription(index)
                                                     setOpen(true)
                                                 }}
-                                        >View Details</Button>
+                                        >{t('pharmacist.prescription.card.view')}</Button>
                                     </Stack>
                                     {item['status'] === 'IN-PROGRESS' && viewingPharmacistName &&
                                         <div className={'viewing-prescription-panel'}>
-                                            <p>{viewingPharmacistName[index]} is prescribing this! Please select another
-                                                prescription</p>
+                                            <p>{t('pharmacist.prescription.select-by-other', {name: viewingPharmacistName[index]})}</p>
                                         </div>
                                     }
                                 </div>
@@ -255,9 +264,7 @@ function PharmacistPrescription(){
             <Dialog fullScreen open={open} onClose={() => setOpen(false)}>
                 <AppBar sx={{position: 'relative'}}>
                     <Toolbar>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
+                        <IconButton edge="start" color="inherit"
                             onClick={() => {
                                 webSocketAxios.post('/leave/prescription?' + new URLSearchParams({
                                     prescribedID: prescriptions[currentPrescription]['prescribedID']
@@ -270,11 +277,11 @@ function PharmacistPrescription(){
                             <CloseIcon/>
                         </IconButton>
                         <Typography sx={{ml: 2, flex: 1, fontSize: '20px', fontWeight: 'bold'}}>
-                            Detailed Prescription View
+                            {t('prescription.title')}
                         </Typography>
                         <Stack direction={'row'} columnGap={1}>
-                            <Button variant="contained" color={'primary'} startIcon={<LocalPrintshopIcon/>}>
-                                Print
+                            <Button variant="contained" color={'primary'} startIcon={<LocalPrintshopIcon/>} onClick={handlePrint}>
+                                {t('prescription.btn.print')}
                             </Button>
                             <Button variant="contained" color={'secondary'} startIcon={<TaskAltIcon/>}
                                     onClick={() => {
@@ -288,46 +295,47 @@ function PharmacistPrescription(){
                                             .catch(err => console.log(err))
                                     }}
                             >
-                                Complete
+                                {t('prescription.btn.complete')}
                             </Button>
                         </Stack>
                     </Toolbar>
                 </AppBar>
                 {currentPrescription !== null &&
-                    <Stack sx={{paddingBlock: '20px'}} rowGap={1}>
+                    <Stack sx={{paddingBlock: '20px'}} rowGap={1} ref={printRef}>
                         <Stack className={'prescription-detail-section'}>
-                            <p className={'prescription-detail-main-title'}>Patient Information</p>
+                            <p className={'prescription-detail-main-title'}>
+                                {t('prescription.patient-info.title')}
+                            </p>
                             <div className={'prescription-detail-patient-info'}>
-                                <p>Name: <b>{prescriptions[currentPrescription]['name']}</b></p>
-                                <p>Date of birth: <b>{prescriptions[currentPrescription]['dateOfBirth']}</b></p>
-                                <p>Gender: <b>{prescriptions[currentPrescription]['gender']}</b></p>
-                                <p>Phone: <b>(123) 456 789</b></p>
-                                <p>Medical History: <b>Hypertension, Asthma</b></p>
-                                <p>Address: <b>{prescriptions[currentPrescription]['address']}</b></p>
+                                <p>{t('prescription.patient-info.name')}: <b>{prescriptions[currentPrescription]['name']}</b></p>
+                                <p>{t('prescription.patient-info.dob')}: <b>{prescriptions[currentPrescription]['dateOfBirth']}</b></p>
+                                <p>{t('prescription.patient-info.gender')}: <b>{t(`gender.${prescriptions[currentPrescription]['gender']}`)}</b></p>
+                                <p>{t('prescription.patient-info.phone')}: <b>(123) 456 789</b></p>
+                                <p>{t('prescription.patient-info.address')}: <b>{prescriptions[currentPrescription]['address']}</b></p>
                             </div>
                         </Stack>
                         <Stack className={'prescription-detail-section'}>
-                            <p className={'prescription-detail-main-title'}>Prescription Details</p>
+                            <p className={'prescription-detail-main-title'}>{t('prescription.detail.title')}</p>
                             <Stack>
                                 <div className={'prescription-detail-doctor-info'}>
-                                    <p>Prescribing Doctor: <b>{prescriptions[currentPrescription]['doctorName']}</b></p>
-                                    <p>Prescription Time: <b>{prescriptions[currentPrescription]['prescribedTime']}</b></p>
-                                    <p>Specialization: <b>Cardiology</b></p>
-                                    <p>Phone: <b>(987) 654 3210</b></p>
-                                    <p>Total Medications: <b>{prescriptions[currentPrescription]['medicationList'].length}</b></p>
+                                    <p>{t('prescription.detail.doctor')}: <b>{prescriptions[currentPrescription]['doctorName']}</b></p>
+                                    <p>{t('prescription.detail.time')}: <b>{prescriptions[currentPrescription]['prescribedTime']}</b></p>
+                                    <p>{t('prescription.detail.phone')}: <b>(987) 654 3210</b></p>
                                 </div>
-                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>Doctor Diagnosis
+                                <div style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'red'}}>{t('prescription.detail.diagnosis')}
                                     <p className={'doctor-diagnosis'}>{prescriptions[currentPrescription]['diagnosis']}</p>
                                 </div>
                             </Stack>
                             <Stack>
-                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>Prescribed Medications</p>
+                                <p style={{color: 'red', fontWeight: 'bold', fontSize: '1.25rem'}}>
+                                    {t('prescription.detail.p-medications', {total: prescriptions[currentPrescription]['medicationList'].length})}
+                            </p>
                                 <TableContainer>
                                     <Table>
                                         <TableHead>
                                             <TableRow sx={{backgroundColor: '#36007B'}}>
                                                 {medicationHeader.map((item, index) =>
-                                                    <TableCell sx={{color: 'white'}} key={index}>{item}</TableCell>)}
+                                                    <TableCell sx={{color: 'white'}} key={index}>{t(`table.${item}`)}</TableCell>)}
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -339,7 +347,7 @@ function PharmacistPrescription(){
                                                     <TableCell>{item['name']}</TableCell>
                                                     <TableCell>{item['dosage']}</TableCell>
                                                     <TableCell>{item['frequency']}</TableCell>
-                                                    <TableCell>{item['quantity']}</TableCell>
+                                                    {/*<TableCell>{item['quantity']}</TableCell>*/}
                                                     <TableCell>{dayjs(item['startDate']).format('DD-MM-YYYY')}</TableCell>
                                                     <TableCell>{dayjs(item['endDate']).format('DD-MM-YYYY')}</TableCell>
                                                     <TableCell>{item['note']}</TableCell>
